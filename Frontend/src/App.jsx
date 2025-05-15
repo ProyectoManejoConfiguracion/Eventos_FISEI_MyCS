@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
+import Home from './Pages/Home'
+import Carusell from './Components/carrusel'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -8,6 +10,7 @@ function App() {
   return (
     <>
       <div>
+        <Carusell/>
         <a href="https://vite.dev" target="_blank">
         </a>
         <a href="https://react.dev" target="_blank">
