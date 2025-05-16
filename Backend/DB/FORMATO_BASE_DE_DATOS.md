@@ -51,5 +51,7 @@ ID_ASI | ID_REG_EST | FEC_ASI |
 
 PORFAVOR REVISAR COMPAÑEROS Y AÑADIR COMO PUNTOS DE ANALISIS EN ESTE MISMO .md
 
-
+Ver si la tabla Facultad es necearia, ya que la pagina se centra en la FISEI.
+Agregar mision y visión a las carreras, y a la facultad si la tabla se queda. 
+En lugar de una tabla estudiantes se podria hacer una tabla usuarios con roles administrador y estudiante
 
