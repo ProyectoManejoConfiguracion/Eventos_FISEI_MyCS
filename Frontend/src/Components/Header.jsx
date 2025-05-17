@@ -1,6 +1,7 @@
 import React from 'react'
 import logo from '../assets/logo.png' ;
 import '../styles/Header.css' ;
+import { Link } from 'react-router-dom';
 import { FaUserAlt } from "react-icons/fa";
 
 const Header = () => {
@@ -11,10 +12,13 @@ const Header = () => {
         
         <nav className='header__nav'>
             <ul className='header__nav-list'>
-                <li className='header__nav-item'>Inicio</li>
-                <li className='header__nav-item'>Eventos</li>
-                <li className='header__nav-item'>Nosotros</li>
-                <li className='header__nav-item'>Contactos</li>
+                <ul className='header__nav-list'>
+                      <li><Link className='header__nav-item' to="/">Inicio</Link></li>
+                      <li><Link className='header__nav-item' to="/Eventos">Eventos</Link></li>
+                      <li><Link className='header__nav-item' to="/Nosotros">Nosotros</Link></li>
+                      <li><Link className='header__nav-item' to="/Contactos">Contactos</Link></li>
+                </ul>
+
             </ul>
         </nav>
         <button className='btn_Loging'> <FaUserAlt size={20} color="#581517" />  Iniciar Sesion</button>
