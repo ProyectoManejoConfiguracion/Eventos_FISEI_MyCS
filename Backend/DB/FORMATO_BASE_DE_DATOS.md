@@ -59,3 +59,5 @@ Ver si la tabla Facultad es necearia, ya que la pagina se centra en la FISEI.
 Agregar mision y visión a las carreras, y a la facultad si la tabla se queda. 
 En lugar de una tabla estudiantes se podria hacer una tabla usuarios con roles administrador y estudiante
 
+**Comentario:** Se deberia mantener la tabla FACULTADES por si a futuro existen cambios en los requerimientos
+
