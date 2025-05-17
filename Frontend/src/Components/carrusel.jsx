@@ -7,11 +7,13 @@ import "../styles/carrusel.css"
 function Carusell(){
   const[currentImagen, setCurrentImagen] = useState(0)
   const[isTransitioning, setIsTransitioning] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
   const carouselRef = useRef(null)
+  const timerRef = useRef(null)
   const imagenes = [
-    {img: carusell1, label: "EVENTOS Y CURSOS", desc:'Incentivar la investigación en los campos afines '},
-    {img: carusell2, label: 'EVENTOS Y CURSOS', desc:'Disponibilidad para todas la personas'},
-    {img: carusell3, label: 'EVENTOS Y CURSOS', desc:'Compromiso con el desarrollo Tecnológico'}
+    {img: carusell1, label: "EVENTOS Y CURSOS", desc:'Incentivar la investigación en los campos afines ', link: '/eventos-cursos'},
+    {img: carusell2, label: 'EVENTOS Y CURSOS', desc:'Disponibilidad para todas la personas', link: '/eventos-cursos'},
+    {img: carusell3, label: 'EVENTOS Y CURSOS', desc:'Compromiso con el desarrollo Tecnológico', link:'/eventos-cursos'}
   ];
 
   const cambiarSlide = useCallback((index)=>{
@@ -37,15 +39,32 @@ function Carusell(){
     cambiarSlide(index);
   };
 
+   const handleImageClick = (link) => {
+    window.location.href = link;
+  };
+
+  useEffect(() => {
+    if (!isPaused) {
+      timerRef.current = setInterval(() => {
+        handleNext();
+      }, 5000); 
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [handleNext, isPaused]);
+
 
   useEffect(()=> {
      const handleKeyDown = (e) => {
-      if (e.key === 'FlechaIzquierda') {
+      if (e.key === 'ArrowLeft') {
         handlePrev();
-      } else if (e.key === 'FlechaDerecha') {
+      } else if (e.key === 'ArrowRight') {
         handleNext();
       } else if (e.key === ' ') {
-        togglePause();
+        setIsPaused(prev => !prev)
         e.preventDefault();
       }
     };
@@ -80,6 +99,7 @@ function Carusell(){
             className={`carusell-imagen ${index === currentImagen ? 'active' : ''}`}
             key ={index}
             aria-hidden={index !== currentImagen}
+            onClick={() => handleImageClick(imagen.link)}
           >
             <img 
             src={imagen.img} 
@@ -88,15 +108,25 @@ function Carusell(){
             <div className='carusell-caption'>
               <h3>{imagen.label}</h3>
               <p>{imagen.desc}</p>
+              <button 
+                className="carrusel-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleImageClick(imagen.link);
+                }}
+              >
+                Ver más
+              </button>
             </div> 
           </div>
         ))}
       </div>
 
-    <button className='carusell-control prev' onClick={handlePrev} aria-label="Anterior">
+    <button className='carusell-control prev' 
+      onClick={(e) => {e.stopPropagation(); handlePrev()}} aria-label="Anterior">
         <span className="flecha-izquierda"></span> 
     </button>
-    <button className='carusell-control next' onClick={handleNext} aria-label='Siguiente'>
+    <button className='carusell-control next' onClick={(e) => {e.stopPropagation(); handleNext()}} aria-label='Siguiente'>
         <span className="flecha-derecha"></span>
     </button>
 
@@ -104,7 +134,7 @@ function Carusell(){
         {imagenes.map((_, index) => (
           <button
             key={index}
-            onClick={() => handleDotClick(index)}
+            onClick={(e) => {e.stopPropagation(); handleDotClick(index)}}
             className={`carrusel-dot ${index === currentImagen ? 'active' : ''}`}
             aria-label={`Ir a la imagen ${index + 1}`}
             aria-current={index === currentImagen}
