@@ -1,0 +1,211 @@
+
+.carusell-container{
+    position: relative;
+    width: 80%;
+    max-width: 1000px; 
+    margin: 0 auto; 
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+  }
+  
+  .carusell{
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+    font-family: Helvetica, sans-serif;
+  }
+  
+  .carusell-imagen{
+    flex: 0 0 100%;
+    position: relative;
+    text-align: center;
+    cursor: pointer;  
+  }
+  
+  .carusell-imagen.active{
+    opacity: 1;
+  }
+  .carusell-imagen img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    
+  }
+  .carusell-caption{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px;
+    color: white;
+    text-align: left;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0,0,0,0));
+  }
+
+  .carusell-caption h3{
+    font-size: 1.8rem;
+    margin: 0 0 5px 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  }
+  .carusell-caption p{
+    font-size: 1rem;
+    margin: 0 0 15px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .carrusel-button {
+  display: inline-block;
+  background-color: #581517;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.carrusel-button:hover {
+  background-color: #470e10;
+}
+
+  .carusell-control{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10;
+    
+  }
+
+  .carusell-control:hover{
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .carusell-control.prev{
+    left: 15px;
+  }
+  .carusell-control.next{
+    right: 15px;
+  }
+
+  .flecha-izquierda,
+.flecha-derecha {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-top: 3px solid white;
+  border-left: 3px solid white;
+  position: relative;
+  
+}
+
+.flecha-izquierda {
+  transform: rotate(-45deg);
+  margin-right: -5px;
+}
+
+.flecha-derecha {
+  transform: rotate(135deg);
+  margin-left: -5px;
+}
+
+  .carrusel-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carrusel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 0;
+}
+
+.carrusel-dot:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.carrusel-dot.active {
+  background-color: white;
+}
+  
+@media (max-width: 768px) {
+  .carrusel-container {
+    max-width: 100%;
+    aspect-ratio: 16/9;
+  }
+  
+  .carrusel-imagen img {
+    height: 400px;
+    object-fit: cover;
+  }
+  
+  .carrusel-caption h3 {
+    font-size: 1.5rem;
+  }
+  
+  .carrusel-caption p {
+    font-size: 0.9rem;
+  }
+  
+  .carrusel-control {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carrusel-imagen img {
+    height: 300px;
+    aspect-ratio: 16/10;
+  }
+  
+  .carrusel-caption h3 {
+    font-size: 1.2rem;
+  }
+  
+  .carrusel-caption p {
+    font-size: 0.8rem;
+  }
+  
+  .carrusel-control {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+  
+  .carrusel-dot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .carrusel-playpause {
+    width: 25px;
+    height: 25px;
+    font-size: 10px;
+  }
+}
