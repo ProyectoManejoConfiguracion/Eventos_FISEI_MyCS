@@ -1,53 +1,17 @@
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import React, { useState } from "react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import "../Styles/Contactos.css";
-import img from '../assets/facultad1.jpg';
-
+import img from "../assets/facultad1.jpg";
 
 const Contactos = () => {
-  const [form, setForm] = useState({
-    nombre: '',
-    correo: '',
-    tipo: '',
-    tema: '',
-    mensaje: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        BACK_URL + "/Contacto.php",
-        JSON.stringify(form),
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-      alert(response.data.message || 'Mensaje enviado correctamente');
-    } catch (error) {
-      console.error('Error al enviar el formulario:', error);
-      alert('Hubo un problema al enviar tu mensaje.');
-    }
-  };
-
   return (
     <div className="contact-container">
-      
       <div className="contact-hero">
-        <img
-          src={img}
-          alt="Banner"
-          className="hero-image"
-        />
+        <img src={img} alt="Banner" className="hero-image" />
         <div className="hero-overlay" />
         <div className="hero-content">
           <h1 className="hero-title">Contáctanos</h1>
-                 </div>
+        </div>
       </div>
       <div className="main-content">
         <div className="cards-grid">
@@ -90,15 +54,13 @@ const Contactos = () => {
 
           <div className="formulario-section">
             <h3 className="section-title">Envíanos un mensaje</h3>
-            <form className="formulario-container" onSubmit={handleSubmit}>
+            <form className="formulario-container">
               <div className="input-group">
                 <input
                   type="text"
                   name="nombre"
                   placeholder="Nombre completo"
                   className="input-field"
-                  value={form.nombre}
-                  onChange={handleChange}
                   required
                 />
                 <input
@@ -106,8 +68,6 @@ const Contactos = () => {
                   name="correo"
                   placeholder="Correo electrónico"
                   className="input-field"
-                  value={form.correo}
-                  onChange={handleChange}
                   required
                 />
               </div>
@@ -117,16 +77,8 @@ const Contactos = () => {
                   name="tipo"
                   placeholder="Teléfono"
                   className="input-field"
-                  value={form.tipo}
-                  onChange={handleChange}
                 />
-                <select
-                  name="tema"
-                  className="input-field"
-                  value={form.tema}
-                  onChange={handleChange}
-                  required
-                >
+                <select name="tema" className="input-field" required>
                   <option value="">Seleccione un tema</option>
                   <option value="compra">Eventos</option>
                   <option value="venta">Congresos</option>
@@ -140,12 +92,12 @@ const Contactos = () => {
                 placeholder="Mensaje"
                 rows="5"
                 className="input-field textarea"
-                value={form.mensaje}
-                onChange={handleChange}
                 required
               ></textarea>
 
-              <button className="submit-button" type="submit">Enviar mensaje</button>
+              <button className="submit-button" type="submit">
+                Enviar mensaje
+              </button>
             </form>
           </div>
         </div>
