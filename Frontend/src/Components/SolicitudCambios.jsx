@@ -1,5 +1,5 @@
-import '../Styles/solicitud.css';
 import logoSolicitud from '../assets/logo-Solicitud.png'
+import '../Styles/SolicitudCambio.css';
 
 const FormularioSolicitudCambios = () => (
   <div className="solicitud-container">
