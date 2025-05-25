@@ -1,0 +1,158 @@
+.solicitud-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background: #f9f9f9;
+}
+.solicitud-form {
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 210mm;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.solicitud-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  table-layout: fixed;
+}
+
+.solicitud-table th,
+.solicitud-table td {
+  border: 1px solid #000;
+  padding: 10px;
+  vertical-align: top;
+  word-wrap: break-word;
+}
+
+.logo-header {
+  width: 140px;
+}
+.logo-placeholder {
+  width: 100%;
+  max-width: 120px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-solicitud {
+  max-width: 120px;
+  max-height: 60px;
+  display: block;
+  margin: 0 auto;
+}
+
+.title-header {
+  width: 280px;
+  text-align: center;
+  vertical-align: middle;
+  border-left: none;
+  border-right: none;
+  font-size: 25px;
+}
+.number-header,
+.number-value {
+  width: 100px;
+  text-align: center;
+}
+
+.sprint-row input {
+  width: auto;
+  min-width: 60px;
+}
+
+.section-title {
+  background-color: #e0e0e0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.subsection-title,
+.textarea-title,
+.input-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.solicitud-table input[type="text"],
+.solicitud-table input[type="date"],
+.solicitud-table textarea {
+  width: 100%;         
+  padding: 6px 8px;     
+  font-size: 14px;      
+  box-sizing: border-box;
+}
+
+.solicitud-table input[type="text"],
+.solicitud-table input[type="date"] {
+  height: 30px;
+}
+
+.solicitud-table textarea {
+  min-height: 100px;
+}
+
+
+input[type="checkbox"] {
+  margin-right: 4px;
+}
+
+
+.firma-container {
+  padding: 0;        
+  border: none;      
+}
+
+.firma-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;  
+}
+
+.firma-table td {
+  border: 1px solid #000;
+  padding: 4px;
+  vertical-align: top;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+.firma-table input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;             
+}
+
+.checkbox-group .subsection-title {
+  margin-bottom: 6px;
+}
+
+.number-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;          
+}
+
+.number-sign {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.number-input {
+  width: 60px;       
+  padding: 4px 6px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
