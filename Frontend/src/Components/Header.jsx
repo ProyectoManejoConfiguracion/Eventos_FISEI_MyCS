@@ -21,7 +21,10 @@ const Header = () => {
 
             </ul>
         </nav>
-        <button className='btn_Loging'> <FaUserAlt size={20} color="#581517" />  Iniciar Sesion</button>
+        <div className='container-botton'>
+<button className='btn_Loging'> <FaUserAlt  size={20} color="#581517" className='btn-icon' />  Iniciar Sesion</button>
+        </div>
+        
         
        
 </div>
