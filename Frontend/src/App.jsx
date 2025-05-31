@@ -9,6 +9,7 @@ import Footer from "./Components/Footer";
 
 
 
+
 function App() {
   
 
@@ -24,7 +25,6 @@ function App() {
           <Route path="/Contactos" element={<Contactos />} />
         </Routes>
         <Footer/>
-      
       </Router>
 
     </>

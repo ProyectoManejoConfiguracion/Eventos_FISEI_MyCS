@@ -4,6 +4,7 @@ const personasController = require('../controllers/personasController');
 
 router.get('/', personasController.getAll);
 router.get('/:id', personasController.getOne);
+router.post('/login', personasController.login);
 router.post('/', personasController.create);
 router.put('/:id', personasController.update);
 router.delete('/:id', personasController.delete);
