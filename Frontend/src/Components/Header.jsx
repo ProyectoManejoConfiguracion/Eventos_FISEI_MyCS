@@ -22,7 +22,7 @@ const Header = () => {
             </ul>
         </nav>
         <div className='container-botton'>
-<button className='btn_Loging'> <FaUserAlt  size={20} color="#581517" className='btn-icon' />  Iniciar Sesion</button>
+<button className='btn_Loging'> <FaUserAlt  size={18} color="white" className='btn-icon' />  Iniciar Sesion</button>
         </div>
         
         
