@@ -1,5 +1,7 @@
 const { PERSONAS } = require('../models');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
 
 exports.getAll = async (req, res) => {
   try {
@@ -63,14 +65,22 @@ exports.login = async (req, res) => {
 
     const isValid = await bcrypt.compare(password, user.CON_PER);
     if (!isValid) {
-      return res.status(401).json({ 
-      error: 'Contraseña incorrecta',
-      hashedPassword: user.CON_PER
-      });
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
+
+    const token = jwt.sign(
+      {
+        id: user.CED_PER,
+        email: user.COR_PER,
+        nombre: user.NOM_PER
+      },
+      JWT_SECRET,
+      { expiresIn: '2h' }
+    );
 
     res.json({
       message: 'Login exitoso',
+      token,
       user: {
         CED_PER: user.CED_PER,
         NOM_PER: user.NOM_PER,
