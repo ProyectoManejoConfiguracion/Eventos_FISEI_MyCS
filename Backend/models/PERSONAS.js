@@ -17,6 +17,14 @@ module.exports = function(sequelize, DataTypes) {
     TEL_PER: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    COR_PER: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    CON_PER: {
+      type: DataTypes.STRING(255),
+      allowNull: false
     }
   }, {
     sequelize,
