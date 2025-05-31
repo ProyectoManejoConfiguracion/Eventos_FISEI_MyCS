@@ -5,7 +5,7 @@ import Carusell from '../Components/carrusel';
 const Home = () => {
   return (
  <div className='home-container'>
-    <Carusell/>
+<Carusell/>
  </div>  
   )
 } 
