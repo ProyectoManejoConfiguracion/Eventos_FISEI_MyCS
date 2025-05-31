@@ -1,7 +1,6 @@
 var DataTypes = require("sequelize").DataTypes;
 var _AUTORIDADES = require("./AUTORIDADES");
 var _CARRERAS = require("./CARRERAS");
-var _CREDENCIALES = require("./CREDENCIALES");
 var _DETALLE_EVENTOS = require("./DETALLE_EVENTOS");
 var _DETALLE_INFORME = require("./DETALLE_INFORME");
 var _ESTUDIANTES = require("./ESTUDIANTES");
@@ -19,7 +18,6 @@ var _TARIFAS_EVENTO = require("./TARIFAS_EVENTO");
 function initModels(sequelize) {
   var AUTORIDADES = _AUTORIDADES(sequelize, DataTypes);
   var CARRERAS = _CARRERAS(sequelize, DataTypes);
-  var CREDENCIALES = _CREDENCIALES(sequelize, DataTypes);
   var DETALLE_EVENTOS = _DETALLE_EVENTOS(sequelize, DataTypes);
   var DETALLE_INFORME = _DETALLE_INFORME(sequelize, DataTypes);
   var ESTUDIANTES = _ESTUDIANTES(sequelize, DataTypes);
@@ -58,8 +56,6 @@ function initModels(sequelize) {
   NIVEL.hasMany(REGISTRO_EVENTO, { as: "REGISTRO_EVENTOs", foreignKey: "ID_NIV"});
   AUTORIDADES.belongsTo(PERSONAS, { as: "CED_PER_PERSONA", foreignKey: "CED_PER"});
   PERSONAS.hasMany(AUTORIDADES, { as: "AUTORIDADEs", foreignKey: "CED_PER"});
-  CREDENCIALES.belongsTo(PERSONAS, { as: "CED_PER_PERSONA", foreignKey: "CED_PER"});
-  PERSONAS.hasMany(CREDENCIALES, { as: "CREDENCIALEs", foreignKey: "CED_PER"});
   DETALLE_EVENTOS.belongsTo(PERSONAS, { as: "CED_AUT_PERSONA", foreignKey: "CED_AUT"});
   PERSONAS.hasMany(DETALLE_EVENTOS, { as: "DETALLE_EVENTOs", foreignKey: "CED_AUT"});
   ESTUDIANTES.belongsTo(PERSONAS, { as: "CED_EST_PERSONA", foreignKey: "CED_EST"});
@@ -78,7 +74,6 @@ function initModels(sequelize) {
   return {
     AUTORIDADES,
     CARRERAS,
-    CREDENCIALES,
     DETALLE_EVENTOS,
     DETALLE_INFORME,
     ESTUDIANTES,
