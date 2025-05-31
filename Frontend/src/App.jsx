@@ -4,6 +4,7 @@ import Header from './Components/Header' ;
 import Eventos from './Pages/Eventos' ;
 import Nosotros from './Pages/Nosotros' ;
 import Contactos from "./Pages/Contactos";
+import Footer from "./Components/Footer";
 
 
 
@@ -23,8 +24,7 @@ function App() {
           <Route path="/Nosotros" element={<Nosotros />} />
           <Route path="/Contactos" element={<Contactos />} />
         </Routes>
-    
-      
+        <Footer/>
       </Router>
 
     </>
