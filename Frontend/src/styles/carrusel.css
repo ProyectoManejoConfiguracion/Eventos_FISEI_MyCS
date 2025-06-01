@@ -14,6 +14,7 @@
     display: flex;
     transition: transform 0.5s ease-in-out;
     width: 100%;
+    font-family: Helvetica, sans-serif;
   }
   
   .carusell-imagen{
