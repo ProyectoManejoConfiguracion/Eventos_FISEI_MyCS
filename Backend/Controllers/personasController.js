@@ -1,4 +1,4 @@
-const { PERSONAS } = require('../models');
+const { PERSONAS, ESTUDIANTES, AUTORIDADES } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
@@ -68,11 +68,28 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
+    let rol = 'Invitado';
+
+    const autoridad = await AUTORIDADES.findOne({ where: { CED_PER: user.CED_PER } });
+    if (autoridad) {
+      const primeraAutoridad = await AUTORIDADES.findOne({
+        order: [['ID_AUT', 'ASC']]
+      });
+
+      rol = (autoridad.ID_AUT === primeraAutoridad.ID_AUT) ? 'Admin' : 'Docente';
+    } else {
+      const estudiante = await ESTUDIANTES.findOne({ where: { CED_EST: user.CED_PER } });
+      if (estudiante) {
+        rol = 'Estudiante';
+      }
+    }
+
     const token = jwt.sign(
       {
         id: user.CED_PER,
         email: user.COR_PER,
-        nombre: user.NOM_PER
+        nombre: user.NOM_PER,
+        ROL_EST: rol
       },
       JWT_SECRET,
       { expiresIn: '2h' }
@@ -85,7 +102,8 @@ exports.login = async (req, res) => {
         CED_PER: user.CED_PER,
         NOM_PER: user.NOM_PER,
         APE_PER: user.APE_PER,
-        COR_PER: user.COR_PER
+        COR_PER: user.COR_PER,
+        ROL_EST: rol
       }
     });
 
@@ -93,6 +111,8 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 
 exports.update = async (req, res) => {
   try {
