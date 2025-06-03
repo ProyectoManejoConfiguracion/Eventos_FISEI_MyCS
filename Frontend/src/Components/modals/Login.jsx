@@ -3,6 +3,8 @@ import "../../Styles/Login.css";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+
 const Login = ({ isOpen, closeModal }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ const Login = ({ isOpen, closeModal }) => {
   }, [isOpen]);
 
   if (!isOpen) return null;
+  
   const handleLogin = async ()=>{
     try {
         await login(email, password);
@@ -45,9 +48,11 @@ const Login = ({ isOpen, closeModal }) => {
         draggable: true,
       }).then(() => {
                 navigate('/Administrador');
+                 closeModal();
             });
 
     } catch (error) {
+         console.error("Error en login:", error.response?.data || error.message || error);
         Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Error al iniciar sesión",
@@ -101,7 +106,7 @@ const Login = ({ isOpen, closeModal }) => {
               </a>
             </div>
 
-            <button className="login-button">Iniciar Sesión</button>
+            <button className="login-button" onClick={handleLogin}>Iniciar Sesión</button>
           </div>
 
           <div className="login-register-container">

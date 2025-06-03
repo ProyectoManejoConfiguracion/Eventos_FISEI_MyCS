@@ -24,7 +24,7 @@ const Header = () => {
 
             </ul>
         </nav>
-        <button className='btn_Loging' onClick={()=>setIsModalOpen(true)}> <FaUserAlt size={20} color="#581517" />  Iniciar Sesion</button>
+        <button className='btn_Loging' onClick={()=>setIsModalOpen(true)}> <FaUserAlt size={20} color="white" />  Iniciar Sesion</button>
         <Login isOpen={isModalOpen} closeModal={()=>setIsModalOpen(false)}/>   
 </div>
 
