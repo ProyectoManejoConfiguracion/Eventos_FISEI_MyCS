@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../assets/logo.png' ;
 import '../styles/Header.css' ;
 import { Link } from 'react-router-dom';
 import { FaUserAlt } from "react-icons/fa";
+import Login from '../Components/modals/Login'
 
 const Header = () => {
+  
+  const [isModalOpen,setIsModalOpen] = useState(false);
   return (
     <header className='header'>
         <div className='header__container'>
@@ -21,9 +24,8 @@ const Header = () => {
 
             </ul>
         </nav>
-        <button className='btn_Loging'> <FaUserAlt size={20} color="#581517" />  Iniciar Sesion</button>
-        
-       
+        <button className='btn_Loging' onClick={()=>setIsModalOpen(true)}> <FaUserAlt size={20} color="white" />  Iniciar Sesion</button>
+        <Login isOpen={isModalOpen} closeModal={()=>setIsModalOpen(false)}/>   
 </div>
 
 

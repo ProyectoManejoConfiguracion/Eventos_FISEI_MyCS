@@ -1,4 +1,7 @@
-const { PERSONAS } = require('../models');
+const { PERSONAS, ESTUDIANTES, AUTORIDADES } = require('../models');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
 
 exports.getAll = async (req, res) => {
   try {
@@ -21,12 +24,95 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const newRecord = await PERSONAS.create(req.body);
-    res.status(201).json(newRecord);
+    const { CON_PER, ...rest } = req.body;
+
+    if (!CON_PER) {
+      return res.status(400).json({ error: 'Se requiere una contraseña' });
+    }
+
+    const hashedPassword = await bcrypt.hash(CON_PER, 10); 
+
+    const newRecord = await PERSONAS.create({
+      CON_PER: hashedPassword,
+      ...rest
+    });
+
+    res.status(201).json({
+      message: 'Usuario creado exitosamente',
+      user: {
+        CED_PER: newRecord.CED_PER,
+        NOM_PER: newRecord.NOM_PER,
+        APE_PER: newRecord.APE_PER,
+        COR_PER: newRecord.COR_PER
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await PERSONAS.findOne({
+      where: { COR_PER: email }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Correo no encontrado' });
+    }
+
+    const isValid = await bcrypt.compare(password, user.CON_PER);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+
+    let rol = 'Invitado';
+
+    const autoridad = await AUTORIDADES.findOne({ where: { CED_PER: user.CED_PER } });
+    if (autoridad) {
+      const primeraAutoridad = await AUTORIDADES.findOne({
+        order: [['ID_AUT', 'ASC']]
+      });
+
+      rol = (autoridad.ID_AUT === primeraAutoridad.ID_AUT) ? 'Admin' : 'Docente';
+    } else {
+      const estudiante = await ESTUDIANTES.findOne({ where: { CED_EST: user.CED_PER } });
+      if (estudiante) {
+        rol = 'Estudiante';
+      }
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.CED_PER,
+        email: user.COR_PER,
+        nombre: user.NOM_PER,
+        ROL_EST: rol
+      },
+      JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    res.json({
+      message: 'Login exitoso',
+      token,
+      user: {
+        CED_PER: user.CED_PER,
+        NOM_PER: user.NOM_PER,
+        APE_PER: user.APE_PER,
+        COR_PER: user.COR_PER,
+        ROL_EST: rol
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 exports.update = async (req, res) => {
   try {
