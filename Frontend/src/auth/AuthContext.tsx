@@ -2,48 +2,49 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
 
-// Tipo del usuario
 interface User {
   id: string;
-  email: string;
   name: string;
+  lastname:string;
+  email: string;
+  role: string;
 }
 
-// Tipo de respuesta del backend
-interface AuthResponse {
-  ok: boolean;
-  user: User;
-}
-
-// Definición del contexto
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-// Hook para acceder fácilmente al contexto
 export const useAuth = () => useContext(AuthContext);
 
-// Provider
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
   const isAuthenticated = !!user;
 
-  const login = async (email: string, password: string) => {
-    const res = await axios.post<AuthResponse>('http://localhost:3000/api/personas/login', {
+  const login = async (email: string, password: string): Promise<User> => {
+    const res = await axios.post('http://localhost:3000/api/personas/login', {
       email,
-      password
+      password,
     });
 
-    const { user } = res.data;
+    const raw = res.data.user;
+
+    const user: User = {
+      id: raw.CED_PER,
+      name: raw.NOM_PER ,
+      lastname:raw.APE_PER,
+      email: raw.COR_PER,
+      role: raw.ROL_EST,
+    };
+
     setUser(user);
-    // Puedes guardar el usuario en localStorage si quieres persistencia
     localStorage.setItem('user', JSON.stringify(user));
+
+    return user;
   };
 
   const logout = () => {
@@ -51,7 +52,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user');
   };
 
-  // Si quieres persistencia tras recargar la página
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
