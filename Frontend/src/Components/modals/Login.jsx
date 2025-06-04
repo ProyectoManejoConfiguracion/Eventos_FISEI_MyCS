@@ -50,7 +50,8 @@ const Login = ({ isOpen, closeModal }) => {
      
                 navigate('/Administrador');
                  closeModal();
-                 console.log("usuario" ,user?.name)
+                 console.log(user?.name);
+                 
                     
             });
 

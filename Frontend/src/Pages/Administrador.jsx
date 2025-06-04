@@ -1,9 +1,16 @@
 import React from 'react'
+import { useAuth } from "../auth/AuthContext";
 
 const Administrador = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <div>Cargando usuario...</div>;
+  }
+
   return (
-    <div>Administrador</div>
-  )
+    <div>Bienvenido, {user.name}</div>
+  );
 }
 
 export default Administrador
