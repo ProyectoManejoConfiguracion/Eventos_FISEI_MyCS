@@ -4,10 +4,11 @@ import Eventos from './Pages/Eventos';
 import Nosotros from './Pages/Nosotros';
 import Contactos from './Pages/Contactos';
 import Administrador from './Pages/Administrador';
-
+import Restudiante from './Pages/Restudiante';  
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Registro from "./Pages/Registro";
+
 
 const Layout = () => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const Layout = () => {
         <Route path="/Contactos" element={<Contactos />} />
         <Route path="/Administrador" element={<Administrador />} />
        <Route path="/Registro" element={<Registro/>} />
+       <Route path="/Restudiante" element={<Restudiante/>} />
       </Routes>
       
       {!isPrivateRoute && <Footer />}
