@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import "../Styles/Registro.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Registro = () => {
     const [imagenPreview, setImagenPreview] = useState(null);
@@ -15,6 +16,8 @@ const Registro = () => {
         CON_PER: "",
         FOT_PER: null
     });
+
+
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -58,6 +61,7 @@ const Registro = () => {
         });
     };
 
+
 const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -81,6 +85,8 @@ const handleSubmit = async (e) => {
             data.append('TEL_PER', formData.TEL_PER);
             data.append('COR_PER', formData.COR_PER);
             data.append('CON_PER', formData.CON_PER);
+
+            data.append
             
             // Agregar imagen si existe
             if (formData.FOT_PER) {
@@ -88,7 +94,7 @@ const handleSubmit = async (e) => {
             }
             
             const response = await axios.post(
-                "http://localhost:3000/personas", 
+                "http://localhost:3000/api/PERSONAS", 
                 data,
                 {
                     headers: {
