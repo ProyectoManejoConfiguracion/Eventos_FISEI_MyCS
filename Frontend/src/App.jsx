@@ -7,6 +7,7 @@ import Administrador from './Pages/Administrador';
 
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import Registro from "./Pages/Registro";
 
 const Layout = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ const Layout = () => {
         <Route path="/Nosotros" element={<Nosotros />} />
         <Route path="/Contactos" element={<Contactos />} />
         <Route path="/Administrador" element={<Administrador />} />
-       
+       <Route path="/Registro" element={<Registro/>} />
       </Routes>
       
       {!isPrivateRoute && <Footer />}

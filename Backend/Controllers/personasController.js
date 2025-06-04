@@ -2,6 +2,79 @@ const { PERSONAS, ESTUDIANTES, AUTORIDADES } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Solo se permiten imágenes (JPEG, JPG, PNG, GIF)'));
+  }
+}).single('FOT_PER');
+
+exports.create = async (req, res) => {
+  // Manejar la subida de la imagen primero
+  upload(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    try {
+      const { CON_PER, ...rest } = req.body;
+      let imagePath = null;
+
+      if (!CON_PER) {
+        return res.status(400).json({ error: 'Se requiere una contraseña' });
+      }
+
+      // Si se subió una imagen
+      if (req.file) {
+        imagePath = req.file.path;
+      }
+
+      const hashedPassword = await bcrypt.hash(CON_PER, 10);
+
+      const newRecord = await PERSONAS.create({
+        CON_PER: hashedPassword,
+        FOT_PER: imagePath, // Guardar la ruta de la imagen
+        ...rest
+      });
+
+      res.status(201).json({
+        message: 'Usuario creado exitosamente',
+        user: {
+          CED_PER: newRecord.CED_PER,
+          NOM_PER: newRecord.NOM_PER,
+          APE_PER: newRecord.APE_PER,
+          COR_PER: newRecord.COR_PER,
+          FOT_PER: newRecord.FOT_PER
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+};
 
 exports.getAll = async (req, res) => {
   try {
@@ -22,34 +95,6 @@ exports.getOne = async (req, res) => {
   }
 };
 
-exports.create = async (req, res) => {
-  try {
-    const { CON_PER, ...rest } = req.body;
-
-    if (!CON_PER) {
-      return res.status(400).json({ error: 'Se requiere una contraseña' });
-    }
-
-    const hashedPassword = await bcrypt.hash(CON_PER, 10); 
-
-    const newRecord = await PERSONAS.create({
-      CON_PER: hashedPassword,
-      ...rest
-    });
-
-    res.status(201).json({
-      message: 'Usuario creado exitosamente',
-      user: {
-        CED_PER: newRecord.CED_PER,
-        NOM_PER: newRecord.NOM_PER,
-        APE_PER: newRecord.APE_PER,
-        COR_PER: newRecord.COR_PER
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
