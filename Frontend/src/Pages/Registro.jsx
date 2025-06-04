@@ -105,7 +105,7 @@ const handleSubmit = async (e) => {
             
             console.log("Registro exitoso:", response.data);
             alert("¡Registro exitoso! Serás redirigido la pagina principal.");
-            navigate("/Home");
+            navigate("/");
             
         } catch (error) {
             const serverError = error.response?.data?.error || "Error en el registro";
