@@ -114,7 +114,7 @@ const Administrador = () => {
               
             </li>
             <li >
-               <Link to="/Administrador/Tarifas" className="navbar_items">
+               <Link to="/Administrador/Configuracion" className="navbar_items">
                  <FaCog className="nav-icon" /> Configuración
               </Link>
               
