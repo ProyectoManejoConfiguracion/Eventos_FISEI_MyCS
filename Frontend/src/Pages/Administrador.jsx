@@ -78,7 +78,7 @@ const Administrador = () => {
               </Link>
             </li>
             <li>
-              <Link to="/Administrador/Usuariogit " className="navbar_items">
+              <Link to="/Administrador/Usuario " className="navbar_items">
                 <FaUser className="nav-icon" /> Usuarios
               </Link>
             </li>
