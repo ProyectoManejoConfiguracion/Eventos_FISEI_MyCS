@@ -1,9 +1,9 @@
-import { React, useState } from "react";
+import React from "react";
 import logo from "../assets/logo.png";
 import "../Styles/Administrador.css";
 import { useAuth } from "../auth/AuthContext";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, Outlet } from "react-router-dom";
 import {
   FaHome,
   FaUser,
@@ -33,7 +33,7 @@ const Administrador = () => {
     });
 
     if (result.isConfirmed) {
-      logout(); // ejecuta la función de cerrar sesión
+      logout();
       await Swal.fire({
         title: "Sesión cerrada",
         text: "Has cerrado sesión exitosamente.",
@@ -51,9 +51,7 @@ const Administrador = () => {
             <img src={logo} alt="Logo" className="header-logo" />
             <p className="panel-text">Panel de Control</p>
           </div>
-
           <div className="header-right">
-           
             <button className="btn_Logout" onClick={handleLogout}>
               <FaUserAlt size={16} color="white" />
               Cerrar Sesión
@@ -62,58 +60,71 @@ const Administrador = () => {
         </div>
       </header>
 
-    
-    <aside className="sidebar">
-        
+      <aside className="sidebar">
         <div className="sidebar-profile">
           <div className="profile-avatar">
             <FaUserAlt className="avatar-icon" />
           </div>
           <div className="profile-info">
-            <h3 className="profile-name">{user?.name || 'Usuario'}</h3>
-            <p className="profile-role">{user?.role}</p>
+            <h3 className="profile-name">{user?.name || "Usuario"}</h3>
+            <p className="profile-role">{user?.role || ""}</p>
           </div>
         </div>
         <nav className="sidebar-navbar">
-           
           <ul className="sidebar-navbar_item">
-            <li className="navbar_items">
-              <FaHome className="nav-icon" />
-              Vista General
+            <li >
+              <Link to="/Administrador/VistaGeneral" className="navbar_items">
+                <FaHome className="nav-icon" /> Vista General
+              </Link>
             </li>
-            <li className="navbar_items">
-              <FaUser className="nav-icon" />
-              Usuarios
+            <li>
+              <Link to="/Administrador/Usuario" className="navbar_items">
+                <FaUser className="nav-icon" /> Usuarios
+              </Link>
             </li>
-            <li className="navbar_items">
-              <FaBook className="nav-icon" />
-              Cursos
+            
+            <li>
+              <Link to="/Administrador/Curso" className="navbar_items">
+                 <FaBook className="nav-icon" /> Cursos
+              </Link>
+             
             </li>
-            <li className="navbar_items">
-              <FaCalendar className="nav-icon" />
-              Eventos
+            <li>
+              <Link to="/Administrador/Eventos_admin" className="navbar_items">
+                  <FaCalendar className="nav-icon" /> Eventos
+              </Link>
+             
             </li>
-            <li className="navbar_items">
-              <FaGlobe className="nav-icon" />
-              Contenido Web
+            <li >
+              <Link to="/Administrador/Contenido" className="navbar_items">
+                 <FaGlobe className="nav-icon" /> Contenido Web
+              </Link>
+              
             </li>
-            <li className="navbar_items">
-              <FaRegStickyNote className="nav-icon" />
-              Notas
+            <li >
+              <Link to="/Administrador/Notas" className="navbar_items">
+                 <FaRegStickyNote className="nav-icon" /> Notas
+              </Link>
+              
             </li>
-            <li className="navbar_items">
-              <PiCurrencyDollarSimpleFill className="nav-icon" />
-              Tarifas
+            <li >
+               <Link to="/Administrador/Tarifas" className="navbar_items">
+                 <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
+              </Link>
+              
             </li>
-            <li className="navbar_items">
-              <FaCog className="nav-icon" />
-              Configuración
+            <li >
+               <Link to="/Administrador/Tarifas" className="navbar_items">
+                 <FaCog className="nav-icon" /> Configuración
+              </Link>
+              
             </li>
           </ul>
         </nav>
       </aside>
-
-      
+       <main className="main-content">
+        <Outlet />
+      </main>
     </div>
   );
 };
