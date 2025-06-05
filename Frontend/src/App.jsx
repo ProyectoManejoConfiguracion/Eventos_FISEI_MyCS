@@ -3,7 +3,6 @@ import Eventos from "./Pages/Eventos";
 import Nosotros from "./Pages/Nosotros";
 import Contactos from "./Pages/Contactos";
 import Administrador from "./Pages/Administrador";
-
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import VistaGeneral from "./Pages/Admin/VistaGeneral";
@@ -16,6 +15,7 @@ import Tarifas from "./Pages/Admin/Tarifas";
 import Configuracion from "./Pages/Admin/Configuracion";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
+import { Routes, Route, BrowserRouter as Router, useLocation } from "react-router-dom";
 
 const Layout = () => {
   const location = useLocation();
