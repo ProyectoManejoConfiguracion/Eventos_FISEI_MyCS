@@ -15,11 +15,12 @@ import Tarifas from "./Pages/Admin/Tarifas";
 import Configuracion from "./Pages/Admin/Configuracion";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
+import Estudiante from "./Pages/Estudiante";
 import { Routes, Route, BrowserRouter as Router, useLocation } from "react-router-dom";
 
 const Layout = () => {
   const location = useLocation();
-  const isPrivateRoute = location.pathname.startsWith("/Administrador");
+  const isPrivateRoute = location.pathname.startsWith("/Administrador")|| location.pathname.startsWith("/Estudiante");
 
   return (
     <>
@@ -45,6 +46,8 @@ const Layout = () => {
           <Route path="Tarifas" element={<Tarifas />} />
           <Route path="Configuracion" element={<Configuracion />} />
         </Route>
+        <Route path="/Estudiante/*" element={<Estudiante />}></Route>
+
       </Routes>
 
       {!isPrivateRoute && <Footer />}
