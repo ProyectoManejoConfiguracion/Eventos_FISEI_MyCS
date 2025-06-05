@@ -1,10 +1,3 @@
-
-import {
-  Routes,
-  Route,
-  BrowserRouter as Router,
-  useLocation,
-} from "react-router-dom";
 import Home from "./Pages/Home";
 import Eventos from "./Pages/Eventos";
 import Nosotros from "./Pages/Nosotros";
@@ -39,6 +32,8 @@ const Layout = () => {
         <Route path="/Eventos" element={<Eventos />} />
         <Route path="/Nosotros" element={<Nosotros />} />
         <Route path="/Contactos" element={<Contactos />} />
+        <Route path="/Registro" element={<Registro/>} />
+          <Route path="/Restudiante" element={<Restudiante/>} />
 
         {/* Rutas privadas (Administrador) */}
         <Route path="/Administrador/*" element={<Administrador />}>
@@ -50,14 +45,14 @@ const Layout = () => {
           <Route path="Notas" element={<Notas />} />
           <Route path="Tarifas" element={<Tarifas />} />
           <Route path="Configuracion" element={<Configuracion />} />
-          <Route path="/Registro" element={<Registro/>} />
-          <Route path="/Restudiante" element={<Restudiante/>} />
+        </Route>
       </Routes>
 
       {!isPrivateRoute && <Footer />}
     </>
   );
 };
+
 
 function App() {
   return (
