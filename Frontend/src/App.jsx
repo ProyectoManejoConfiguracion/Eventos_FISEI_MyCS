@@ -14,7 +14,6 @@ import Contenido from "./Pages/Admin/Contenido";
 import Notas from "./Pages/Admin/Notas";
 import Tarifas from "./Pages/Admin/Tarifas";
 import Configuracion from "./Pages/Admin/Configuracion";
-import { Routes, Route, BrowserRouter as Router, useLocation } from "react-router-dom";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
 
@@ -52,6 +51,7 @@ const Layout = () => {
     </>
   );
 };
+
 
 
 function App() {
