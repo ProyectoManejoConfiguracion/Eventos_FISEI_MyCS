@@ -21,7 +21,6 @@ import Contenido from "./Pages/Admin/Contenido";
 import Notas from "./Pages/Admin/Notas";
 import Tarifas from "./Pages/Admin/Tarifas";
 import Configuracion from "./Pages/Admin/Configuracion";
-import { Routes, Route, BrowserRouter as Router, useLocation } from "react-router-dom";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
 
@@ -50,14 +49,16 @@ const Layout = () => {
           <Route path="Notas" element={<Notas />} />
           <Route path="Tarifas" element={<Tarifas />} />
           <Route path="Configuracion" element={<Configuracion />} />
-          <Route path="/Registro" element={<Registro/>} />
-          <Route path="/Restudiante" element={<Restudiante/>} />
+        </Route>
+        <Route path="/Registro" element={<Registro />} />
+        <Route path="/Restudiante" element={<Restudiante />} />
       </Routes>
 
       {!isPrivateRoute && <Footer />}
     </>
   );
 };
+
 
 function App() {
   return (
