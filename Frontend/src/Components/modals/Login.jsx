@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 
 const Login = ({ isOpen, closeModal }) => {
-  const { login } = useAuth();
+  const { login,user } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,6 +49,7 @@ const Login = ({ isOpen, closeModal }) => {
       }).then(() => {
                 navigate('/Administrador');
                  closeModal();
+                 console.log(user?.name);
             });
 
     } catch (error) {
