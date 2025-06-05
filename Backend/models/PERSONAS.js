@@ -25,6 +25,10 @@ module.exports = function(sequelize, DataTypes) {
     CON_PER: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    FOT_PER: {
+      type: DataTypes.STRING(255),
+      allowNull: false
     }
   }, {
     sequelize,
