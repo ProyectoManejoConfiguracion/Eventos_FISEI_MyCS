@@ -124,12 +124,13 @@ const registroEstudiante = () => {
     setError("");
 
     // Validación básica de campos
-    if (!formData.CED_PER || !formData.NOM_PER || !formData.APE_PER ||
-      !formData.COR_PER || !formData.CON_PER) {
+    if (!formData.CED_PER || !formData.NOM_PER || !formData.APE_PER ||!formData.FOT_PER||
+      !formData.COR_PER || !formData.CON_PER || !formData2.ID_EST || !formData2.ID_NIV || !formData2.ID_CAR) {
       setError("Todos los campos marcados con * son obligatorios");
       setLoading(false);
       return;
     }
+
 
     try {
       const data = new FormData();
@@ -212,6 +213,7 @@ const registroEstudiante = () => {
                   id="foto"
                   accept="image/*"
                   onChange={manejarCambioImagen}
+                  required
                 />
                 <label htmlFor="foto" className="file-label">
                   Seleccionar imagen
@@ -299,7 +301,7 @@ const registroEstudiante = () => {
           <div className="columna estudiante">
             <div>
               <div className="form-group">
-                <label>ID ESTUDIANTE:</label>
+                <label>ID ESTUDIANTE:<span className="required">*</span></label>
                 <input
                   type="text"
                   name="ID_EST"
@@ -311,7 +313,7 @@ const registroEstudiante = () => {
               </div>
 
               <div className="form-group">
-                <label>Carrera:</label>
+                <label>Carrera:<span className="required">*</span></label>
                 <select
                   name="ID_CAR"
                   value={formData2.ID_CAR}
@@ -328,7 +330,7 @@ const registroEstudiante = () => {
               </div>
 
               <div className="form-group">
-                <label>Nivel:</label>
+                <label>Nivel:<span className="required">*</span></label>
                 <select
                   name="ID_NIV"
                   value={formData2.ID_NIV}
