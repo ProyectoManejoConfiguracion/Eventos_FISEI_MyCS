@@ -3,7 +3,7 @@ import logo from "../assets/logo.png";
 import "../Styles/Administrador.css";
 import { useAuth } from "../auth/AuthContext";
 import Swal from "sweetalert2";
-import { useNavigate, Link, Outlet } from "react-router-dom";
+import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import {
   FaHome,
   FaUser,
@@ -72,57 +72,91 @@ const Administrador = () => {
         </div>
         <nav className="sidebar-navbar">
           <ul className="sidebar-navbar_item">
-            <li >
-              <Link to="/Administrador/VistaGeneral" className="navbar_items">
+            <li>
+              <NavLink
+                to="/Administrador/VistaGeneral"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
                 <FaHome className="nav-icon" /> Vista General
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link to="/Administrador/Usuario " className="navbar_items">
+              <NavLink
+                to="/Administrador/Usuario"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
                 <FaUser className="nav-icon" /> Usuarios
-              </Link>
+              </NavLink>
             </li>
-            
+
             <li>
-              <Link to="/Administrador/Curso" className="navbar_items">
-                 <FaBook className="nav-icon" /> Cursos
-              </Link>
-             
+              <NavLink
+                to="/Administrador/Curso"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <FaBook className="nav-icon" /> Cursos
+              </NavLink>
             </li>
             <li>
-              <Link to="/Administrador/Eventos_admin" className="navbar_items">
-                  <FaCalendar className="nav-icon" /> Eventos
-              </Link>
-             
+              <NavLink
+                to="/Administrador/Eventos"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <FaCalendar className="nav-icon" /> Eventos
+              </NavLink>
             </li>
-            <li >
-              <Link to="/Administrador/Contenido" className="navbar_items">
-                 <FaGlobe className="nav-icon" /> Contenido Web
-              </Link>
-              
+            <li>
+              <NavLink
+                to="/Administrador/Contenido"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <FaGlobe className="nav-icon" /> Contenido Web
+              </NavLink>
             </li>
-            <li >
-              <Link to="/Administrador/Notas" className="navbar_items">
-                 <FaRegStickyNote className="nav-icon" /> Notas
-              </Link>
-              
+            <li>
+              <NavLink
+                to="/Administrador/Notas"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <FaRegStickyNote className="nav-icon" /> Notas
+              </NavLink>
             </li>
-            <li >
-               <Link to="/Administrador/Tarifas" className="navbar_items">
-                 <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
-              </Link>
-              
+            <li>
+              <NavLink
+                to="/Administrador/Tarifas"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
+              </NavLink>
             </li>
-            <li >
-               <Link to="/Administrador/Configuracion" className="navbar_items">
-                 <FaCog className="nav-icon" /> Configuración
-              </Link>
-              
+            <li>
+              <NavLink
+                to="/Administrador/Configuracion"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <FaCog className="nav-icon" /> Configuración
+              </NavLink>
             </li>
           </ul>
         </nav>
       </aside>
-       <main className="main-content">
+      <main className="main-content">
         <Outlet />
       </main>
     </div>

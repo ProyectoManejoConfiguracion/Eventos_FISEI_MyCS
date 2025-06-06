@@ -219,6 +219,11 @@
   line-height: 1.6;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+.estado-activo {
+  background-color: #581517;
+  color: white ;
+  transform: translateX(5px);
+}
 
 @media (max-width: 768px) {
   .admin-layout {

@@ -3,10 +3,10 @@ import "../../Styles/Login.css";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const Login = ({ isOpen, closeModal }) => {
-  const { user, isAuthenticated, logout,login } = useAuth();
+  const { user, isAuthenticated, logout, login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,11 +24,11 @@ const Login = ({ isOpen, closeModal }) => {
   }, [isOpen]);
 
   if (!isOpen) return null;
-  
-  const handleLogin = async ()=>{
+
+  const handleLogin = async () => {
     try {
-        await login(email, password);
-        const Toast = Swal.mixin({
+      const loggedUser= await login(email, password);
+      const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
@@ -42,30 +42,31 @@ const Login = ({ isOpen, closeModal }) => {
           toast.onmouseleave = Swal.resumeTimer;
         },
       });
-       Swal.fire({
+      Swal.fire({
         title: "Inicio de sesion Correcto!",
         icon: "success",
         draggable: true,
       }).then(() => {
-     
-                navigate('/Administrador');
-                 closeModal();
-                 console.log(user?.name);
-                 
-                    
-            });
-
+        if (loggedUser?.role == "Admin") {
+          navigate("/Administrador");
+          closeModal();
+        }else if(loggedUser?.role=="Estudiante"){
+          navigate("/Estudiante");
+          closeModal();
+        }
+      });
     } catch (error) {
-         console.error("Error en login:", error.response?.data || error.message || error);
-        Swal.fire({
+      console.error(
+        "Error en login:",
+        error.response?.data || error.message || error
+      );
+      Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Error al iniciar sesión",
         icon: "error",
         confirmButtonColor: "#d33",
       });
     }
-
-
   };
 
   return (
@@ -110,7 +111,9 @@ const Login = ({ isOpen, closeModal }) => {
               </a>
             </div>
 
-            <button className="login-button" onClick={handleLogin}>Iniciar Sesión</button>
+            <button className="login-button" onClick={handleLogin}>
+              Iniciar Sesión
+            </button>
           </div>
 
           <div className="login-register-container">
@@ -122,7 +125,7 @@ const Login = ({ isOpen, closeModal }) => {
               </a>
               <br />
               <a href="/Restudiante" className="login-register-link">
-              {""}
+                {""}
                 Regístrate como estudiante
               </a>
             </p>
