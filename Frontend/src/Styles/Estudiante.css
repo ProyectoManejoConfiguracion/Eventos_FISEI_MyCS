@@ -103,10 +103,25 @@
   padding: 0.8rem 1rem;
   border-radius: 8px;
   transition: all 0.2s ease;
+  text-decoration: none;
 }
 
 .nav-item-estudiante:hover {
   background-color: #581517;
   color: white;
+  transform: translateX(5px);
+  
+}
+
+.main-content-est {
+  grid-area: main;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: white;
+  min-height: 0; 
+}
+.est-activo {
+  background-color: #581517;
+  color: white ;
   transform: translateX(5px);
 }

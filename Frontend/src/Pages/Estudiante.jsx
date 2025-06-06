@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import "../Styles/Estudiante.css";
 import { useAuth } from "../auth/AuthContext";
-import { useNavigate, Link, Outlet } from "react-router-dom";
+import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import Swal from "sweetalert2";
 import { MdWavingHand } from "react-icons/md";
 const Estudiante = () => {
@@ -61,23 +61,62 @@ const Estudiante = () => {
 
       <nav className="nav-estudiante">
         <ul className="nav-list-estudiante">
-          <li className="nav-item-estudiante">
-            <FaBookOpen /> Mis Cursos
+          <li>
+            <NavLink
+              to="/Estudiante/Cursos"
+              className={({ isActive }) =>
+                `nav-item-estudiante ${isActive ? "est-activo" : ""}`
+              }
+            >
+              <FaBookOpen /> Mis Cursos
+            </NavLink>
           </li>
-          <li className="nav-item-estudiante">
-            <FaGraduationCap /> Calificaciones
+          <li>
+            <NavLink
+              to="/Estudiante/Calificaciones"
+              className={({ isActive }) =>
+                `nav-item-estudiante ${isActive ? "est-activo" : ""}`
+              }
+            >
+              <FaGraduationCap /> Calificaciones
+            </NavLink>
           </li>
-          <li className="nav-item-estudiante">
-            <FaCalendarCheck /> Asistencia
+          <li>
+            <NavLink
+              to="/Estudiante/Asistencia"
+              className={({ isActive }) =>
+                `nav-item-estudiante ${isActive ? "est-activo" : ""}`
+              }
+            >
+              <FaCalendarCheck /> Asistencia
+            </NavLink>
           </li>
-          <li className="nav-item-estudiante">
-            <FaCertificate /> Certificados
+          <li>
+            <NavLink
+              to="/Estudiante/Certificados"
+              className={({ isActive }) =>
+                `nav-item-estudiante ${isActive ? "est-activo" : ""}`
+              }
+            >
+              <FaCertificate /> Certificados
+            </NavLink>
           </li>
-          <li className="nav-item-estudiante">
-            <FaCog /> Configuración
+          <li>
+            <NavLink
+              to="/Estudiante/Configuracion"
+              className={({ isActive }) =>
+                `nav-item-estudiante ${isActive ? "est-activo" : ""}`
+              }
+            >
+              <FaCog /> Configuración
+            </NavLink>
           </li>
         </ul>
       </nav>
+
+      <main className="main-content-est">
+        <Outlet />
+      </main>
     </div>
   );
 };
