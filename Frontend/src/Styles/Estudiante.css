@@ -23,12 +23,26 @@
   width: auto;
 }
 
-.panel-title {
-  font-size: 1.4rem;
-  color: #333;
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 700;
   margin: 0;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 600;
+  color: #1a1a1a;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.welcome-text {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 0.2rem 0 0;
+  color: #555;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header-right {
@@ -58,19 +72,41 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.dashboard-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0;
-  color: #1a1a1a;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+.nav-estudiante {
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  padding: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.welcome-text {
-  font-size: 1.1rem;
-  font-weight: 400;
-  margin: 0.1rem 0 0;
-  color: #555;
-  text-align: left;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+.nav-list-estudiante {
+  display: flex;
+  gap: 130px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.nav-item-estudiante {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #333;
+  gap: 0.9rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-item-estudiante:hover {
+  background-color: #581517;
+  color: white;
+  transform: translateX(5px);
 }

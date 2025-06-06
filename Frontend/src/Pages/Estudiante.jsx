@@ -1,6 +1,13 @@
 import React from "react";
 import logo from "../assets/logo.png";
-import { FaUserAlt } from "react-icons/fa";
+import {
+  FaUserAlt,
+  FaBookOpen,
+  FaGraduationCap,
+  FaCalendarCheck,
+  FaCertificate,
+  FaCog,
+} from "react-icons/fa";
 import "../Styles/Estudiante.css";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate, Link, Outlet } from "react-router-dom";
@@ -45,13 +52,32 @@ const Estudiante = () => {
           </div>
         </div>
         <div className="header-right">
-         
           <button className="logout-btn" onClick={handleLogout}>
             <FaUserAlt size={16} color="white" />
             Cerrar Sesión
           </button>
         </div>
       </header>
+
+      <nav className="nav-estudiante">
+        <ul className="nav-list-estudiante">
+          <li className="nav-item-estudiante">
+            <FaBookOpen /> Mis Cursos
+          </li>
+          <li className="nav-item-estudiante">
+            <FaGraduationCap /> Calificaciones
+          </li>
+          <li className="nav-item-estudiante">
+            <FaCalendarCheck /> Asistencia
+          </li>
+          <li className="nav-item-estudiante">
+            <FaCertificate /> Certificados
+          </li>
+          <li className="nav-item-estudiante">
+            <FaCog /> Configuración
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 };
