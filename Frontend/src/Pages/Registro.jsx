@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { useState } from "react";
 import "../Styles/Registro.css";
 import axios from "axios";
@@ -17,7 +17,7 @@ const Registro = () => {
         FOT_PER: null
     });
 
-
+    const navigate = useNavigate();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
