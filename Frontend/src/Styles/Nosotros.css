@@ -1,0 +1,503 @@
+/* AboutFaculty.css */
+
+.about-faculty {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.us-container{
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  overflow: hidden;
+  padding-top: 30px; 
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  height: 350px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 60px;
+}
+
+.hero-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hero-overlay {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(104, 103, 103, 0.9);
+  z-index: 2;
+}
+
+.hero-content {
+  position: absolute;
+  z-index: 3;
+  text-align: center;
+  color: #fff;
+  padding: 0 20px;
+  max-width: 800px;
+}
+
+.hero-title {
+  font-size: 2.5rem; 
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem; 
+  font-weight: 300;
+  color: white;
+}
+
+/* Main Content */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+/* Achievements Section */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+.achievement-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.achievement-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(-0.5rem);
+}
+
+.achievement-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #64121d;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.achievement-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.achievement-description {
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Mission, Vision, Values Grid */
+.mvv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+.mvv-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.mvv-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.mvv-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.mvv-icon {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.75rem;
+}
+
+.mission-icon {
+  color: #2563eb;
+}
+
+.vision-icon {
+  color: #059669;
+}
+
+.values-icon {
+  color: #dc2626;
+}
+
+.mvv-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.mvv-text {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.values-list {
+  color: #6b7280;
+  list-style: none;
+  padding: 0;
+}
+
+.values-list li {
+  margin-bottom: 0.5rem;
+}
+
+/* Objective Section */
+.objective-section {
+  background:  #3b0606;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin-bottom: 5rem;
+}
+
+.objective-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.objective-text {
+  color: #eef0f3;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+/* Authorities Section */
+.authorities-section {
+  margin-bottom: 5rem;
+}
+
+.authorities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.authority-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.authority-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.authority-image {
+  width: 8rem;
+  height: 8rem;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.authority-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.authority-placeholder {
+  width: 4rem;
+  height: 4rem;
+  color: #6b7280;
+}
+
+.authority-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.authority-position {
+  color: #2563eb;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.authority-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* History Section */
+.history-section {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5rem;
+}
+
+.history-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .history-content {
+    grid-template-columns: 1fr 350px; /* Aumentado de 300px a 350px para más espacio cuadrado */
+  }
+}
+
+.history-text {
+  order: 1;
+}
+
+.history-paragraph {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  text-align: justify; 
+}
+
+.history-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Contenedor para la imagen de historia */
+.history-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.8; 
+}
+
+
+.history-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center; 
+  border-radius: 0.75rem; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.history-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #d1d5db;
+  border-radius: 0.75rem; /* Aumentado de 0.5rem */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1; /* Placeholder también cuadrado */
+}
+
+.history-placeholder {
+  width: 6rem;
+  height: 6rem;
+  color: #6b7280;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .history-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .history-image-container {
+    max-width: 300px; 
+    margin: 0 auto; 
+  }
+}
+
+@media (max-width: 480px) {
+  .history-image-container {
+    max-width: 250px; /* Más pequeño en móviles muy pequeños */
+  }
+}
+
+/* Programs Section */
+.programs-section {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.programs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.program-card {
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.pregrado {
+  background-color: #eff6ff;
+}
+
+.posgrado {
+  background-color: #fdf0f2;
+}
+
+.educacion-continua {
+  background-color: #faf5ff;
+}
+
+.program-title {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.pregrado .program-title {
+  color: #1e40af;
+}
+
+.posgrado .program-title {
+  color: #651616;
+}
+
+.educacion-continua .program-title {
+  color: #7c2d12;
+}
+
+.program-list {
+  color: #374151;
+  list-style: none;
+  padding: 0;
+}
+
+.program-list li {
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem; 
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .main-content {
+    padding: 2rem 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .achievements-grid,
+  .mvv-grid,
+  .authorities-grid,
+  .programs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mvv-card {
+    padding: 1.5rem;
+  }
+  
+  .objective-section,
+  .history-section,
+  .programs-section {
+    padding: 1.5rem;
+  }
+
+  .history-content {
+    grid-template-columns: 1fr;
+  }
+
+  .history-img,
+  .history-image-placeholder {
+    height: 150px; /* Más pequeño en móvil */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 300px; /* Más pequeño en móviles pequeños */
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-content {
+    padding: 0 1rem;
+  }
+  
+  .main-content {
+    padding: 2rem 0.75rem;
+  }
+  
+  .achievement-card,
+  .mvv-card,
+  .authority-card {
+    padding: 1.25rem;
+  }
+}
