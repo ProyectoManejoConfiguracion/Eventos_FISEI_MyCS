@@ -1,5 +1,6 @@
-.registro-container {
-    max-width: 900px;
+.evento-container {
+    max-width: 1280px;
+    min-height: 800px;
     margin: 40px auto;
     padding: 30px;
     background: white;
@@ -8,18 +9,20 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.registro-header {
+
+
+.evento-header {
     text-align: center;
     margin-bottom: 30px;
 }
 
-.registro-header h1 {
+.evento-header h1 {
     color: #2c3e50;
     font-size: 2.2rem;
     margin-bottom: 10px;
 }
 
-.registro-header p {
+.evento-header p {
     color: #7f8c8d;
     font-size: 1.1rem;
 }
@@ -66,6 +69,15 @@
 }
 
 .form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group textarea {
     width: 100%;
     padding: 12px 15px;
     border: 1px solid #ddd;
@@ -154,7 +166,8 @@
 }
 
 .submit-button {
-    padding: 14px 30px;
+    margin-top: 80px;
+    padding: 15px 30px;
     background: #5a1616;
     color: white;
     border: none;
