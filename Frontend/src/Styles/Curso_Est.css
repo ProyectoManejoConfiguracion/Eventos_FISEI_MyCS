@@ -1,0 +1,129 @@
+.cursos-page {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.cursos-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.cursos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 2rem;
+}
+
+.curso-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.curso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.curso-nombre {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.curso-estado {
+  padding: 0.4rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.badge-amarillo {
+  background: #fffbe6;
+  color: #b8860b;
+}
+
+.badge-verde {
+  background: #e6fff2;
+  color: #2e8b57;
+}
+
+.badge-rojo {
+  background: #ffe6e6;
+  color: #cc0000;
+}
+
+.badge-gris {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.curso-instructor {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #444;
+}
+
+.curso-icon {
+  color: #581517;
+}
+
+.curso-progreso label {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.curso-barra {
+  width: 100%;
+  height: 10px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.curso-barra-inner {
+  height: 100%;
+  background: #581517;
+  transition: width 0.4s;
+}
+
+.curso-info {
+  font-size: 0.9rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.curso-actions {
+  margin-top: auto;
+}
+
+.btn-curso {
+  width: 100%;
+  background: #581517;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-curso:hover {
+  background: #711e21;
+}
