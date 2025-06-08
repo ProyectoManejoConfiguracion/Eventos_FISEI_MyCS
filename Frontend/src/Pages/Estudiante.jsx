@@ -47,7 +47,7 @@ const Estudiante = () => {
           <div>
             <h1 className="dashboard-title">Bienvenido al Aula Virtual</h1>
             <p className="welcome-text">
-              <MdWavingHand /> Hola, {user?.name} {user?.lastname}
+              <MdWavingHand /> Hola, {user?.name}  {user?.lastname}
             </p>
           </div>
         </div>

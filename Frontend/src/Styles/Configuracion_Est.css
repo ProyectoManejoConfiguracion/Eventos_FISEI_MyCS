@@ -1,0 +1,186 @@
+.perfil-page-full {
+  
+  width: 100%;
+  background: #f7fafd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 100%;
+  
+  font-family: 'Segoe UI', sans-serif;
+  align-items: center;
+}
+
+.perfil-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #232b36;
+  margin-bottom: 1.5rem;
+}
+
+.perfil-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  width: 100%;
+}
+
+.perfil-editar-btn,
+.perfil-guardar-btn,
+.perfil-cancelar-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.perfil-editar-btn {
+  background: #397cf6;
+  color: #fff;
+}
+.perfil-editar-btn:hover {
+  background: #2257b6;
+}
+.perfil-guardar-btn {
+  background: #22c55e;
+  color: #fff;
+  margin-right: 0.5rem;
+}
+.perfil-guardar-btn:hover {
+  background: #15803d;
+}
+.perfil-cancelar-btn {
+  background: #6b7280;
+  color: #fff;
+}
+.perfil-cancelar-btn:hover {
+  background: #374151;
+}
+.perfil-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.perfil-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+.perfil-avatar-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.perfil-avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #e5e7eb;
+  background: #f3f4f6;
+}
+.perfil-upload-label {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #397cf6;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.perfil-upload-label:hover {
+  background: #2257b6;
+}
+.perfil-upload-input {
+  display: none;
+}
+.perfil-rol {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.perfil-info-section {
+  width: 100%;
+}
+.perfil-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 700px) {
+  .perfil-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .perfil-card {
+    padding: 1rem 0.5rem;
+  }
+  .perfil-title {
+    font-size: 1.2rem;
+  }
+  .perfil-editar-btn,
+  .perfil-guardar-btn,
+  .perfil-cancelar-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+.perfil-label {
+  font-weight: 600;
+  color: #232b36;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+.perfil-input {
+  width: 100%;
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-size: 1.05rem;
+  color: #232b36;
+  margin-bottom: 0.7rem;
+  outline: none;
+  transition: border 0.2s;
+}
+.perfil-input:focus {
+  border: 1.5px solid #397cf6;
+}
+.perfil-info-value {
+  color: #232b36;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.05rem;
+}
