@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('INFORMES', {
-    NUM_INF: {
+    NUM_IFN: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -14,6 +14,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'REGISTRO_PERSONAS',
         key: 'NUM_REG_PER'
       }
+    },
+    NOT_INF: {
+      type: DataTypes.DECIMAL(5,2),
+      allowNull: true 
     }
   }, {
     sequelize,
