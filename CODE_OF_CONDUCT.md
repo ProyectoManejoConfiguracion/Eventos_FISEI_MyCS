@@ -1,4 +1,4 @@
-# Código de Conducta del Proyecto Gestión Académica de Eventos
+# Código de Conducta del Proyecto Gestión Académica de Eventos FISEI
 
 ## Nuestra promesa
 
@@ -43,11 +43,11 @@ Los mantenedores del proyecto deberán:
 
 Si eres testigo o víctima de algún comportamiento que viole este Código de Conducta, por favor contacta a los mantenedores del proyecto de forma privada enviando un correo electrónico a:
 
-**mrubio7466@uta.edu.ec**
-**jcuadrado1092@uta.edu.ec**
-**vjaque5367@uta.edu.ec**
-**jojeda2618@uta.edu.ec**
-**eandrade8754@uta.edu.ec**
+- **mrubio7466@uta.edu.ec**
+- **jcuadrado1092@uta.edu.ec**
+- **vjaque5367@uta.edu.ec**
+- **jojeda2618@uta.edu.ec**
+- **eandrade8754@uta.edu.ec**
 
 Todas las denuncias serán manejadas con confidencialidad y seriedad.
 
