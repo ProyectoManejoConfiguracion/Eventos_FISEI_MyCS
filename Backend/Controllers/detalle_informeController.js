@@ -1,52 +1,26 @@
-const { DETALLE_INFORME } = require('../models');
+const { sequelize, Sequelize } = require('../models');
+const multer = require('multer');
+const path = require('path');
 
-exports.getAll = async (req, res) => {
+exports.getNotasPorEvento = async (req, res) => {
   try {
-    const data = await DETALLE_INFORME.findAll();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    const [results] = await sequelize.query(`
+      SELECT e.ID_EVT, e.NOM_EVT, p.CED_PER, p.NOM_PER, p.APE_PER,
+             di.NUM_DET_INF, di.REG_ASI, di.NOT_DET
+      FROM EVENTOS e
+      JOIN DETALLE_EVENTOS de ON e.ID_EVT = de.ID_EVT
+      JOIN REGISTRO_EVENTO re ON de.ID_DET = re.ID_DET
+      JOIN REGISTRO_PERSONAS rp ON re.ID_REG_EVT = rp.ID_REG_EVT
+      JOIN PERSONAS p ON rp.CED_PER = p.CED_PER
+      JOIN INFORMES i ON rp.NUM_REG_PER = i.NUM_REG_PER
+      JOIN DETALLE_INFORME di ON i.NUM_IFN = di.NUM_INF
+      WHERE e.ID_EVT = :id
+    `, {
+      replacements: { id: req.params.id },
+      type: Sequelize.QueryTypes.SELECT
+    });
 
-exports.getOne = async (req, res) => {
-  try {
-    const data = await DETALLE_INFORME.findByPk(req.params.id);
-    if (data) res.json(data);
-    else res.status(404).json({ error: 'No encontrado' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.create = async (req, res) => {
-  try {
-    const newRecord = await DETALLE_INFORME.create(req.body);
-    res.status(201).json(newRecord);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.update = async (req, res) => {
-  try {
-    const [updated] = await DETALLE_INFORME.update(req.body, { where: { id: req.params.id } });
-    if (updated) {
-      const updatedRecord = await DETALLE_INFORME.findByPk(req.params.id);
-      res.json(updatedRecord);
-    } else {
-      res.status(404).json({ error: 'No encontrado' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.delete = async (req, res) => {
-  try {
-    const deleted = await DETALLE_INFORME.destroy({ where: { id: req.params.id } });
-    if (deleted) res.json({ message: 'Eliminado correctamente' });
-    else res.status(404).json({ error: 'No encontrado' });
+    res.json(results);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
