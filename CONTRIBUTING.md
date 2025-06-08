@@ -1,11 +1,10 @@
-````markdown
 # Guía para contribuir al proyecto Gestión Académica de Eventos
 
 ¡Gracias por interesarte en contribuir a este proyecto! 🙌
 
 Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indicaciones de esta guía.
 
----
+
 
 ## 1. Reporte de errores (Issues)
 
@@ -17,7 +16,7 @@ Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indica
   - Capturas de pantalla, logs o mensajes de error si es posible.
 - Etiqueta el issue con la categoría adecuada si tienes permisos.
 
----
+
 
 ## 2. Solicitud de nuevas funcionalidades
 
@@ -26,7 +25,6 @@ Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indica
 - Si tienes ideas de implementación, compártelas.
 - Sé abierto a feedback y discusiones.
 
----
 
 ## 3. Estilo y convenciones de código
 
@@ -35,7 +33,6 @@ Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indica
 - Mantén el código limpio y legible.
 - Realiza pruebas locales antes de enviar cambios.
 
----
 
 ## 4. Cómo contribuir con código
 
@@ -46,7 +43,6 @@ Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indica
    git pull origin develop
    git checkout -b feature/nombre-descriptivo
    ```
-````
 
 3. Realiza tus cambios en la nueva rama.
 4. Asegúrate de que todos los tests pasen y que tu código no rompa funcionalidades existentes.
@@ -59,7 +55,7 @@ Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indica
 7. Describe claramente qué hace tu PR y qué problema resuelve.
 8. Responde a los comentarios y solicitudes de cambios que hagan los revisores.
 
----
+
 
 ## 5. Pruebas y validación
 
@@ -67,14 +63,14 @@ Para que tu aporte sea valioso y fluya sin problemas, por favor sigue las indica
 * Verifica que los flujos principales (inscripción, pago, generación de certificados) sigan funcionando correctamente.
 * Usa el entorno de desarrollo para probar antes de enviar PR.
 
----
+
 
 ## 6. Código de conducta
 
 Este proyecto se rige por un [Código de Conducta](CODE_OF_CONDUCT.md).
 Se espera un comportamiento respetuoso, colaborativo y profesional en todas las interacciones.
 
----
+
 
 ## 7. Contacto y dudas
 
