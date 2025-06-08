@@ -4,7 +4,7 @@
 ## 🧰 Tecnologías específica
 - ⚛️ **React** – Interfaz de usuario moderna y responsiva
 - 🌐 **HTML/CSS** – Maquetado y estilos personalizados
-- 🟢 **Node.js** – Gestor de paquetes para instalar dependencias
+- 🟢 **Node.js** – Servidor del proyecto y gestor de paquetes
   
 ## 🧰 Tecnologías utilizadas
 - 📊 **CRUD completo** – Gestión de eventos, organizadores, participantes y usuarios con roles diferenciados
