@@ -1,114 +1,70 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../../Styles/Calificacion_Est.css';
+import { useAuth } from '../../auth/AuthContext';
 
 const Calificaciones_Est = () => {
+  const { user } = useAuth();
   const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //Filtro por el estado del curso
   const [filtroNombre, setFiltroNombre] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
   const fetchCalificaciones = async () => {
+    if (!user) return;
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const datosDB = [
-        {
-          id: 1,
-          nombre: "Desarrollo Web Full Stack",
-          nota: 8.5,
-          fechaFinalizacion: "2024-03-15"
-        },
-        {
-          id: 2,
-          nombre: "Marketing Digital",
-          nota: 9.2,
-          fechaFinalizacion: "2024-02-28"
-        },
-        {
-          id: 3,
-          nombre: "Diseño UX/UI",
-          nota: 7.8,
-          fechaFinalizacion: null // En progreso
-        },
-        {
-          id: 4,
-          nombre: "Base de Datos Avanzadas",
-          nota: 5.2,
-          fechaFinalizacion: "2024-01-20"
-        },
-        {
-          id: 5,
-          nombre: "Inteligencia Artificial",
-          nota: 6.8,
-          fechaFinalizacion: "2024-04-10"
-        },
-        {
-          id: 6,
-          nombre: "Desarrollo Mobile",
-          nota: 4.5,
-          fechaFinalizacion: "2024-03-05"
-        }
-      ];
+      const res = await axios.get(`http://localhost:3000/api/notas/${user.id}`);
+      const datosDB = res.data;
 
-      // Procesar datos y determinar estado
       const cursosConEstado = datosDB.map(curso => {
+        const notaNum = parseFloat(curso.nota);
         let estado, estadoColor;
-        
-        if (curso.fechaFinalizacion === null) {
+        if (!curso.fechaFinalizacion) {
           estado = "En progreso";
           estadoColor = "progreso";
-        } else if (curso.nota >= 7.0) {
+        } else if (notaNum >= 7.0) {
           estado = "Aprobado";
           estadoColor = "aprobado";
         } else {
           estado = "Reprobado";
           estadoColor = "reprobado";
         }
-
         return {
-          ...curso,
-          notaFormateada: `${curso.nota}/10`,
+          id: curso.id,
+          nombre: curso.nombre,
+          notaNum,
+          fechaFinalizacion: curso.fechaFinalizacion,
+          notaFormateada: `${notaNum.toFixed(1)}/10`,
           estado,
           estadoColor
         };
       });
-
       setCursos(cursosConEstado);
-      setError(null);
     } catch (err) {
+      console.error(err);
       setError('Error al cargar las calificaciones');
-      console.error('Error fetching data:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  
   useEffect(() => {
     fetchCalificaciones();
-  }, []);
+  }, [user]);
 
-
-  const handleReload = () => {
-    fetchCalificaciones();
-  };
-
-  // Función para limpiar filtros
+  const handleReload = () => fetchCalificaciones();
   const limpiarFiltros = () => {
     setFiltroNombre('');
     setFiltroEstado('todos');
   };
 
-  // Filtrar cursos según los criterios
   const cursosFiltrados = cursos.filter(curso => {
     const coincideNombre = curso.nombre.toLowerCase().includes(filtroNombre.toLowerCase());
     const coincideEstado = filtroEstado === 'todos' || curso.estadoColor === filtroEstado;
-    
     return coincideNombre && coincideEstado;
   });
 
@@ -117,8 +73,9 @@ const Calificaciones_Est = () => {
     aprobados: cursosFiltrados.filter(c => c.estadoColor === 'aprobado').length,
     reprobados: cursosFiltrados.filter(c => c.estadoColor === 'reprobado').length,
     enProgreso: cursosFiltrados.filter(c => c.estadoColor === 'progreso').length,
-    promedioGeneral: cursos.length > 0 ? 
-      (cursos.reduce((sum, c) => sum + c.nota, 0) / cursos.length).toFixed(1) : 0
+    promedioGeneral: cursos.length > 0
+      ? (cursos.reduce((sum, c) => sum + c.notaNum, 0) / cursos.length).toFixed(1)
+      : 0
   };
 
   if (loading) {
@@ -133,7 +90,6 @@ const Calificaciones_Est = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="calificaciones-container">
@@ -159,8 +115,7 @@ const Calificaciones_Est = () => {
               Actualizar
             </button>
           </div>
-          
-          {/* Filtros */}
+
           <div className="filtros-container">
             <div className="filtro-grupo">
               <label className="filtro-label">Buscar por nombre:</label>
@@ -169,16 +124,16 @@ const Calificaciones_Est = () => {
                 className="filtro-input"
                 placeholder="Escribe el nombre del curso..."
                 value={filtroNombre}
-                onChange={(e) => setFiltroNombre(e.target.value)}
+                onChange={e => setFiltroNombre(e.target.value)}
               />
             </div>
-            
+
             <div className="filtro-grupo">
               <label className="filtro-label">Filtrar por estado:</label>
               <select
                 className="filtro-select"
                 value={filtroEstado}
-                onChange={(e) => setFiltroEstado(e.target.value)}
+                onChange={e => setFiltroEstado(e.target.value)}
               >
                 <option value="todos">Todos los estados</option>
                 <option value="aprobado">Aprobados</option>
@@ -186,14 +141,12 @@ const Calificaciones_Est = () => {
                 <option value="progreso">En progreso</option>
               </select>
             </div>
-            
+
             <button onClick={limpiarFiltros} className="limpiar-filtros-btn">
               Limpiar filtros
             </button>
           </div>
 
-
-          {/* Estadísticas */}
           <div className="estadisticas">
             <div className="stat-item">
               <span className="stat-label">Total:</span>
@@ -211,10 +164,9 @@ const Calificaciones_Est = () => {
               <span className="stat-label">En Progreso:</span>
               <span className="stat-value progreso">{estadisticas.enProgreso}</span>
             </div>
-            
           </div>
         </div>
-        
+
         <div className="table-container">
           {cursosFiltrados.length === 0 ? (
             <div className="no-resultados">
@@ -233,7 +185,7 @@ const Calificaciones_Est = () => {
                 </tr>
               </thead>
               <tbody>
-                {cursosFiltrados.map((curso) => (
+                {cursosFiltrados.map(curso => (
                   <tr key={curso.id} className="table-row">
                     <td className="td-curso">
                       <div className="curso-info">
