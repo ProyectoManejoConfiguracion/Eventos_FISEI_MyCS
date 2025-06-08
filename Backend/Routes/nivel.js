@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const nivelController = require('../controllers/nivelController');
 
+router.get('/:idCarrera', nivelController.getNivelesPorCarrera);
 router.get('/', nivelController.getAll);
 router.get('/:id', nivelController.getOne);
 router.post('/', nivelController.create);

@@ -1,5 +1,19 @@
 const { NIVEL } = require('../models');
 
+exports.getNivelesPorCarrera = async (req, res) => {
+  try {
+    const niveles = await NIVEL.findAll({
+      where: { ID_CAR: req.params.idCarrera},
+    });
+
+    res.json(niveles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener los niveles' });
+  }
+};
+
+
 exports.getAll = async (req, res) => {
   try {
     const data = await NIVEL.findAll();
