@@ -169,12 +169,13 @@ exports.update = async (req, res) => {
       const updatedRecord = await PERSONAS.findByPk(req.params.id);
       res.json(updatedRecord);
     } else {
-      res.status(404).json({ error: 'No encontrado' });
+      res.status(404).json({ error: 'Persona no encontrada' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.delete = async (req, res) => {
   try {

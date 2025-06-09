@@ -23,6 +23,14 @@ module.exports = function(sequelize, DataTypes) {
         key: 'ID_REG_EVT'
       }
     },
+    ID_TAR_PER: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'TTARIFAS_EVENTO',
+        key: 'ID_TAR'
+      }
+    },
     FEC_REG_PER: {
       type: DataTypes.DATEONLY,
       allowNull: false
