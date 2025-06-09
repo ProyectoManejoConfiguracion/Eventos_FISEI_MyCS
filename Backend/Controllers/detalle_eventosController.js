@@ -1,4 +1,4 @@
-const { DETALLE_EVENTOS } = require('../models');
+const { DETALLE_EVENTOS, EVENTOS, REGISTRO_EVENTO } = require('../models');
 
 exports.getAll = async (req, res) => {
   try {
@@ -29,25 +29,25 @@ exports.getByEvent = async (req, res) => {
   }
 };
 
+
 exports.create = async (req, res) => {
   try {
-    // Obtener el último ID_DET existente
+    // Obtener el último ID_DET
     const lastDetalle = await DETALLE_EVENTOS.findOne({
       order: [['ID_DET', 'DESC']]
     });
 
-    let newId;
+    let newIdDet;
     if (lastDetalle) {
       const lastNumber = parseInt(lastDetalle.ID_DET.replace("DET", ""), 10);
-      const nextNumber = lastNumber + 1;
-      newId = `DET${nextNumber.toString().padStart(3, '0')}`;
+      newIdDet = `DET${(lastNumber + 1).toString().padStart(3, '0')}`;
     } else {
-      newId = "DET001";
+      newIdDet = "DET001";
     }
 
-    // Agregar el ID_DET generado al body
+    // Crear nuevo detalle
     const detalleData = {
-      ID_DET: newId,
+      ID_DET: newIdDet,
       ID_EVT: req.body.ID_EVT,
       CED_AUT: req.body.CED_AUT,
       CUP_DET: req.body.CUP_DET,
@@ -58,16 +58,64 @@ exports.create = async (req, res) => {
     };
 
     const newDetalle = await DETALLE_EVENTOS.create(detalleData);
-    res.status(201).json(newDetalle);
+
+    // Verificar tipo de evento
+    const evento = await EVENTOS.findByPk(req.body.ID_EVT);
+
+    if (!evento) {
+      return res.status(404).json({ error: "Evento no encontrado" });
+    }
+
+    // Obtener el último ID_REG para iniciar numeración
+    const lastRegistro = await REGISTRO_EVENTO.findOne({
+      order: [['ID_REG_EVT', 'DESC']]
+    });
+
+    let nextRegNum = 1;
+    if (lastRegistro) {
+      const lastRegNumber = parseInt(lastRegistro.ID_REG_EVT.replace("REG", ""), 10);
+      nextRegNum = lastRegNumber + 1;
+    }
+
+    const generarIdReg = () => {
+      const id = `REG${nextRegNum.toString().padStart(3, '0')}`;
+      nextRegNum++;
+      return id;
+    };
+
+    // Insertar registros según tipo de evento
+    if (evento.MOD_EVT === "PUBLICO") {
+      await REGISTRO_EVENTO.create({
+        ID_REG_EVT: generarIdReg(),
+        ID_DET: newDetalle.ID_DET
+      });
+    } else if (evento.MOD_EVT === "PRIVADO") {
+      const niveles = req.body.NIVELES_PRIVADOS;
+
+      if (!Array.isArray(niveles) || niveles.length === 0) {
+        return res.status(400).json({ error: "Se requieren niveles para eventos privados" });
+      }
+
+      const registros = niveles.map(idNiv => ({
+        ID_REG_EVT: generarIdReg(),
+        ID_DET: newDetalle.ID_DET,
+        ID_NIV: idNiv
+      }));
+
+      await REGISTRO_EVENTO.bulkCreate(registros);
+    }
+
+    res.status(201).json({ detalle: newDetalle, mensaje: "Detalle y registro(s) creado(s) correctamente" });
 
   } catch (error) {
-    console.error("Error al crear detalle_evento:", error);
+    console.error("Error al crear detalle_evento y registro_evento:", error);
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json({ error: error.errors.map(e => e.message) });
     }
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 exports.update = async (req, res) => {

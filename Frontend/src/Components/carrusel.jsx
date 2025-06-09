@@ -13,9 +13,9 @@ function Carrusel() {
   const timerRef = useRef(null);
 
   const imagenes = [
-    { img: carusell1, label: "EVENTOS Y CURSOS", desc: 'Incentivar la investigación en los campos afines', link: '/eventos-cursos' },
-    { img: carusell2, label: 'EVENTOS Y CURSOS', desc: 'Disponibilidad para todas la personas', link: '/eventos-cursos' },
-    { img: carusell3, label: 'EVENTOS Y CURSOS', desc: 'Compromiso con el desarrollo Tecnológico', link: '/eventos-cursos' }
+    { img: carusell1, label: "EVENTOS Y CURSOS", desc: 'Incentivar la investigación en los campos afines' },
+    { img: carusell2, label: 'EVENTOS Y CURSOS', desc: 'Disponibilidad para todas la personas' },
+    { img: carusell3, label: 'EVENTOS Y CURSOS', desc: 'Compromiso con el desarrollo Tecnológico' }
   ];
 
   const cambiarSlide = useCallback((index) => {
@@ -28,7 +28,11 @@ function Carrusel() {
   const handleNext = useCallback(() => cambiarSlide((currentImagen + 1) % imagenes.length), [currentImagen, imagenes.length, cambiarSlide]);
   const handlePrev = useCallback(() => cambiarSlide((currentImagen - 1 + imagenes.length) % imagenes.length), [currentImagen, imagenes.length, cambiarSlide]);
   const handleDotClick = (index) => cambiarSlide(index);
-  const handleImageClick = (link) => window.location.href = link;
+
+  // 🔄 Redirigir siempre a "/Eventos"
+  const handleImageClick = () => {
+    window.location.href = "/Eventos";
+  };
 
   useEffect(() => {
     if (!isPaused) {
@@ -66,7 +70,7 @@ function Carrusel() {
             className={`discovery-carousel-slide ${index === currentImagen ? 'active' : ''}`}
             key={index}
             aria-hidden={index !== currentImagen}
-            onClick={() => handleImageClick(imagen.link)}
+            onClick={handleImageClick}
           >
             <img 
               src={imagen.img} 
@@ -80,7 +84,7 @@ function Carrusel() {
                 className="discovery-carousel-button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleImageClick(imagen.link);
+                  handleImageClick();
                 }}
               >
                 Ver más

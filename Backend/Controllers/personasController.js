@@ -164,7 +164,7 @@ exports.login = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await PERSONAS.update(req.body, { where: { id: req.params.id } });
+    const [updated] = await PERSONAS.update(req.body, { where: { CED_PER: req.params.id } });
     if (updated) {
       const updatedRecord = await PERSONAS.findByPk(req.params.id);
       res.json(updatedRecord);
