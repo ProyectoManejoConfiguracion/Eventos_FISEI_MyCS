@@ -202,7 +202,7 @@ const Eventos = () => {
                 )}
               </div>
               <div className="evento-actions">
-                <button className="btn-detalles">Ver Detalles</button>
+                
                 <button
                   className="btn-inscribirse"
                   onClick={() => {
