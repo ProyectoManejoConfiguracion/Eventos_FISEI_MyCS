@@ -21,12 +21,44 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const newRecord = await DETALLE_EVENTOS.create(req.body);
-    res.status(201).json(newRecord);
+    // Obtener el último ID_DET existente
+    const lastDetalle = await DETALLE_EVENTOS.findOne({
+      order: [['ID_DET', 'DESC']]
+    });
+
+    let newId;
+    if (lastDetalle) {
+      const lastNumber = parseInt(lastDetalle.ID_DET.replace("DET", ""), 10);
+      const nextNumber = lastNumber + 1;
+      newId = `DET${nextNumber.toString().padStart(3, '0')}`;
+    } else {
+      newId = "DET001";
+    }
+
+    // Agregar el ID_DET generado al body
+    const detalleData = {
+      ID_DET: newId,
+      ID_EVT: req.body.ID_EVT,
+      CED_AUT: req.body.CED_AUT,
+      CUP_DET: req.body.CUP_DET,
+      NOT_DET: req.body.NOT_DET,
+      HOR_DET: req.body.HOR_DET,
+      ARE_DET: req.body.ARE_DET,
+      CAT_DET: req.body.CAT_DET
+    };
+
+    const newDetalle = await DETALLE_EVENTOS.create(detalleData);
+    res.status(201).json(newDetalle);
+
   } catch (error) {
+    console.error("Error al crear detalle_evento:", error);
+    if (error.name === "SequelizeValidationError") {
+      return res.status(400).json({ error: error.errors.map(e => e.message) });
+    }
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.update = async (req, res) => {
   try {
