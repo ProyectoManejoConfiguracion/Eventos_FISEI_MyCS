@@ -3,7 +3,7 @@ const router = express.Router();
 const detalle_eventosController = require('../controllers/detalle_eventosController');
 
 router.get('/', detalle_eventosController.getAll);
-router.get('/:id', detalle_eventosController.getOne);
+router.get('/:id', detalle_eventosController.getByEvent);
 router.post('/', detalle_eventosController.create);
 router.put('/:id', detalle_eventosController.update);
 router.delete('/:id', detalle_eventosController.delete);
