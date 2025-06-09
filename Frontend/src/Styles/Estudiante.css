@@ -148,3 +148,82 @@
   color: white ;
   transform: translateX(5px);
 }
+
+
+@media (max-width: 900px) {
+  .estudiante-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+  .header-left {
+    gap: 1.5rem;
+  }
+  .nav-list-estudiante {
+    gap: 40px;
+  }
+  .main-content-est {
+    padding: 1rem;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .estudiante-container {
+    margin: 0.5rem;
+  }
+  .estudiante-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.7rem;
+  }
+  .header-left {
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+  .logo {
+    height: 45px;
+  }
+  .dashboard-title {
+    font-size: 1.2rem;
+  }
+  .welcome-text {
+    font-size: 0.95rem;
+  }
+  .nav-estudiante {
+    margin: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .nav-list-estudiante {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .nav-item-estudiante {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.7rem 0.8rem;
+    font-size: 1rem;
+  }
+  .main-content-est {
+    padding: 0.5rem;
+  }
+}
+@media (max-width: 1500px) and (min-width: 601px) {
+  .nav-list-estudiante {
+    flex-direction: row;
+    gap: 40px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #581517 #eee;
+  }
+  .nav-item-estudiante {
+    min-width: 150px;
+   
+  }
+}
