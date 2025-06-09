@@ -3,8 +3,9 @@ import "../Styles/Eventos.css";
 import { FaRegClock, FaUsers } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import axios from "axios";
-
+import BuscadorEventos from "../Components/BuscadorEventos";
 import defaultImg from "../assets/imagen_defecto.jpg";
+import cursosimg from '../assets/Cursos.jpg';
 
 const badgeColor = (tipo) => {
   switch (tipo) {
@@ -28,7 +29,6 @@ const badgeColor = (tipo) => {
       return "badge-green";
     case "DE PAGO":
       return "badge-tomato";
-
     default:
       return "badge-default";
   }
@@ -46,6 +46,7 @@ const Eventos = () => {
   const [detalles, setDetalles] = useState([]);
   const [tarifas, setTarifas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [eventosFiltrados, setEventosFiltrados] = useState([]);
 
   useEffect(() => {
     Promise.all([
@@ -57,10 +58,43 @@ const Eventos = () => {
         setEventos(resEventos.data);
         setDetalles(resDetalles.data);
         setTarifas(resTarifas.data);
+        setEventosFiltrados(resEventos.data);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+
+  const eventosCombinados = eventos.map((evt) => {
+    const det = detalles.find((d) => d.ID_EVT === evt.ID_EVT) || {};
+    return { ...evt, ...det };
+  });
+
+  const handleFiltrar = (filtros) => {
+    let filtrados = eventosCombinados;
+    if (filtros.nombre)
+      filtrados = filtrados.filter((e) =>
+        e.NOM_EVT?.toLowerCase().includes(filtros.nombre.toLowerCase())
+      );
+    if (filtros.categoria)
+      filtrados = filtrados.filter((e) =>
+        (e.CAT_DET || "")
+          .toLowerCase()
+          .includes(filtros.categoria.toLowerCase())
+      );
+    if (filtros.area)
+      filtrados = filtrados.filter((e) =>
+        (e.ARE_DET || "").toLowerCase().includes(filtros.area.toLowerCase())
+      );
+    if (filtros.horas)
+      filtrados = filtrados.filter((e) =>
+        String(e.HOR_DET || "").includes(filtros.horas)
+      );
+    if (filtros.tipo)
+      filtrados = filtrados.filter((e) =>
+        (e.TIP_EVT || "").toLowerCase().includes(filtros.tipo.toLowerCase())
+      );
+    setEventosFiltrados(filtrados);
+  };
 
   const getDetalleEvento = (id_evt) =>
     detalles.find((d) => d.ID_EVT === id_evt);
@@ -73,9 +107,22 @@ const Eventos = () => {
 
   return (
     <div className="eventos-page">
-      <h1 className="eventos-title">Cursos y Eventos</h1>
+      <div className="tit-container">
+        <div className="tit-section">
+          <img src={cursosimg}  className="tit-imagen" />
+          <div className="hero-overlay"></div>
+          <div className="tit-content">
+            <h1 className="tit-title">Cursos y Eventos</h1>
+            <p className="tit-subtitle">
+              Descubre nuestros eventos académicos y cursos especializados de cada
+              facultad
+            </p>
+          </div>
+        </div>
+      </div>
+      <BuscadorEventos onFiltrar={handleFiltrar} />
       <div className="eventos-grid">
-        {eventos.map((evento) => {
+        {eventosFiltrados.map((evento) => {
           const detalle = getDetalleEvento(evento.ID_EVT);
           const tarifasEvento = getTarifaEvento(evento.ID_EVT);
           const imagenUrl = evento.FOT_EVT
