@@ -49,6 +49,29 @@
   display: flex;
   align-items: center;
 }
+.back-btn{
+   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 1.2rem;
+  background-color: #581517;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  
+}
+.back-btn:hover {
+  background-color: #722022;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
 .logout-btn {
   display: flex;
