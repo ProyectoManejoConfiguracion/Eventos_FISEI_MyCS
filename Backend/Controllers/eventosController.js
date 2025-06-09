@@ -1,9 +1,14 @@
 const { EVENTOS , TARIFAS_EVENTO } = require('../models');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const uploadPath = path.join(__dirname, '..', 'uploads', 'eventos');
 
 const storageEventos = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/eventos'),
+  destination: (req, file, cb) => {
+    fs.mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
+  },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
@@ -24,18 +29,43 @@ const uploadEvento = multer({
 
 exports.create = async (req, res) => {
   uploadEvento(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ error: err.message });
-    } else if (err) {
+    if (err instanceof multer.MulterError || err) {
       return res.status(400).json({ error: err.message });
     }
 
     try {
-      const { ID_EVT, NOM_EVT, FEC_EVT, LUG_EVT, TIP_EVT, MOD_EVT,FOT_EVT, DES_EVT, SUB_EVT } = req.body;
+      // Generar ID_EVT automático
+      const lastEvento = await EVENTOS.findOne({
+        order: [['ID_EVT', 'DESC']]
+      });
+
+      let newId;
+      if (lastEvento) {
+        const lastNumber = parseInt(lastEvento.ID_EVT.replace("EV", ""), 10);
+        const nextNumber = lastNumber + 1;
+        newId = `EV${nextNumber.toString().padStart(3, '0')}`;
+      } else {
+        newId = "EV001";
+      }
+
+      const {
+        NOM_EVT,
+        FEC_EVT,
+        LUG_EVT,
+        TIP_EVT,
+        MOD_EVT,
+        DES_EVT,
+        SUB_EVT
+      } = req.body;
+
       const imagenPath = req.file ? req.file.path : null;
 
+      if (!imagenPath) {
+        return res.status(400).json({ error: "No se subió ninguna imagen válida." });
+      }
+
       const newEvento = await EVENTOS.create({
-        ID_EVT,
+        ID_EVT: newId,
         NOM_EVT,
         FEC_EVT,
         LUG_EVT,
@@ -48,10 +78,12 @@ exports.create = async (req, res) => {
 
       res.status(201).json(newEvento);
     } catch (error) {
+      console.error("Error al crear evento:", error);
       res.status(500).json({ error: error.message });
     }
   });
 };
+
 
 
 exports.getAll = async (req, res) => {

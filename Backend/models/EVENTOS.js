@@ -28,7 +28,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     FOT_EVT: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
+
     },
     DES_EVT: {
       type: DataTypes.STRING(255),
@@ -37,6 +38,8 @@ module.exports = function(sequelize, DataTypes) {
     SUB_EVT: {
       type: DataTypes.STRING(80),
       allowNull: true
+
+
     }
   }, {
     sequelize,
