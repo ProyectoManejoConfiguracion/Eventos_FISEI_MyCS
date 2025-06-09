@@ -5,6 +5,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import axios from "axios";
 import BuscadorEventos from "../Components/BuscadorEventos";
 import defaultImg from "../assets/imagen_defecto.jpg";
+import cursosimg from '../assets/Cursos.jpg';
 
 const badgeColor = (tipo) => {
   switch (tipo) {
@@ -57,13 +58,12 @@ const Eventos = () => {
         setEventos(resEventos.data);
         setDetalles(resDetalles.data);
         setTarifas(resTarifas.data);
-        setEventosFiltrados(resEventos.data); 
+        setEventosFiltrados(resEventos.data);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
-  
   const eventosCombinados = eventos.map((evt) => {
     const det = detalles.find((d) => d.ID_EVT === evt.ID_EVT) || {};
     return { ...evt, ...det };
@@ -77,7 +77,9 @@ const Eventos = () => {
       );
     if (filtros.categoria)
       filtrados = filtrados.filter((e) =>
-        (e.CAT_DET || "").toLowerCase().includes(filtros.categoria.toLowerCase())
+        (e.CAT_DET || "")
+          .toLowerCase()
+          .includes(filtros.categoria.toLowerCase())
       );
     if (filtros.area)
       filtrados = filtrados.filter((e) =>
@@ -105,7 +107,19 @@ const Eventos = () => {
 
   return (
     <div className="eventos-page">
-      <h1 className="eventos-title">Cursos y Eventos</h1>
+      <div className="tit-container">
+        <div className="tit-section">
+          <img src={cursosimg}  className="tit-imagen" />
+          <div className="hero-overlay"></div>
+          <div className="tit-content">
+            <h1 className="tit-title">Cursos y Eventos</h1>
+            <p className="tit-subtitle">
+              Descubre nuestros eventos académicos y cursos especializados de cada
+              facultad
+            </p>
+          </div>
+        </div>
+      </div>
       <BuscadorEventos onFiltrar={handleFiltrar} />
       <div className="eventos-grid">
         {eventosFiltrados.map((evento) => {
