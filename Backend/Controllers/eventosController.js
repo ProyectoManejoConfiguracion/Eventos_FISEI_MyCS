@@ -58,7 +58,8 @@ exports.create = async (req, res) => {
         SUB_EVT
       } = req.body;
 
-      const imagenPath = req.file ? req.file.path : null;
+      const imagenPath = req.file ? path.join('uploads', 'eventos', req.file.filename).replace(/\\/g, '/') : null;
+
 
       if (!imagenPath) {
         return res.status(400).json({ error: "No se subió ninguna imagen válida." });

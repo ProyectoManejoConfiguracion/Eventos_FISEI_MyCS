@@ -1,4 +1,4 @@
-require('dotenv').config(); 
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join('C:', 'uploads')));
+
 
 app.get('/', (req, res) => {
   res.send('Servidor Backend activo ✅');
