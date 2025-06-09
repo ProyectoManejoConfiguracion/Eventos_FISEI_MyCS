@@ -24,6 +24,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     MOD_EVT: {
       type: DataTypes.STRING(10),
+      allowNull: true
+    },
+    FOT_EVT: {
+      type: DataTypes.STRING(255), 
+      allowNull: true
+
       allowNull: false
     },
     FOT_EVT: {
