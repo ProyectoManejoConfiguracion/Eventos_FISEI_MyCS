@@ -2,7 +2,7 @@ const { EVENTOS , TARIFAS_EVENTO } = require('../models');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const uploadPath = path.join(__dirname, '..', 'uploads', 'eventos');
+const uploadPath = path.join('C:', 'uploads', 'eventos');
 
 const storageEventos = multer.diskStorage({
   destination: (req, file, cb) => {
