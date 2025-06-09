@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Login = ({ isOpen, closeModal }) => {
-  const { user, isAuthenticated, logout, login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,7 +51,7 @@ const Login = ({ isOpen, closeModal }) => {
           navigate("/Administrador");
           closeModal();
         }else if(loggedUser?.role=="Estudiante"){
-          navigate("/Estudiante");
+          navigate("/");
           closeModal();
         }
       });
@@ -72,8 +72,8 @@ const Login = ({ isOpen, closeModal }) => {
   return (
     <>
       <div className="overlay" onClick={closeModal} />
-      <div className="Container-Modal">
-        <div className="modal-content">
+      <div className="Container-ModalL">
+        <div className="modal-contentL">
           <button className="close-button" onClick={closeModal}>
             &times;
           </button>

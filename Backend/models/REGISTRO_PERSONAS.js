@@ -23,14 +23,6 @@ module.exports = function(sequelize, DataTypes) {
         key: 'ID_REG_EVT'
       }
     },
-    TIP_PAR: {
-      type: DataTypes.STRING(10),
-      allowNull: false,
-      references: {
-        model: 'TARIFAS_EVENTO',
-        key: 'TIP_PAR'
-      }
-    },
     FEC_REG_PER: {
       type: DataTypes.DATEONLY,
       allowNull: false

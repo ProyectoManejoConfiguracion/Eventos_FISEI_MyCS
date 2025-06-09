@@ -1,0 +1,82 @@
+
+.certificados-container {
+  padding: 2.5rem;
+}
+
+.certificados-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.certificados-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center; 
+}
+
+.cert-card {
+  width: 100%;
+  max-width: 1500px;     
+  margin: 0 auto 2rem;    
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cert-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #fafafa;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.cert-icon-award { font-size: 2rem; color: #f1c40f; }
+.cert-icon-ok    { font-size: 2rem; color: #2ecc71; }
+
+.cert-card-body {
+  padding: 2rem;
+}
+
+.cert-course-name {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.cert-date {
+  margin-top: 0.5rem;
+  color: #555;
+}
+
+.cert-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(150deg, #f5d96a, #e67e22);
+  color: #fff;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.cert-download-btn:hover {
+  background: linear-gradient(90deg, #e6b800, #d35400);
+}
+
+.cert-loading,
+.cert-error,
+.cert-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+}

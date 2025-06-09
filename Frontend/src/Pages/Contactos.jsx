@@ -1,9 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import "../Styles/Contactos.css";
 import img from "../assets/facultad1.jpg";
 
 const Contactos = () => {
+  const [contactData, setContactData] = useState({
+    TELF: "(03) 285-1894",
+    EMAIL_A: "talleresfisei@uta.edu.ec",
+    EMAIL_B: "ctt.fisei@uta.edu.ec"
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/web');
+        if (!response.ok) {
+          throw new Error('No se pudo cargar la información de contacto');
+        }
+        const data = await response.json();
+        
+        setContactData({
+          TELF: data.TELF || "(03) 285-1894",
+          EMAIL_A: data.EMAIL_A || "talleresfisei@uta.edu.ec",
+          EMAIL_B: data.EMAIL_B || "ctt.fisei@uta.edu.ec"
+        });
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching contact data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContactData();
+  }, []);
+
+  if (loading) {
+    return <div className="loading-contact">Cargando información de contacto...</div>;
+  }
+
+  if (error) {
+    return <div className="error-contact">Error: {error}</div>;
+  }
+
   return (
     <div className="contact-container">
       <div className="contact-hero">
@@ -22,7 +63,7 @@ const Contactos = () => {
               </div>
               <div className="card-info">
                 <h4 className="card-title">Llámanos</h4>
-                <p className="card-text">(03) 285-1894</p>
+                <p className="card-text">{contactData.TELF}</p>
               </div>
             </div>
           </div>
@@ -34,8 +75,8 @@ const Contactos = () => {
               </div>
               <div>
                 <h4 className="card-title">Email</h4>
-                <p className="card-text">talleresfisei@uta.edu.ec</p>
-                <p className="card-text">ctt.fisei@uta.edu.ec</p>
+                <p className="card-text">{contactData.EMAIL_A}</p>
+                <p className="card-text">{contactData.EMAIL_B}</p>
               </div>
             </div>
           </div>

@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const informesController = require('../controllers/informesController');
+const informesController = require('../Controllers/informesController');
 
-router.get('/', informesController.getAll);
-router.get('/:id', informesController.getOne);
-router.post('/', informesController.create);
-router.put('/:id', informesController.update);
-router.delete('/:id', informesController.delete);
+router.get('/', informesController.getNotasPorEvento);
+router.get('/:cedula', informesController.getNotasPorAutoridad);
+router.post('/nota', informesController.editarOCrearNota);
 
 module.exports = router;

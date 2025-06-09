@@ -9,7 +9,7 @@
   z-index: 100;
 }
 
-.Container-Modal {
+.Container-ModalL {
   position: fixed;
   top: 0;
   left: 0;
@@ -22,12 +22,11 @@
     
   }
 
-  .modal-content {
+  .modal-contentL {
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(48, 24, 24, 0.2);
-    width: 100%;
-    max-width: 420px;
+    width: 350px;
     margin: 0 16px;
     padding: 32px;
     position: relative;
@@ -36,6 +35,7 @@
   
   .close-button {
     position: absolute;
+    font-size: 25px;
     top: 16px;
     right: 16px;
     background: none;
