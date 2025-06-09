@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     ID_NIV: {
       type: DataTypes.STRING(10),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'NIVEL',
         key: 'ID_NIV'

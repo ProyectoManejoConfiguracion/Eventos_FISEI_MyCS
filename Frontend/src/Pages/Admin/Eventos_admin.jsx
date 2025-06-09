@@ -2,20 +2,19 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../../Styles/Evento.css"; // Asegúrate de tener tu CSS importado
+import "../../Styles/Evento.css";
 
 const Evento = () => {
-
   const navigate = useNavigate();
 
   const [autoridades, setAutoridades] = useState([]);
-
-  const [personas, setPersonas] = useState([]);
-
+  const [carreras, setCarreras] = useState([]);
   const [imagenPreview, setImagenPreview] = useState(null);
+  const [todosLosNiveles, setTodosLosNiveles] = useState([]);
+  const [nivelesFiltrados, setNivelesFiltrados] = useState([]);
+  const [combinaciones, setCombinaciones] = useState([]);
 
   const [formData, setFormData] = useState({
-
     NOM_EVT: "",
     FEC_EVT: "",
     LUG_EVT: "",
@@ -25,50 +24,51 @@ const Evento = () => {
     DES_EVT: "",
     SUB_EVT: "",
 
-    // Detalle
-
     CED_AUT: "",
     CUP_DET: "",
     NOT_DET: "",
     HOR_DET: "",
     ARE_DET: "",
-    CAT_DET: ""
+    CAT_DET: "",
+    CARRERAS: [],
+    NIVELES: [],
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetch("http://localhost:3000/api/autoridades")
+      .then((res) => res.json())
+      .then((data) => setAutoridades(data))
+      .catch((err) => console.error("Error cargando autoridades:", err));
+
+    fetch("http://localhost:3000/api/carreras")
+      .then((res) => res.json())
+      .then((data) => setCarreras(data))
+      .catch((err) => console.error("Error cargando carreras:", err));
+
+    fetch("http://localhost:3000/api/nivel")
+      .then((res) => res.json())
+      .then((data) => setTodosLosNiveles(data)) // Almacena todos los niveles
+      .catch((err) => console.error("Error cargando niveles:", err));
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
   };
 
-
-  const handleAutoridadChange = async (e) => {
+  const handleAutoridadChange = (e) => {
     const cedautoridad = e.target.value;
-
-    setFormData(prev => ({
-      ...prev,
-      CED_AUT: cedautoridad
-    }));
-  }
-
-
-  useEffect(() => {
-    // Cargar autoridades al iniciar
-    fetch('http://localhost:3000/api/autoridades')
-      .then((res) => res.json())
-      .then((data) => setAutoridades(data))
-      .catch((err) => console.error('Error cargando autoridades:', err));
-  }, []);
+    setFormData((prev) => ({ ...prev, CED_AUT: cedautoridad }));
+  };
 
   const manejarCambioImagen = (e) => {
     const archivo = e.target.files[0];
     if (archivo) {
-      // Validar tipo y tamaño de archivo
       const tiposPermitidos = ["image/jpeg", "image/png", "image/gif"];
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024;
 
       if (!tiposPermitidos.includes(archivo.type)) {
         setError("Solo se permiten imágenes (JPEG, PNG, GIF)");
@@ -81,16 +81,53 @@ const Evento = () => {
       }
 
       const lector = new FileReader();
-      lector.onloadend = () => {
-        setImagenPreview(lector.result);
-      };
+      lector.onloadend = () => setImagenPreview(lector.result);
       lector.readAsDataURL(archivo);
 
-      setFormData({
-        ...formData,
-        FOT_EVT: archivo
-      });
+      setFormData({ ...formData, FOT_EVT: archivo });
       setError("");
+    }
+  };
+
+  const handleCarrerasChange = (e) => {
+    const selectedCarrera = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      CARRERAS: [selectedCarrera],
+      NIVELES: [""],
+    }));
+
+    const niveles = todosLosNiveles.filter(
+      (nivel) => nivel.ID_CAR === selectedCarrera
+    );
+    setNivelesFiltrados(niveles);
+  };
+
+const handleAgregar = () => {
+  const carreraSeleccionada = formData.CARRERAS[0];
+  const nivelSeleccionado = formData.NIVELES[0];
+
+  if (!carreraSeleccionada || !nivelSeleccionado) return;
+
+  const yaExiste = combinaciones.some(
+    (c) => c.CARRERA === carreraSeleccionada && c.NIVEL === nivelSeleccionado
+  );
+
+  if (!yaExiste) {
+    setCombinaciones((prev) => [
+      ...prev,
+      { CARRERA: carreraSeleccionada, NIVEL: nivelSeleccionado },
+    ]);
+  }
+};
+
+  const handleNivelesChange = (e) => {
+    const selected = e.target.value;
+    if (selected && !formData.NIVELES.includes(selected)) {
+      setFormData((prev) => ({
+        ...prev,
+        NIVELES: [...prev.NIVELES, selected],
+      }));
     }
   };
 
@@ -108,52 +145,34 @@ const Evento = () => {
       data.append("MOD_EVT", formData.MOD_EVT);
       data.append("DES_EVT", formData.DES_EVT);
       data.append("SUB_EVT", formData.SUB_EVT);
+      if (formData.FOT_EVT) data.append("FOT_EVT", formData.FOT_EVT);
 
-      if (formData.FOT_EVT) {
-        data.append('FOT_EVT', formData.FOT_EVT);
-      }
-
-
-      const response = await axios.post("http://localhost:3000/api/eventos", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.status !== 201 && response.status !== 200) {
-        throw new Error("Error al registrar el evento");
-        return;
-      }
-      // Evento registrado exitosamente, ahora registrar el detalle del evento
-     await new Promise(res => setTimeout(res, 100));
-      // INSERTAR DETALLE_EVENTOS (sin imagen)
-
+      const response = await axios.post(
+        "http://localhost:3000/api/eventos",
+        data
+      );
       const nuevoID_EVT = response.data.ID_EVT;
 
-      const detalleData = new FormData();
-      detalleData.append("ID_EVT", nuevoID_EVT);
-      detalleData.append("CED_AUT", formData.CED_AUT);
-      detalleData.append("CUP_DET", formData.CUP_DET);
-      detalleData.append("NOT_DET", formData.NOT_DET);
-      detalleData.append("HOR_DET", formData.HOR_DET);
-      detalleData.append("ARE_DET", formData.ARE_DET);
-      detalleData.append("CAT_DET", formData.CAT_DET);
+      const detalleData = {
+        ID_EVT: nuevoID_EVT,
+        CED_AUT: formData.CED_AUT,
+        CUP_DET: formData.CUP_DET,
+        NOT_DET: formData.NOT_DET,
+        HOR_DET: formData.HOR_DET,
+        ARE_DET: formData.ARE_DET,
+        CAT_DET: formData.CAT_DET,
+        NIVELES_PRIVADOS: combinaciones.map(c => c.NIVEL),
+      };
+      console.log("Datos que se enviarán:", detalleData);
+      await axios.post(
+        "http://localhost:3000/api/detalle_eventos",
+        detalleData
+      );
 
-
-      const response2 = await axios.post("http://localhost:3000/api/detalle_eventos",detalleData, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-      });
-
-      if (response2.status !== 201 && response2.status !== 200) {
-        throw new Error("Error al registrar el detalle del evento");
-        return;
-      }
       alert("Evento registrado exitosamente");
-
       navigate("/eventos");
     } catch (err) {
+      console.error(err);
       setError("Error al registrar el evento. Verifica los campos.");
     } finally {
       setLoading(false);
@@ -167,36 +186,64 @@ const Evento = () => {
         <p>Llena el siguiente formulario para agregar un nuevo evento</p>
       </div>
 
-      <form className="formulario" onSubmit={handleSubmit} encType="multipart/form-data">
+      <form
+        className="formulario"
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+      >
         <div className="form-container">
           <div className="columna izquierda">
             <div className="form-group">
-              <label>Nombre del Evento <span className="required">*</span></label>
-              <input name="NOM_EVT" value={formData.NOM_EVT} onChange={handleChange} required />
+              <label>
+                Nombre del Evento <span className="required">*</span>
+              </label>
+              <input
+                name="NOM_EVT"
+                value={formData.NOM_EVT}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="form-group">
-              <label>Subtitulo del evento <span className="required">*</span></label>
-              <textarea className="form-group"
+              <label>
+                Subtitulo del evento <span className="required">*</span>
+              </label>
+              <textarea
+                className="form-group"
                 name="SUB_EVT"
                 value={formData.SUB_EVT}
                 onChange={handleChange}
                 required
-                cols={30} // Puedes ajustar el número de columnas
-                rows={10} // Puedes ajustar el número de filas
+                cols={30}
+                rows={10}
               ></textarea>
-
             </div>
 
             <div className="form-group">
-              <label>Fecha del Evento <span className="required">*</span></label>
-              <input type="date" name="FEC_EVT" value={formData.FEC_EVT} onChange={handleChange} required />
+              <label>
+                Fecha del Evento <span className="required">*</span>
+              </label>
+              <input
+                type="date"
+                name="FEC_EVT"
+                value={formData.FEC_EVT}
+                onChange={handleChange}
+                required
+              />
             </div>
             <br />
 
             <div className="form-group">
-              <label>Campus del Evento <span className="required">*</span></label>
-              <select name="LUG_EVT" id={formData.LUG_EVT} onChange={handleChange} required>
+              <label>
+                Campus del Evento <span className="required">*</span>
+              </label>
+              <select
+                name="LUG_EVT"
+                id={formData.LUG_EVT}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Seleccione un lugar</option>
                 <option value="HUACHI">Huachi</option>
                 <option value="INGAURCO">Ingaurco</option>
@@ -204,7 +251,9 @@ const Evento = () => {
               </select>
 
               <div className="form-group">
-                <label>Cédula de Autoridad a Cargo <span className="required">*</span></label>
+                <label>
+                  Autoridad a Cargo <span className="required">*</span>
+                </label>
                 <select
                   name="CED_AUT"
                   value={formData.CED_AUT}
@@ -214,31 +263,54 @@ const Evento = () => {
                   <option value="">Seleccione una Autoridad</option>
                   {autoridades.map((autoridad) => (
                     <option key={autoridad.ID_AUT} value={autoridad.CED_PER}>
-                      {autoridad.ID_AUT} - {autoridad.CED_PER_PERSONA?.NOM_PER} {autoridad.CED_PER_PERSONA?.APE_PER}
+                      {autoridad.ID_AUT} - {autoridad.CED_PER_PERSONA?.NOM_PER}{" "}
+                      {autoridad.CED_PER_PERSONA?.APE_PER}
                     </option>
                   ))}
                 </select>
-
-
               </div>
 
               <div className="form-group">
-                <label>Cupos del Evento <span className="required">*</span></label>
-                <input type="number" name="CUP_DET" value={formData.CUP_DET} onChange={handleChange} required />
+                <label>
+                  Cupos del Evento <span className="required">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="CUP_DET"
+                  value={formData.CUP_DET}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
-                <label>Nota Requerida para Aprobar <span className="required">*</span></label>
-                <input type="number" step="0.01" name="NOT_DET" value={formData.NOT_DET} onChange={handleChange} required />
+                <label>
+                  Nota Requerida para Aprobar{" "}
+                  <span className="required">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  name="NOT_DET"
+                  value={formData.NOT_DET}
+                  onChange={handleChange}
+                  required
+                />
               </div>
-
             </div>
           </div>
 
           <div className="columna derecha">
             <div className="form-group">
-              <label>Tipo de Evento <span className="required">*</span></label>
-              <select name="TIP_EVT" value={formData.TIP_EVT} onChange={handleChange} required>
+              <label>
+                Tipo de Evento <span className="required">*</span>
+              </label>
+              <select
+                name="TIP_EVT"
+                value={formData.TIP_EVT}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Seleccione una opción</option>
                 <option value="GRATUITO">Gratuito</option>
                 <option value="DE PAGO">De Pago</option>
@@ -246,8 +318,15 @@ const Evento = () => {
             </div>
 
             <div className="form-group">
-              <label>Modalidad del Evento <span className="required">*</span></label>
-              <select name="MOD_EVT" value={formData.MOD_EVT} onChange={handleChange} required>
+              <label>
+                Modalidad del Evento <span className="required">*</span>
+              </label>
+              <select
+                name="MOD_EVT"
+                value={formData.MOD_EVT}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Seleccione una opción</option>
                 <option value="PUBLICO">Público</option>
                 <option value="PRIVADO">Privado</option>
@@ -255,9 +334,13 @@ const Evento = () => {
             </div>
 
             <div className="form-group">
-              <label>Fotografía del Evento <span className="required">*</span></label>
+              <label>
+                Fotografía del Evento <span className="required">*</span>
+              </label>
               <div className="file-input-container">
-                <label className="file-label" htmlFor="foto">Seleccionar imagen</label>
+                <label className="file-label" htmlFor="foto">
+                  Seleccionar imagen
+                </label>
                 <input
                   type="file"
                   id="foto"
@@ -266,34 +349,56 @@ const Evento = () => {
                   required
                 />
               </div>
-              <div className="file-hint">Formatos aceptados: JPG, PNG. Máximo 2MB.</div>
+              <div className="file-hint">
+                Formatos aceptados: JPG, PNG. Máximo 2MB.
+              </div>
               {imagenPreview && (
                 <div className="imagen-preview">
                   <img src={imagenPreview} alt="Vista previa" />
                 </div>
               )}
             </div>
+
             <div className="form-group">
-              <label>Descripción del Evento <span className="required">*</span></label>
-              <textarea className="form-group"
+              <label>
+                Descripción del Evento <span className="required">*</span>
+              </label>
+              <textarea
+                className="form-group"
                 name="DES_EVT"
                 value={formData.DES_EVT}
                 onChange={handleChange}
                 required
-                cols={80} // Puedes ajustar el número de columnas
-                rows={6} // Puedes ajustar el número de filas
+                cols={80}
+                rows={6}
               ></textarea>
             </div>
 
             <br />
             <div className="form-group">
-              <label>Horas del Evento <span className="required">*</span></label>
-              <input type="number" step="0.01" name="HOR_DET" value={formData.HOR_DET} onChange={handleChange} required />
+              <label>
+                Horas del Evento <span className="required">*</span>
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                name="HOR_DET"
+                value={formData.HOR_DET}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="form-group">
-              <label>Área del Evento <span className="required">*</span></label>
-              <select name="ARE_DET" value={formData.ARE_DET} onChange={handleChange} required>
+              <label>
+                Área del Evento <span className="required">*</span>
+              </label>
+              <select
+                name="ARE_DET"
+                value={formData.ARE_DET}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Seleccione una opción</option>
                 <option>SALUD Y SERVICIOS SOCIALES</option>
                 <option>CIENCIAS NATURALES Y MATEMATICAS</option>
@@ -307,8 +412,15 @@ const Evento = () => {
             </div>
 
             <div className="form-group">
-              <label>Categoría del Evento <span className="required">*</span></label>
-              <select name="CAT_DET" value={formData.CAT_DET} onChange={handleChange} required>
+              <label>
+                Categoría del Evento <span className="required">*</span>
+              </label>
+              <select
+                name="CAT_DET"
+                value={formData.CAT_DET}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Seleccione una opción</option>
                 <option>CURSO</option>
                 <option>CONGRESO</option>
@@ -320,9 +432,82 @@ const Evento = () => {
                 <option>OTROS</option>
               </select>
             </div>
+
+            {formData.MOD_EVT === "PRIVADO" && (
+              <>
+                <div className="form-group">
+                  <label>
+                    Carreras <span className="required">*</span>
+                  </label>
+                  <select
+                    name="CARRERAS"
+                    value={formData.CARRERAS[0] || ""}
+                    onChange={handleCarrerasChange}
+                    required
+                  >
+                    <option value="">Seleccione una carrera</option>
+                    {carreras.map((carrera) => (
+                      <option key={carrera.ID_CAR} value={carrera.ID_CAR}>
+                        {carrera.NOM_CAR}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    Niveles <span className="required">*</span>
+                  </label>
+                  <select
+                    name="NIVELES"
+                    value={formData.NIVELES[0] || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        NIVELES: [e.target.value],
+                      }))
+                    }
+                    required
+                  >
+                    <option value="">Seleccione un nivel</option>
+                    {nivelesFiltrados.map((nivel) => (
+                      <option key={nivel.ID_NIV} value={nivel.ID_NIV}>
+                        {nivel.NOM_NIV}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  className="submit-button"
+                  onClick={handleAgregar}
+                >
+                  Agregar
+                </button>
+
+                <div style={{ marginTop: "1rem" }}>
+                  <h4>Niveles agregados:</h4>
+                  <ul>
+                    {combinaciones.map((item, index) => {
+                      const carrera = carreras.find(
+                        (c) => c.ID_CAR === item.CARRERA
+                      )?.NOM_CAR;
+                      const nivel = todosLosNiveles.find(
+                        (n) => n.ID_NIV === item.NIVEL
+                      )?.NOM_NIV;
+                      return (
+                        <li key={index}>
+                          {carrera} - {nivel}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </>
+            )}
           </div>
         </div>
-
 
         {error && <div className="error-message">{error}</div>}
 
@@ -334,6 +519,6 @@ const Evento = () => {
       </form>
     </div>
   );
-}
+};
 
 export default Evento;

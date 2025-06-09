@@ -3,7 +3,7 @@ import logo from "../assets/logo.png";
 import "../Styles/Administrador.css";
 import { useAuth } from "../auth/AuthContext";
 import Swal from "sweetalert2";
-import { useNavigate, NavLink, Outlet } from "react-router-dom";
+import { useNavigate, NavLink, Outlet, Link } from "react-router-dom";
 import {
   FaHome,
   FaUser,
@@ -48,7 +48,9 @@ const Administrador = () => {
       <header className="header-principal">
         <div className="header-content">
           <div className="header-left">
-            <img src={logo} alt="Logo" className="header-logo" />
+            <Link to="/">
+              <img src={logo} alt="Logo" className="header-logo" />
+            </Link>
             <p className="panel-text">Panel de Control</p>
           </div>
           <div className="header-right">
@@ -72,7 +74,6 @@ const Administrador = () => {
         </div>
         <nav className="sidebar-navbar">
           <ul className="sidebar-navbar_item">
-            
             <li>
               <NavLink
                 to="/Administrador/Usuario"

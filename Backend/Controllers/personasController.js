@@ -164,12 +164,9 @@ exports.login = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await PERSONAS.update(req.body, {
-      where: { CED_PER: req.params.cedula } // 👈 este es el nombre correcto
-    });
-
+    const [updated] = await PERSONAS.update(req.body, { where: { CED_PER: req.params.id } });
     if (updated) {
-      const updatedRecord = await PERSONAS.findByPk(req.params.cedula);
+      const updatedRecord = await PERSONAS.findByPk(req.params.id);
       res.json(updatedRecord);
     } else {
       res.status(404).json({ error: 'Persona no encontrada' });
