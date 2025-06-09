@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../Styles/Carreras.css';
 
-// Importa tus imágenes (asegúrate de tenerlas en tu carpeta assets)
 import softwareImg from '../../assets/Software.jpg';
 import telecomImg from '../../assets/Telecomunicaciones.png';
 import tiImg from '../../assets/TI.png';
@@ -46,7 +45,7 @@ const CategoryCard = ({ category }) => {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate(category.route);
+    navigate("/");
   };
 
   return (

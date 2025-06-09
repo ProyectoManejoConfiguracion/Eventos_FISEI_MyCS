@@ -1,4 +1,3 @@
-// controllers/notasController.js
 const { sequelize, Sequelize } = require('../models');
 
 exports.getNotasPorEstudiante = async (req, res) => {

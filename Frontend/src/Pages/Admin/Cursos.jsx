@@ -11,7 +11,7 @@ const Cursos = () => {
   useEffect(() => {
     if (user?.id) {
       axios
-        .get(`http://localhost:3000/api/detalle_informe/1012345678`)
+        .get(`http://localhost:3000/api/detalle_informe/${user.id}`)
         .then((response) => setEventos(response.data))
         .catch((error) =>
           console.error("Error al obtener asistencias:", error)

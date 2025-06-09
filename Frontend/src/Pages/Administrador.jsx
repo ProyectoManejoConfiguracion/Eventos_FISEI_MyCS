@@ -72,16 +72,7 @@ const Administrador = () => {
         </div>
         <nav className="sidebar-navbar">
           <ul className="sidebar-navbar_item">
-            <li>
-              <NavLink
-                to="/Administrador/VistaGeneral"
-                className={({ isActive }) =>
-                  `navbar_items ${isActive ? "estado-activo" : ""}`
-                }
-              >
-                <FaHome className="nav-icon" /> Vista General
-              </NavLink>
-            </li>
+            
             <li>
               <NavLink
                 to="/Administrador/Usuario"
@@ -141,16 +132,6 @@ const Administrador = () => {
                 }
               >
                 <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/Administrador/Configuracion"
-                className={({ isActive }) =>
-                  `navbar_items ${isActive ? "estado-activo" : ""}`
-                }
-              >
-                <FaCog className="nav-icon" /> Configuración
               </NavLink>
             </li>
           </ul>
