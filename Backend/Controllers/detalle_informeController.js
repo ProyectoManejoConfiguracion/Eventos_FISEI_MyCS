@@ -2,10 +2,12 @@ const { sequelize, Sequelize } = require('../models');
 const multer = require('multer');
 const path = require('path');
 
-exports.getNotasPorEvento = async (req, res) => {
+exports.getAsistenciasPorAutoridad = async (req, res) => {
   try {
+    const cedula = req.params.cedula;
+
     const results = await sequelize.query(`
-      SELECT e.ID_EVT, e.NOM_EVT, de.CAT_DET,
+      SELECT e.ID_EVT, e.NOM_EVT, e.FEC_EVT, de.CAT_DET,
              p.CED_PER, p.NOM_PER, p.APE_PER,
              di.NUM_DET_INF, di.REG_ASI
       FROM EVENTOS e
@@ -15,19 +17,21 @@ exports.getNotasPorEvento = async (req, res) => {
       JOIN PERSONAS p ON rp.CED_PER = p.CED_PER
       LEFT JOIN INFORMES i ON rp.NUM_REG_PER = i.NUM_REG_PER
       LEFT JOIN DETALLE_INFORME di ON i.NUM_IFN = di.NUM_INF
-      WHERE de.CAT_DET = 'CURSO'
+      WHERE de.CAT_DET = 'CURSO' AND de.CED_AUT = :cedula
     `, {
+      replacements: { cedula },
       type: Sequelize.QueryTypes.SELECT
     });
 
     const eventosMap = {};
 
     results.forEach(row => {
-      const key = `${row.ID_EVT}`;
+      const key = row.ID_EVT;
       if (!eventosMap[key]) {
         eventosMap[key] = {
           ID_EVT: row.ID_EVT,
           NOM_EVT: row.NOM_EVT,
+          FEC_EVT: row.FEC_EVT,
           CAT_DET: row.CAT_DET,
           Personas: []
         };
@@ -42,10 +46,10 @@ exports.getNotasPorEvento = async (req, res) => {
       });
     });
 
-    const resultadoFinal = Object.values(eventosMap);
-    res.json(resultadoFinal);
-    
+    res.json(Object.values(eventosMap));
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
