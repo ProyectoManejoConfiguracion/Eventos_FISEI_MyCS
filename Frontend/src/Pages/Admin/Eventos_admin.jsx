@@ -15,7 +15,7 @@ const Evento = () => {
   const [imagenPreview, setImagenPreview] = useState(null);
 
   const [formData, setFormData] = useState({
-    ID_EVT: "",
+
     NOM_EVT: "",
     FEC_EVT: "",
     LUG_EVT: "",
@@ -27,7 +27,7 @@ const Evento = () => {
 
     // Detalle
 
-    ID_AUT: "",
+    CED_AUT: "",
     CUP_DET: "",
     NOT_DET: "",
     HOR_DET: "",
@@ -45,16 +45,12 @@ const Evento = () => {
   };
 
 
-
-
-
-
   const handleAutoridadChange = async (e) => {
-    const idautoridad = e.target.value;
+    const cedautoridad = e.target.value;
 
     setFormData(prev => ({
       ...prev,
-      ID_AUT: idautoridad
+      CED_AUT: cedautoridad
     }));
   }
 
@@ -99,21 +95,12 @@ const Evento = () => {
   };
 
   const handleSubmit = async (e) => {
-    if (!formData.ID_EVT || !formData.NOM_EVT || !formData.FEC_EVT || !formData.LUG_EVT) {
-      setError("Completa todos los campos obligatorios antes de enviar.");
-      setLoading(false);
-      return;
-    }
-
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-
       const data = new FormData();
-
-      data.append("ID_EVT", formData.ID_EVT);
       data.append("NOM_EVT", formData.NOM_EVT);
       data.append("FEC_EVT", formData.FEC_EVT);
       data.append("LUG_EVT", formData.LUG_EVT);
@@ -122,10 +109,10 @@ const Evento = () => {
       data.append("DES_EVT", formData.DES_EVT);
       data.append("SUB_EVT", formData.SUB_EVT);
 
-        if (formData.FOT_EVT) {
-    data.append('FOT_EVT', formData.FOT_EVT);
-    alert("Imagen cargada correctamente");
-  }
+      if (formData.FOT_EVT) {
+        data.append('FOT_EVT', formData.FOT_EVT);
+      }
+
 
       const response = await axios.post("http://localhost:3000/api/eventos", data, {
         headers: {
@@ -133,27 +120,33 @@ const Evento = () => {
         },
       });
 
-      if (response.status !== 201 || response.status !== 200) {
+      if (response.status !== 201 && response.status !== 200) {
         throw new Error("Error al registrar el evento");
         return;
       }
       // Evento registrado exitosamente, ahora registrar el detalle del evento
-
+     await new Promise(res => setTimeout(res, 100));
       // INSERTAR DETALLE_EVENTOS (sin imagen)
 
+      const nuevoID_EVT = response.data.ID_EVT;
+
+      const detalleData = new FormData();
+      detalleData.append("ID_EVT", nuevoID_EVT);
+      detalleData.append("CED_AUT", formData.CED_AUT);
+      detalleData.append("CUP_DET", formData.CUP_DET);
+      detalleData.append("NOT_DET", formData.NOT_DET);
+      detalleData.append("HOR_DET", formData.HOR_DET);
+      detalleData.append("ARE_DET", formData.ARE_DET);
+      detalleData.append("CAT_DET", formData.CAT_DET);
 
 
-      const response2 = await axios.post("http://localhost:3000/api/detalle_eventos", {
-        ID_EVT: formData.ID_EVT,
-        ID_AUT: formData.ID_AUT,
-        CUP_DET: formData.CUP_DET,
-        NOT_DET: formData.NOT_DET,
-        HOR_DET: formData.HOR_DET,
-        ARE_DET: formData.ARE_DET,
-        CAT_DET: formData.CAT_DET,
+      const response2 = await axios.post("http://localhost:3000/api/detalle_eventos",detalleData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
       });
 
-      if (!response2.status === 201 || !response2.status === 200) {
+      if (response2.status !== 201 && response2.status !== 200) {
         throw new Error("Error al registrar el detalle del evento");
         return;
       }
@@ -177,11 +170,6 @@ const Evento = () => {
       <form className="formulario" onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="form-container">
           <div className="columna izquierda">
-            <div className="form-group">
-              <label>ID del Evento <span className="required">*</span></label>
-              <input name="ID_EVT" value={formData.ID_EVT} onChange={handleChange} required />
-            </div>
-
             <div className="form-group">
               <label>Nombre del Evento <span className="required">*</span></label>
               <input name="NOM_EVT" value={formData.NOM_EVT} onChange={handleChange} required />
@@ -218,15 +206,15 @@ const Evento = () => {
               <div className="form-group">
                 <label>Cédula de Autoridad a Cargo <span className="required">*</span></label>
                 <select
-                  name="ID_AUT"
-                  value={formData.ID_AUT}
+                  name="CED_AUT"
+                  value={formData.CED_AUT}
                   onChange={handleAutoridadChange}
                   required
                 >
                   <option value="">Seleccione una Autoridad</option>
                   {autoridades.map((autoridad) => (
-                    <option key={autoridad.ID_AUT} value={autoridad.ID_AUT}>
-                      {autoridad.ID_AUT}
+                    <option key={autoridad.ID_AUT} value={autoridad.CED_PER}>
+                      {autoridad.ID_AUT} - {autoridad.CED_PER_PERSONA?.NOM_PER} {autoridad.CED_PER_PERSONA?.APE_PER}
                     </option>
                   ))}
                 </select>
@@ -279,11 +267,11 @@ const Evento = () => {
                 />
               </div>
               <div className="file-hint">Formatos aceptados: JPG, PNG. Máximo 2MB.</div>
-            {imagenPreview && (
-              <div className="imagen-preview">
-                <img src={imagenPreview} alt="Vista previa" />
-              </div>
-            )}
+              {imagenPreview && (
+                <div className="imagen-preview">
+                  <img src={imagenPreview} alt="Vista previa" />
+                </div>
+              )}
             </div>
             <div className="form-group">
               <label>Descripción del Evento <span className="required">*</span></label>
