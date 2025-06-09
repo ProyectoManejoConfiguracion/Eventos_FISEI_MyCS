@@ -127,6 +127,30 @@
   background: #e3e8fd;
   color: #1976d2;
 }
+.badge-yellow {
+  background: #e3e8fd;
+  color: #cfd219;
+}
+.badge-purple {
+  background: #e3e8fd;
+  color: #7919d2;
+}
+.badge-red {
+  background: #e3e8fd;
+  color: #d21947;
+}
+.badge-vine {
+  background: #e3e8fd;
+  color: #19d276c4;
+}
+.badge-pink {
+  background: #e3e8fd;
+  color: #d219c99d;
+}
+.badge-greenwatter {
+  background: #e3e8fd;
+  color: #19d276c4;
+}
 .badge-default {
   background: #eee;
   color: #333;
