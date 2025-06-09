@@ -27,15 +27,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     FOT_EVT: {
-      type: DataTypes.STRING(255), 
-      allowNull: true
-
-      allowNull: false
-    },
-    FOT_EVT: {
       type: DataTypes.STRING(255),
       allowNull: false
-
     },
     DES_EVT: {
       type: DataTypes.STRING(255),
