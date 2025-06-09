@@ -1,0 +1,123 @@
+.buscador-eventos {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 32px;
+  background: #fff;
+  padding: 40px 45px;
+  border-radius: 16px;
+}
+
+.buscador-input-container {
+  width: 100%;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.icono-buscador {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280; /* gris, no azul */
+  pointer-events: none;
+}
+
+.buscador-input {
+  padding-left: 60px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f1f5f9;
+  transition: border 0.2s;
+}
+
+.buscador-input:focus {
+  border-color: #581517;
+  outline: none;
+}
+
+.buscador-advanced-toggle {
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  background: #f3f4f6;
+  color: #581517;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.buscador-advanced-section {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.buscador-campo {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.buscador-campo input {
+  width: 80%;
+  padding: 10px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f1f5f9;
+}
+
+.buscador-campo-horas input {
+  width: 70%;
+}
+
+.buscador-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.buscador-eventos button {
+  background: #581517;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.buscador-eventos button:hover {
+  background: #6e2426;
+}
+
+@media (max-width: 600px) {
+  .buscador-eventos {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 6px;
+  }
+
+  .buscador-eventos input,
+  .buscador-eventos select {
+    min-width: 100px;
+    width: 100%;
+  }
+}
