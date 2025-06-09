@@ -52,7 +52,7 @@ exports.create = async (req, res) => {
 
       // Si se subió una imagen
       if (req.file) {
-        imagePath = req.file.path;
+        imagePath = path.join('uploads', req.file.filename).replace(/\\/g, '/');
       }
 
       const hashedPassword = await bcrypt.hash(CON_PER, 10);
