@@ -1,4 +1,3 @@
-// src/components/Certificado.jsx
 import React from 'react';
 import '../Styles/Certificado.css';
 
@@ -29,7 +28,7 @@ const Certificado = ({
     title: 'Cargo del Comite',
     signatureSrc: firmaCommittee,
   },
-  sponsors        = [sponsorSpringer, sponsorScopus, sponsorRedcedia, sponsorDide],
+  sponsors = [sponsorSpringer, sponsorScopus, sponsorRedcedia, sponsorDide],
 }) => {
   return (
     <div className="certificate-container">
@@ -73,7 +72,7 @@ const Certificado = ({
       {/* Texto del cuerpo */}
       <div className="certificate-body">
         <p>
-          For this course approval and attendance “<strong>{tituloEvento}</strong>” ({horasEvento} hours) 
+          For this course approval and attendance <strong>“<strong>{tituloEvento}</strong>”</strong> ({horasEvento} hours) 
           which was held in {locacion}, from {fechaInicio} to {fechaFin}.
         </p>
       </div>
