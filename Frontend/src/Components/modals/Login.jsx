@@ -51,7 +51,7 @@ const Login = ({ isOpen, closeModal }) => {
           navigate("/Administrador");
           closeModal();
         }else if(loggedUser?.role=="Estudiante"){
-          navigate("/Estudiante");
+          navigate("/");
           closeModal();
         }
       });

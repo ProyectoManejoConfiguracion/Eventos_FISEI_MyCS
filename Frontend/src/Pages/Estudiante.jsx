@@ -12,7 +12,9 @@ import "../Styles/Estudiante.css";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import Swal from "sweetalert2";
-import { MdWavingHand } from "react-icons/md";
+import { MdWavingHand,MdExitToApp } from "react-icons/md";
+
+
 const Estudiante = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -39,6 +41,11 @@ const Estudiante = () => {
       navigate("/");
     }
   };
+
+  const handleBack = () => {
+    navigate("/");
+  };
+
   return (
     <div className="estudiante-container">
       <header className="estudiante-header">
@@ -47,11 +54,15 @@ const Estudiante = () => {
           <div>
             <h1 className="dashboard-title">Bienvenido al Aula Virtual</h1>
             <p className="welcome-text">
-              <MdWavingHand /> Hola, {user?.name}  {user?.lastname}
+              <MdWavingHand /> Hola, {user?.name} {user?.lastname}
             </p>
           </div>
         </div>
         <div className="header-right">
+          <button className="back-btn" onClick={handleBack} style={{marginRight: "10px"}}>
+            <MdExitToApp size={16} color="white" />
+            Regresar
+          </button>
           <button className="logout-btn" onClick={handleLogout}>
             <FaUserAlt size={16} color="white" />
             Cerrar Sesión
