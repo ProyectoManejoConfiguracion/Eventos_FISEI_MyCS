@@ -1,100 +1,102 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Styles/Eventos.css';
-import eventoImg from '../assets/img-css.png';
-import { FaRegClock,FaUsers } from "react-icons/fa";
+import { FaRegClock, FaUsers } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
+import axios from 'axios';
 
-
-const eventos = [
-  {
-    id: 1,
-    titulo: "Hackathon Universitario 2024",
-    tipo: "Competencia",
-    imagen: eventoImg,
-    descripcion: "Competencia de programación de 48 horas",
-    fecha: "2024-06-15 - 09:00 AM",
-    lugar: "Campus Principal - Aula Magna",
-    participantes: 150,
-    tecnologias: ["JavaScript", "Python", "React", "Node.js"]
-  },
-  {
-    id: 2,
-    titulo: "Curso de React",
-    tipo: "Curso",
-    imagen: eventoImg,
-    descripcion: "Aprende React desde cero",
-    fecha: "2024-07-01 - 10:00 AM",
-    lugar: "Aula 101",
-    participantes: 50,
-    tecnologias: ["React", "JavaScript"]
-  },
-   {
-    id: 3,
-    titulo: "Hackathon Universitario 2024",
-    tipo: "Competencia",
-    imagen: eventoImg,
-    descripcion: "Competencia de programación de 48 horas",
-    fecha: "2024-06-15 - 09:00 AM",
-    lugar: "Campus Principal - Aula Magna",
-    participantes: 150,
-    tecnologias: ["JavaScript", "Python", "React", "Node.js"]
-  },
-   {
-    id: 4,
-    titulo: "Hackathon Universitario 2024",
-    tipo: "Competencia",
-    imagen: eventoImg,
-    descripcion: "Competencia de programación de 48 horas",
-    fecha: "2024-06-15 - 09:00 AM",
-    lugar: "Campus Principal - Aula Magna",
-    participantes: 150,
-    tecnologias: ["JavaScript", "Python", "React", "Node.js"]
-  },
-];
+import defaultImg from '../assets/imagen_defecto.jpg';
 
 const badgeColor = tipo => {
   switch (tipo) {
-    case "Competencia": return "badge-tomato";
-    case "Curso": return "badge-blue";
-    
+    case "CONFERENCIAS": return "badge-tomato";
+    case "CURSO": return "badge-blue";
+    case "Gratuito": return "badge-green";
+    case "CURSO": return "badge-blue";
     default: return "badge-default";
   }
 };
 
 const Eventos = () => {
+  const [eventos, setEventos] = useState([]);
+  const [detalles, setDetalles] = useState([]);
+  const [tarifas, setTarifas] = useState([]);
+
+  useEffect(() => {
+    // Traer eventos
+    axios.get('http://localhost:3000/api/eventos')
+      .then(res => setEventos(res.data))
+      .catch(err => console.error(err));
+
+    // Traer detalles
+    axios.get('http://localhost:3000/api/detalle_eventos')
+      .then(res => setDetalles(res.data))
+      .catch(err => console.error(err));
+
+    // Traer tarifas
+    axios.get('http://localhost:3000/api/tarifas_evento')
+      .then(res => setTarifas(res.data))
+      .catch(err => console.error(err));
+  }, []);
+
+  // Función para obtener detalles y tarifas por evento
+  const getDetalleEvento = (id_evt) => detalles.find(d => d.ID_EVT === id_evt);
+  const getTarifaEvento = (id_evt) => tarifas.filter(t => t.ID_EVT === id_evt);
+
   return (
     <div className="eventos-page">
       <h1 className="eventos-title">Cursos y Eventos</h1>
       <div className="eventos-grid">
-        {eventos.map(evento => (
-          <div className="evento-card" key={evento.id}>
-            <h2 className="evento-title">{evento.titulo}</h2>
-            <span className={`evento-badge ${badgeColor(evento.tipo)}`}>{evento.tipo}</span>
-            <img src={evento.imagen} alt={evento.titulo} className="evento-img" />
-            <p className="evento-desc">{evento.descripcion}</p>
-            <div className="evento-info">
-              <span>
-                <i><FaRegClock /></i> {evento.fecha}
+        {eventos.map(evento => {
+          const detalle = getDetalleEvento(evento.ID_EVT);
+          const tarifasEvento = getTarifaEvento(evento.ID_EVT);
+          // Construir la URL de la imagen o usar la imagen por defecto
+          const imagenUrl = evento.FOT_EVT
+            ? `http://localhost:3000/${evento.FOT_EVT.replace(/\\/g, "/")}`
+            : defaultImg;
+
+          return (
+            <div className="evento-card" key={evento.ID_EVT}>
+              <h2 className="evento-title">{evento.NOM_EVT}</h2>
+              <span className={`evento-badge ${badgeColor(detalle?.CAT_DET || evento.TIP_EVT)}`}>
+                {detalle?.CAT_DET || evento.TIP_EVT}
               </span>
-              <span>
-                <i><FaLocationDot /></i> {evento.lugar}
-              </span>
-              <span>
-                <i><FaUsers /></i> {evento.participantes} participantes
-              </span>
+              <img
+                src={imagenUrl}
+                alt={evento.NOM_EVT}
+                className="evento-img"
+                onError={e => { e.target.onerror = null; e.target.src = defaultImg; }}
+                style={{ display: 'block', margin: '10px auto', maxHeight: '120px', objectFit: 'contain' }}
+              />
+              <p className="evento-desc">{evento.DES_EVT}</p>
+              <div className="evento-info">
+                <span>
+                  <i><FaRegClock /></i> {evento.FEC_EVT}
+                </span>
+                <span>
+                  <i><FaLocationDot /></i> {evento.LUG_EVT}
+                </span>
+                <span>
+                  <i><FaUsers /></i> {detalle?.CUP_DET || 'N/A'} cupos
+                </span>
+              </div>
+              <div className="evento-tec">
+                <b>Área:</b> {detalle?.ARE_DET || 'N/A'}
+              </div>
+              <div className="evento-tec">
+                <b>Tarifas:</b>
+                {tarifasEvento.length > 0 ? tarifasEvento.map((tarifa, idx) => (
+                  <span className="tec-badge" key={idx}>
+                    {tarifa.TIP_PAR}: ${tarifa.VAL_EVT}
+                  </span>
+                )) : <span className="tec-badge">Gratuito</span>}
+              </div>
+              <div className="evento-actions">
+                <button className="btn-detalles">Ver Detalles</button>
+                <button className="btn-inscribirse">Inscribirse</button>
+              </div>
             </div>
-            <div className="evento-tec">
-              <b>Tecnologías:</b>
-              {evento.tecnologias.map((tec, idx) => (
-                <span className="tec-badge" key={idx}>{tec}</span>
-              ))}
-            </div>
-            <div className="evento-actions">
-              <button className="btn-detalles">Ver Detalles</button>
-              <button className="btn-inscribirse">Inscribirse</button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
