@@ -16,31 +16,40 @@ const badgeColor = tipo => {
   }
 };
 
+const Loader = () => (
+  <div className="loader-container">
+    <div className="loader"></div>
+    <span>Cargando eventos...</span>
+  </div>
+);
+
 const Eventos = () => {
   const [eventos, setEventos] = useState([]);
   const [detalles, setDetalles] = useState([]);
   const [tarifas, setTarifas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Traer eventos
-    axios.get('http://localhost:3000/api/eventos')
-      .then(res => setEventos(res.data))
-      .catch(err => console.error(err));
-
-    // Traer detalles
-    axios.get('http://localhost:3000/api/detalle_eventos')
-      .then(res => setDetalles(res.data))
-      .catch(err => console.error(err));
-
-    // Traer tarifas
-    axios.get('http://localhost:3000/api/tarifas_evento')
-      .then(res => setTarifas(res.data))
-      .catch(err => console.error(err));
+    Promise.all([
+      axios.get('http://localhost:3000/api/eventos'),
+      axios.get('http://localhost:3000/api/detalle_eventos'),
+      axios.get('http://localhost:3000/api/tarifas_evento')
+    ])
+      .then(([resEventos, resDetalles, resTarifas]) => {
+        setEventos(resEventos.data);
+        setDetalles(resDetalles.data);
+        setTarifas(resTarifas.data);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
 
-  // Función para obtener detalles y tarifas por evento
   const getDetalleEvento = (id_evt) => detalles.find(d => d.ID_EVT === id_evt);
   const getTarifaEvento = (id_evt) => tarifas.filter(t => t.ID_EVT === id_evt);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="eventos-page">
@@ -49,7 +58,6 @@ const Eventos = () => {
         {eventos.map(evento => {
           const detalle = getDetalleEvento(evento.ID_EVT);
           const tarifasEvento = getTarifaEvento(evento.ID_EVT);
-          // Construir la URL de la imagen o usar la imagen por defecto
           const imagenUrl = evento.FOT_EVT
             ? `http://localhost:3000/${evento.FOT_EVT.replace(/\\/g, "/")}`
             : defaultImg;
@@ -103,3 +111,6 @@ const Eventos = () => {
 };
 
 export default Eventos;
+
+
+
