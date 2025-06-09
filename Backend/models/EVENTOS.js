@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     NOM_EVT: {
-      type: DataTypes.STRING(25),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     FEC_EVT: {
@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     LUG_EVT: {
-      type: DataTypes.STRING(25),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     TIP_EVT: {
@@ -29,6 +29,7 @@ module.exports = function(sequelize, DataTypes) {
     FOT_EVT: {
       type: DataTypes.STRING(255),
       allowNull: false
+
     },
     DES_EVT: {
       type: DataTypes.STRING(255),
@@ -36,7 +37,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     SUB_EVT: {
       type: DataTypes.STRING(80),
-      allowNull: false
+      allowNull: true
+
+
     }
   }, {
     sequelize,

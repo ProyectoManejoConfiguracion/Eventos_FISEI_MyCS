@@ -19,6 +19,16 @@ exports.getOne = async (req, res) => {
   }
 };
 
+exports.getByEvent = async (req, res) => {
+  try {
+    const data = await DETALLE_EVENTOS.findAll({ where: { ID_EVT: req.params.id } });
+    if (data) res.json(data);
+    else res.status(404).json({ error: 'No encontrado' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.create = async (req, res) => {
   try {
     // Obtener el último ID_DET existente

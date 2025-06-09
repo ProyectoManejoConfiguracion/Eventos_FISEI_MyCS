@@ -11,10 +11,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATEONLY,
       allowNull: true
     },
-    NOT_DET: {
-      type: DataTypes.DECIMAL(5,2),
-      allowNull: false
-    },
     NUM_INF: {
       type: DataTypes.INTEGER,
       allowNull: false,
