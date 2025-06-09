@@ -20,15 +20,23 @@ module.exports = function(sequelize, DataTypes) {
     },
     TIP_EVT: {
       type: DataTypes.STRING(10),
-      allowNull: true
+      allowNull: false
     },
     MOD_EVT: {
       type: DataTypes.STRING(10),
-      allowNull: true
+      allowNull: false
     },
     FOT_EVT: {
-      type: DataTypes.STRING(255), 
-      allowNull: true
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    DES_EVT: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    SUB_EVT: {
+      type: DataTypes.STRING(80),
+      allowNull: false
     }
   }, {
     sequelize,
