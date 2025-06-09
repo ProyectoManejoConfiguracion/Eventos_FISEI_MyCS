@@ -1,0 +1,229 @@
+.estudiante-container {
+  margin: 1rem;
+}
+
+.estudiante-header {
+  background-color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.logo {
+  height: 65px;
+  width: auto;
+}
+
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1a1a;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.welcome-text {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 0.2rem 0 0;
+  color: #555;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+.back-btn{
+   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 1.2rem;
+  background-color: #581517;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  
+}
+.back-btn:hover {
+  background-color: #722022;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 1.2rem;
+  background-color: #581517;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #722022;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-estudiante {
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  padding: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-list-estudiante {
+  display: flex;
+  gap: 130px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.nav-item-estudiante {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #333;
+  gap: 0.9rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.nav-item-estudiante:hover {
+  background-color: #581517;
+  color: white;
+  transform: translateX(5px);
+  
+}
+
+.main-content-est {
+  grid-area: main;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: white;
+  min-height: 0; 
+}
+.est-activo {
+  background-color: #581517;
+  color: white ;
+  transform: translateX(5px);
+}
+
+
+@media (max-width: 900px) {
+  .estudiante-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+  .header-left {
+    gap: 1.5rem;
+  }
+  .nav-list-estudiante {
+    gap: 40px;
+  }
+  .main-content-est {
+    padding: 1rem;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .estudiante-container {
+    margin: 0.5rem;
+  }
+  .estudiante-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.7rem;
+  }
+  .header-left {
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+  .logo {
+    height: 45px;
+  }
+  .dashboard-title {
+    font-size: 1.2rem;
+  }
+  .welcome-text {
+    font-size: 0.95rem;
+  }
+  .nav-estudiante {
+    margin: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .nav-list-estudiante {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .nav-item-estudiante {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.7rem 0.8rem;
+    font-size: 1rem;
+  }
+  .main-content-est {
+    padding: 0.5rem;
+  }
+}
+@media (max-width: 1500px) and (min-width: 601px) {
+  .nav-list-estudiante {
+    flex-direction: row;
+    gap: 40px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #581517 #eee;
+  }
+  .nav-item-estudiante {
+    min-width: 150px;
+   
+  }
+}

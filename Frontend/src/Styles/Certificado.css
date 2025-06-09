@@ -1,0 +1,273 @@
+
+.certificate-container {
+  position: relative;
+
+  width: 1122px !important;
+  height: 794px !important;
+  max-width: none;
+  margin: 0 auto;
+
+  padding-left: 300px;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+
+  box-sizing: border-box;
+  background-color: white;
+  border: 2px solid #222;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  font-family: 'Arial', sans-serif;
+  color: #222;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.certificate-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/marca_agua.png');
+  background-repeat: no-repeat;
+  background-position: 70% 50%;
+  background-size: 450px 650px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+.certificate-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+.certificate-sidebar {
+  position: absolute;
+  left: 0;   
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  background-image: url('../assets/sidebar_curvas2.png');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: auto 100%;
+  z-index: 1; 
+}
+
+
+.certificate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  
+  width: 822px;
+  margin: 20px auto;    
+  padding: 0;             
+}
+
+.logo-universidad,
+.logo-facultad {
+  height: 80px;
+  width: auto;
+}
+
+.header-textos {
+  text-align: center;
+}
+
+.header-textos h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.header-textos p {
+  margin: 4px 0 0;
+  font-size: 18px;
+  color: #822433;
+}
+
+
+.certificate-title {
+  text-align: center;
+  width: 822px;
+  margin: 0 auto 20px auto; 
+  padding: 0;
+}
+
+.certificate-title h1 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: bold;
+  color: #822433;
+}
+
+.certificate-to {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 822px;
+  margin: 0 auto 15px auto; 
+  padding: 0;
+}
+
+.certificate-to span {
+  font-size: 32px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.certificate-to h2 {
+  font-size: 32px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+
+.certificate-body {
+  text-align: center;
+  width: 822px;
+  margin: 0 auto 25px auto; 
+  padding: 0;
+  max-width: 822px;
+}
+
+.certificate-body p {
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.certificate-signatures {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 822px;
+  margin: 25px auto 30px auto;
+  padding: 0;
+}
+
+.signature-block {
+  text-align: center;
+  width: 40%;
+}
+
+.signature-image {
+  height: 80px;
+  width: auto;
+  margin-bottom: 8px;
+}
+
+.signature-name {
+  font-weight: bold;
+  margin: 0;
+  font-size: 16px;
+}
+
+.signature-title {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #555;
+}
+
+
+.certificate-sponsors {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 822px;
+  margin: 0 auto; 
+  padding: 0 0 15px 0; 
+}
+
+.sponsor-logo {
+  height: 50px;
+  width: auto;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.sponsor-logo:hover {
+  opacity: 1;
+}
+
+
+@media (max-width: 900px) {
+  
+  .certificate-container {
+  position: relative;
+
+  width: 1122px !important;   
+  height: 794px !important;  
+  max-width: none;
+  margin: 0 auto;
+
+  padding-left: 300px;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+
+  box-sizing: border-box;
+  background-color: white;
+  border: 2px solid #222;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  font-family: 'Arial', sans-serif;
+  color: #222;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+  .certificate-sidebar {
+    display: none;
+  }
+
+  .certificate-header,
+  .certificate-title,
+  .certificate-to,
+  .certificate-body,
+  .certificate-signatures,
+  .certificate-sponsors {
+    width: 100%;
+    margin: 0 auto 15px auto; 
+    padding: 0 10px;
+  }
+
+  .certificate-title h1 {
+    font-size: 28px;
+  }
+
+  .certificate-to span,
+  .certificate-to h2 {
+    font-size: 26px;
+  }
+
+  .certificate-body {
+    max-width: 100%;
+  }
+
+  .certificate-signatures {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .signature-block {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .certificate-sponsors {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+}
