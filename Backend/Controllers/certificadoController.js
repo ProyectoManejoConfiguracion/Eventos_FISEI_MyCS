@@ -1,7 +1,4 @@
-// controllers/certificadoController.js
 const { sequelize, Sequelize } = require('../models');
-
-// controllers/certificadoController.js
 
 exports.getCertificado = async (req, res) => {
   const cedula = req.params.cedula;
