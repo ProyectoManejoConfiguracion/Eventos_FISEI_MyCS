@@ -164,17 +164,21 @@ exports.login = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await PERSONAS.update(req.body, { where: { id: req.params.id } });
+    const [updated] = await PERSONAS.update(req.body, {
+      where: { CED_PER: req.params.cedula } // 👈 este es el nombre correcto
+    });
+
     if (updated) {
-      const updatedRecord = await PERSONAS.findByPk(req.params.id);
+      const updatedRecord = await PERSONAS.findByPk(req.params.cedula);
       res.json(updatedRecord);
     } else {
-      res.status(404).json({ error: 'No encontrado' });
+      res.status(404).json({ error: 'Persona no encontrada' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.delete = async (req, res) => {
   try {
