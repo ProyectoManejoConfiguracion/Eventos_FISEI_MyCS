@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Eventos.css";
+import "../Styles/Inscripcion.css";
 import { FaRegClock, FaUsers } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import axios from "axios";
 import BuscadorEventos from "../Components/BuscadorEventos";
 import defaultImg from "../assets/imagen_defecto.jpg";
 import cursosimg from '../assets/Cursos.jpg';
+import ModalInscripcion from "../Components/modals/Inscripcion";
+import { useAuth } from "../auth/AuthContext";
 
 const badgeColor = (tipo) => {
   switch (tipo) {
@@ -47,6 +50,11 @@ const Eventos = () => {
   const [tarifas, setTarifas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [eventosFiltrados, setEventosFiltrados] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [eventoSel, setEventoSel] = useState(null);
+  const [detalleSel, setDetalleSel] = useState(null);
+  const [tarifaSel, setTarifaSel] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     Promise.all([
@@ -109,7 +117,7 @@ const Eventos = () => {
     <div className="eventos-page">
       <div className="tit-container">
         <div className="tit-section">
-          <img src={cursosimg}  className="tit-imagen" />
+          <img src={cursosimg} className="tit-imagen" />
           <div className="hero-overlay"></div>
           <div className="tit-content">
             <h1 className="tit-title">Cursos y Eventos</h1>
@@ -195,12 +203,33 @@ const Eventos = () => {
               </div>
               <div className="evento-actions">
                 <button className="btn-detalles">Ver Detalles</button>
-                <button className="btn-inscribirse">Inscribirse</button>
+                <button
+                  className="btn-inscribirse"
+                  onClick={() => {
+                    setEventoSel({ ...evento, FOT_EVT: imagenUrl });
+                    setDetalleSel(detalle);
+                    setTarifaSel(tarifasEvento);
+                    setModalOpen(true);
+                  }}
+                >
+                  Inscribirse
+                </button>
               </div>
             </div>
           );
         })}
       </div>
+      <ModalInscripcion
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        evento={eventoSel}
+        detalle={detalleSel}
+        tarifa={tarifaSel}
+        usuario={user}
+        onInscribir={(data) => {
+         
+        }}
+      />
     </div>
   );
 };
