@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('TARIFAS_EVENTO', {
+    ID_TAR: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     ID_EVT: {
       type: DataTypes.STRING(10),
       allowNull: false,
@@ -11,8 +16,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     TIP_PAR: {
       type: DataTypes.STRING(10),
-      allowNull: true,
-      unique: "TIP_PAR"
+      allowNull: true
     },
     VAL_EVT: {
       type: DataTypes.DOUBLE,
@@ -24,18 +28,17 @@ module.exports = function(sequelize, DataTypes) {
     timestamps: false,
     indexes: [
       {
-        name: "TIP_PAR",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "TIP_PAR" },
-        ]
-      },
-      {
         name: "ID_EVT",
         using: "BTREE",
         fields: [
           { name: "ID_EVT" },
+        ]
+      },
+      {
+        name: "TIP_PAR",
+        using: "BTREE",
+        fields: [
+          { name: "TIP_PAR" },
         ]
       },
     ]

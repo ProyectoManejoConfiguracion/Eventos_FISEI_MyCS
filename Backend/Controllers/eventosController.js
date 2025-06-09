@@ -1,4 +1,4 @@
-const { EVENTOS } = require('../models');
+const { EVENTOS , TARIFAS_EVENTO } = require('../models');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -14,10 +14,6 @@ const storageEventos = multer.diskStorage({
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
-
-
-
-
 
 const uploadEvento = multer({
   storage: storageEventos,
@@ -131,5 +127,83 @@ exports.delete = async (req, res) => {
     else res.status(404).json({ error: 'No encontrado' });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getEventosPagoConTarifas = async (req, res) => {
+  try {
+    const eventos = await EVENTOS.findAll({
+      where: { TIP_EVT: 'DE PAGO' }
+    });
+
+    const resultados = await Promise.all(eventos.map(async (evento) => {
+      const tarifas = await TARIFAS_EVENTO.findAll({
+        where: { ID_EVT: evento.ID_EVT }
+      });
+
+      const tarifaEstudiante = tarifas.find(t => t.TIP_PAR === 'ESTUDIANTE');
+      const tarifaPersona = tarifas.find(t => t.TIP_PAR === 'PERSONA');
+
+      let tarifasFormateadas = {};
+
+      if (evento.MOD_EVT === 'PRIVADO') {
+        tarifasFormateadas = {
+          Estudiante: tarifaEstudiante ? tarifaEstudiante.VAL_EVT : "",
+          Persona: "N/A"
+        };
+      } else { 
+        tarifasFormateadas = {
+          Estudiante: tarifaEstudiante ? tarifaEstudiante.VAL_EVT : "",
+          Persona: tarifaPersona ? tarifaPersona.VAL_EVT : ""
+        };
+      }
+
+      return {
+        ID_EVT: evento.ID_EVT,
+        NOM_EVT: evento.NOM_EVT,
+        TIP_EVT: evento.TIP_EVT,
+        FEC_EVT: evento.FEC_EVT,
+        MOD_EVT: evento.MOD_EVT,
+        FOT_EVT: evento.FOT_EVT,
+        ACCESO_EVT: evento.ACCESO_EVT,
+        tarifas: tarifasFormateadas
+      };
+    }));
+
+    return res.json(resultados);
+
+  } catch (error) {
+    console.error('Error al obtener eventos de pago con tarifas:', error);
+    return res.status(500).json({ error: 'Error del servidor' });
+  }
+};
+
+exports.asignarOActualizarTarifa = async (req, res) => {
+  try {
+    const { ID_EVT, TIP_PAR, VAL_EVT } = req.body;
+
+    if (!ID_EVT || !TIP_PAR || VAL_EVT === undefined) {
+      return res.status(400).json({ error: 'Datos incompletos.' });
+    }
+
+    const [tarifa, created] = await TARIFAS_EVENTO.findOrCreate({
+      where: { ID_EVT, TIP_PAR },
+      defaults: { VAL_EVT }
+    });
+
+    if (!created) {
+      // Ya existe → actualizar
+      tarifa.VAL_EVT = VAL_EVT;
+      await tarifa.save();
+    }
+
+    return res.json({
+      mensaje: created ? 'Tarifa creada correctamente.' : 'Tarifa actualizada correctamente.',
+      tarifa
+    });
+
+  } catch (error) {
+    console.error('Error al asignar o actualizar tarifa:', error);
+    return res.status(500).json({ error: 'Error del servidor' });
   }
 };
