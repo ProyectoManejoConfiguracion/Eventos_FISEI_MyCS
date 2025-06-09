@@ -83,13 +83,13 @@
 
 .header-textos h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 25px;
   font-weight: bold;
 }
 
 .header-textos p {
   margin: 4px 0 0;
-  font-size: 16px;
+  font-size: 18px;
   color: #822433;
 }
 
@@ -103,7 +103,7 @@
 
 .certificate-title h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: 36px;
   font-weight: bold;
   color: #822433;
 }
@@ -118,13 +118,13 @@
 }
 
 .certificate-to span {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
   margin-right: 10px;
 }
 
 .certificate-to h2 {
-  font-size: 28px;
+  font-size: 32px;
   margin: 0;
   text-transform: uppercase;
 }
@@ -139,7 +139,7 @@
 }
 
 .certificate-body p {
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1.5;
 }
 
@@ -166,7 +166,7 @@
 .signature-name {
   font-weight: bold;
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .signature-title {
@@ -248,7 +248,7 @@
 
   .certificate-to span,
   .certificate-to h2 {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .certificate-body {
