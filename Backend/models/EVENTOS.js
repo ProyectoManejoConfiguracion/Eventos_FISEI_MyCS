@@ -37,8 +37,6 @@ module.exports = function(sequelize, DataTypes) {
     SUB_EVT: {
       type: DataTypes.STRING(80),
       allowNull: true
-
-
     }
   }, {
     sequelize,

@@ -1,30 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, Target, Eye, Heart, Award, BookOpen, Building, Calendar, GraduationCap } from 'lucide-react';
 import '../Styles/Nosotros.css';
 import US from '../assets/arduino.png';
-import Decano from '../assets/decano.png';
-import Subdecano from '../assets/subdecano.png';
-import CTT from '../assets/ctt.png';
 import Fisei from '../assets/fisei.jpg';
 
 const AboutFaculty = () => {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/web');
+        if (!response.ok) {
+          throw new Error('No se pudo cargar el contenido');
+        }
+        const data = await response.json();
+        setContent(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const authorities = [
     {
-      name: "Ing. Franklin Mayorga, Mg.",
+      name: content?.DECANO || "Ing. Franklin Mayorga, Mg.",
       position: "Decano",
-      image: Decano,
       description: "FISEI"
     },
     {
-      name: "Ing. Luis Morales, Mg.",
+      name: content?.SUBDECANO || "Ing. Luis Morales, Mg.", 
       position: "Subdecano", 
-      image: Subdecano,
       description: "FISEI"
     },
     {
-      name: "Ing. Daniel Jerez, Mg.",
+      name: content?.CTT || "Ing. Daniel Jerez, Mg.",
       position: "Responsable",
-      image: CTT,
       description: "CTT"
     }
   ];
@@ -47,6 +64,9 @@ const AboutFaculty = () => {
     }
   ];
 
+  if (loading) return <div className="loading">Cargando...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+
   return (
     <div className="about-faculty">
       {/* Hero Section */}
@@ -55,15 +75,14 @@ const AboutFaculty = () => {
           <img src={US} alt="Eventos y Cursos" className="hero-imagen" />
           <div className='hero-overlay'></div>
           <div className="hero-content">
-            <h1 className="hero-title">Nosotros</h1>
+            <h1 className="hero-title">{content?.TITLE || "Nosotros"}</h1>
             <p className="hero-subtitle">
-              Descubre nuestros eventos académicos y cursos especializados de la facultad
+              {content?.SUBTITLE || "Descubre nuestros eventos académicos y cursos especializados de la facultad"}
             </p>
           </div>
         </div>
       </div>
       
-
       <div className="main-content">
         {/* Achievements Section */}
         <div className="achievements-grid">
@@ -87,9 +106,7 @@ const AboutFaculty = () => {
               <h3 className="mvv-title">Misión</h3>
             </div>
             <p className="mvv-text">
-              Proporcionar eventos académicos de calidad y cursos especializados que 
-              complementen la formación profesional, conectando a estudiantes y 
-              profesionales con las últimas tendencias del sector.
+              {content?.MISION || "Proporcionar eventos académicos de calidad y cursos especializados que complementen la formación profesional..."}
             </p>
           </div>
 
@@ -99,9 +116,7 @@ const AboutFaculty = () => {
               <h3 className="mvv-title">Visión</h3>
             </div>
             <p className="mvv-text">
-              Ser la plataforma líder de eventos y cursos especializados de la región, 
-              reconocida por la calidad de sus contenidos y su contribución al desarrollo 
-              profesional continuo.
+              {content?.VISION || "Ser la plataforma líder de eventos y cursos especializados de la región..."}
             </p>
           </div>
 
@@ -110,13 +125,13 @@ const AboutFaculty = () => {
               <Heart className="mvv-icon values-icon" />
               <h3 className="mvv-title">Valores</h3>
             </div>
-            <ul className="values-list">
+            <div dangerouslySetInnerHTML={{ __html: content?.VALOR || `
               <li>• Excelencia en contenidos</li>
               <li>• Actualización constante</li>
               <li>• Accesibilidad e inclusión</li>
               <li>• Networking profesional</li>
               <li>• Innovación educativa</li>
-            </ul>
+            `}} />
           </div>
         </div>
 
@@ -124,30 +139,16 @@ const AboutFaculty = () => {
         <div className="objective-section">
           <h3 className="objective-title">Objetivo Principal</h3>
           <p className="objective-text">
-            Ofrecer una plataforma integral de eventos académicos y cursos especializados 
-            que fortalezcan las competencias profesionales y fomenten el intercambio de 
-            conocimientos entre la comunidad académica y el sector productivo.
+            {content?.OBJETIVE || "Ofrecer una plataforma integral de eventos académicos y cursos especializados..."}
           </p>
         </div>
 
-        {/* Authorities */}
+        {/* Authorities - ya usa los datos dinámicos */}
         <div className="authorities-section">
           <h3 className="section-title">Autoridades</h3>
           <div className="authorities-grid">
             {authorities.map((authority, index) => (
               <div key={index} className="authority-card">
-                <div className="authority-image">
-                  <img 
-                    src={authority.image} 
-                    alt={authority.name}
-                    className="authority-img"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'block';
-                    }}
-                  />
-                  <Users className="authority-placeholder" style={{display: 'none'}} />
-                </div>
                 <h4 className="authority-name">{authority.name}</h4>
                 <p className="authority-position">{authority.position}</p>
                 <p className="authority-description">{authority.description}</p>
@@ -156,7 +157,7 @@ const AboutFaculty = () => {
           </div>
         </div>
 
-        {/* History */}
+        {/* History (sección estática que no requiere datos dinámicos) */}
         <div className="history-section">
           <h3 className="section-title">Nuestra Historia</h3>
           <div className="history-content">
@@ -164,13 +165,7 @@ const AboutFaculty = () => {
               <p className="history-paragraph">
                 El 20 de octubre de 2002 se crea el Centro de Transferencia y Desarrollo de Tecnologías 
                 mediante resolución 1452-2002-CU-P en la áreas de Ingenierías en Sistemas, Electrónica e 
-                Industrial de la Universidad Técnica de Ambato, para proveer servicios a la comunidad mediante
-                 la realización de trabajos y proyectos específicos , asesorías, estudios, investigaciones, 
-                 cursos de entrenamiento, seminarios y otras actividades de servicios a los sectores sociales 
-                 y productivos en las áreas de Ingeniería en Sistemas computacionales e Informáticos, Ingeniería 
-                 Electrónica y Comunicaciones e Ingeniería Industrial en Procesos de Automatización.
-
-
+                Industrial de la Universidad Técnica de Ambato...
               </p>
               <p className="history-paragraph">
                 Nuestro compromiso es mantener actualizada la oferta formativa, 
@@ -194,40 +189,6 @@ const AboutFaculty = () => {
             </div>
           </div>
         </div>
-
-        {/* Programs 
-        <div className="programs-section">
-          <h3 className="section-title">Nuestra Oferta</h3>
-          <div className="programs-grid">
-            <div className="program-card pregrado">
-              <h4 className="program-title">Eventos</h4>
-              <ul className="program-list">
-                <li>• Conferencias magistrales</li>
-                <li>• Seminarios especializados</li>
-                <li>• Talleres prácticos</li>
-                <li>• Simposios académicos</li>
-              </ul>
-            </div>
-            <div className="program-card posgrado">
-              <h4 className="program-title">Cursos</h4>
-              <ul className="program-list">
-                <li>• Certificaciones profesionales</li>
-                <li>• Cursos en línea</li>
-                <li>• Programas intensivos</li>
-                <li>• Capacitación empresarial</li>
-              </ul>
-            </div>
-            <div className="program-card educacion-continua">
-              <h4 className="program-title">Servicios</h4>
-              <ul className="program-list">
-                <li>• Consultoría académica</li>
-                <li>• Asesoría en proyectos</li>
-                <li>• Networking profesional</li>
-                <li>• Bolsa de empleo</li>
-              </ul>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );
