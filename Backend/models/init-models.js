@@ -1,6 +1,7 @@
 var DataTypes = require("sequelize").DataTypes;
 var _AUTORIDADES = require("./AUTORIDADES");
 var _CARRERAS = require("./CARRERAS");
+var _CONTENIDO_WEB = require("./CONTENIDO_WEB");
 var _DETALLE_EVENTOS = require("./DETALLE_EVENTOS");
 var _DETALLE_INFORME = require("./DETALLE_INFORME");
 var _ESTUDIANTES = require("./ESTUDIANTES");
@@ -18,6 +19,7 @@ var _TARIFAS_EVENTO = require("./TARIFAS_EVENTO");
 function initModels(sequelize) {
   var AUTORIDADES = _AUTORIDADES(sequelize, DataTypes);
   var CARRERAS = _CARRERAS(sequelize, DataTypes);
+  var CONTENIDO_WEB = _CONTENIDO_WEB(sequelize, DataTypes);
   var DETALLE_EVENTOS = _DETALLE_EVENTOS(sequelize, DataTypes);
   var DETALLE_INFORME = _DETALLE_INFORME(sequelize, DataTypes);
   var ESTUDIANTES = _ESTUDIANTES(sequelize, DataTypes);
@@ -68,12 +70,13 @@ function initModels(sequelize) {
   REGISTRO_PERSONAS.hasMany(INFORMES, { as: "INFORMEs", foreignKey: "NUM_REG_PER"});
   PAGOS.belongsTo(REGISTRO_PERSONAS, { as: "NUM_REG_PER_REGISTRO_PERSONA", foreignKey: "NUM_REG_PER"});
   REGISTRO_PERSONAS.hasMany(PAGOS, { as: "PAGOs", foreignKey: "NUM_REG_PER"});
-  REGISTRO_PERSONAS.belongsTo(TARIFAS_EVENTO, { as: "TIP_PAR_TARIFAS_EVENTO", foreignKey: "TIP_PAR"});
-  TARIFAS_EVENTO.hasMany(REGISTRO_PERSONAS, { as: "REGISTRO_PERSONAs", foreignKey: "TIP_PAR"});
+  REGISTRO_PERSONAS.belongsTo(TARIFAS_EVENTO, { as: "ID_TAR_PER_TARIFAS_EVENTO", foreignKey: "ID_TAR_PER"});
+  TARIFAS_EVENTO.hasMany(REGISTRO_PERSONAS, { as: "REGISTRO_PERSONAs", foreignKey: "ID_TAR_PER"});
 
   return {
     AUTORIDADES,
     CARRERAS,
+    CONTENIDO_WEB,
     DETALLE_EVENTOS,
     DETALLE_INFORME,
     ESTUDIANTES,

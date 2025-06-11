@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('REGISTRO_PERSONAS', {
     NUM_REG_PER: {
-      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
@@ -27,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'TTARIFAS_EVENTO',
+        model: 'TARIFAS_EVENTO',
         key: 'ID_TAR'
       }
     },
@@ -63,10 +62,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "TIP_PAR",
+        name: "ID_TAR_PER",
         using: "BTREE",
         fields: [
-          { name: "TIP_PAR" },
+          { name: "ID_TAR_PER" },
         ]
       },
     ]
