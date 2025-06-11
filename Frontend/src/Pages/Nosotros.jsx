@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Users, Target, Eye, Heart, Award, BookOpen, Building, Calendar, GraduationCap } from 'lucide-react';
 import '../Styles/Nosotros.css';
 import US from '../assets/arduino.png';
-import Fisei from '../assets/fisei.jpg';
+import Fisei from '../assets/fisei.png';
 
 const AboutFaculty = () => {
   const [content, setContent] = useState(null);
