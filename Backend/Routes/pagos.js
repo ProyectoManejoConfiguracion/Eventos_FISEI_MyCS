@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pagosController = require('../controllers/pagosController');
+const pagosController = require('../Controllers/pagosController');
 
 router.get('/', pagosController.getAll);
 router.get('/:id', pagosController.getOne);

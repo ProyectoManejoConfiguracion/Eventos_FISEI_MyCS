@@ -26,7 +26,7 @@ const Cursos = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3000/api/cursos/${user?.id}`)
+    fetch(`https://eventos-fisei-mycs.onrender.com/api/cursos/${user?.id}`)
       .then((res) => res.json())
       .then((data) => setCursos(data))
       .catch(() => setCursos([]))

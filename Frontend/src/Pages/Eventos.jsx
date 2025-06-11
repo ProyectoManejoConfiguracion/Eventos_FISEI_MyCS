@@ -58,9 +58,9 @@ const Eventos = () => {
 
   useEffect(() => {
     Promise.all([
-      axios.get("http://localhost:3000/api/eventos"),
-      axios.get("http://localhost:3000/api/detalle_eventos"),
-      axios.get("http://localhost:3000/api/tarifas_evento"),
+      axios.get("https://eventos-fisei-mycs.onrender.com/api/eventos"),
+      axios.get("https://eventos-fisei-mycs.onrender.com/api/detalle_eventos"),
+      axios.get("https://eventos-fisei-mycs.onrender.com/api/tarifas_evento"),
     ])
       .then(([resEventos, resDetalles, resTarifas]) => {
         setEventos(resEventos.data);
@@ -134,7 +134,7 @@ const Eventos = () => {
           const detalle = getDetalleEvento(evento.ID_EVT);
           const tarifasEvento = getTarifaEvento(evento.ID_EVT);
           const imagenUrl = evento.FOT_EVT
-            ? `http://localhost:3000/${evento.FOT_EVT.replace(/\\/g, "/")}`
+            ? `https://eventos-fisei-mycs.onrender.com/${evento.FOT_EVT.replace(/\\/g, "/")}`
             : defaultImg;
 
           return (

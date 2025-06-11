@@ -7,12 +7,12 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     NOM_FAC: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     UBI_PRE_FAC: {
-      type: DataTypes.STRING(15),
-      allowNull: true
+      type: DataTypes.STRING(255),
+      allowNull: false
     },
     MIS_FAC: {
       type: DataTypes.STRING(255),

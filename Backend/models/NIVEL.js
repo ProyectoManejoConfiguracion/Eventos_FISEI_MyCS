@@ -8,11 +8,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     NOM_NIV: {
       type: DataTypes.STRING(10),
-      allowNull: true
+      allowNull: false
     },
     ORG_CUR_NIV: {
-      type: DataTypes.STRING(10),
-      allowNull: true
+      type: DataTypes.STRING(30),
+      allowNull: false
     },
     ID_CAR: {
       type: DataTypes.STRING(10),

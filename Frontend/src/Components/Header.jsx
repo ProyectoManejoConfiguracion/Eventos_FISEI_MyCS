@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.png";
-import "../styles/Header.css";
+import "../Styles/Header.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaUserAlt } from "react-icons/fa";
 import Login from "../Components/modals/Login";

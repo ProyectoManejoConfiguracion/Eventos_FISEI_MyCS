@@ -30,7 +30,7 @@ const Certificados_Est = () => {
   useEffect(() => {
     if (!user) return
     setLoading(true)
-    axios.get(`http://localhost:3000/api/certificado/${user.id}`)
+    axios.get(`https://eventos-fisei-mycs.onrender.com/api/certificado/${user.id}`)
       .then(({ data }) => {
         setCerts(data)
         setError(null)

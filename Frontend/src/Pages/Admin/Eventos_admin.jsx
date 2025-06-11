@@ -38,17 +38,17 @@ const Evento = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/autoridades")
+    fetch("https://eventos-fisei-mycs.onrender.com/api/autoridades")
       .then((res) => res.json())
       .then((data) => setAutoridades(data))
       .catch((err) => console.error("Error cargando autoridades:", err));
 
-    fetch("http://localhost:3000/api/carreras")
+    fetch("https://eventos-fisei-mycs.onrender.com/api/carreras")
       .then((res) => res.json())
       .then((data) => setCarreras(data))
       .catch((err) => console.error("Error cargando carreras:", err));
 
-    fetch("http://localhost:3000/api/nivel")
+    fetch("https://eventos-fisei-mycs.onrender.com/api/nivel")
       .then((res) => res.json())
       .then((data) => setTodosLosNiveles(data)) // Almacena todos los niveles
       .catch((err) => console.error("Error cargando niveles:", err));
@@ -148,7 +148,7 @@ const handleAgregar = () => {
       if (formData.FOT_EVT) data.append("FOT_EVT", formData.FOT_EVT);
 
       const response = await axios.post(
-        "http://localhost:3000/api/eventos",
+        "https://eventos-fisei-mycs.onrender.com/api/eventos",
         data
       );
       const nuevoID_EVT = response.data.ID_EVT;
@@ -165,7 +165,7 @@ const handleAgregar = () => {
       };
       console.log("Datos que se enviarán:", detalleData);
       await axios.post(
-        "http://localhost:3000/api/detalle_eventos",
+        "https://eventos-fisei-mycs.onrender.com/api/detalle_eventos",
         detalleData
       );
 

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const webController = require('../Controllers/webController');
+const tarifas_eventoController = require('../Controllers/webController');
 
-router.get('/', webController.getWebContent);
-router.put('/:id', webController.updateContent);
+
+router.get('/', tarifas_eventoController.getWebContent);
+router.put('/:id', tarifas_eventoController.updateContent);
 
 module.exports = router;

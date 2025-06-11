@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const nivelController = require('../controllers/nivelController');
+const nivelController = require('../Controllers/nivelController');
 
 router.get('/:idCarrera', nivelController.getNivelesPorCarrera);
 router.get('/', nivelController.getAll);
