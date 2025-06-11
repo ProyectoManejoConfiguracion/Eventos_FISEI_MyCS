@@ -47,7 +47,7 @@ const Login = ({ isOpen, closeModal }) => {
         icon: "success",
         draggable: true,
       }).then(() => {
-        if (loggedUser?.role == "Admin") {
+        if (loggedUser?.role == "Admin"||loggedUser?.role == "Docente") {
           navigate("/Administrador");
           closeModal();
         }else if(loggedUser?.role=="Estudiante"){
