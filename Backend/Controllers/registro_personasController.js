@@ -99,17 +99,26 @@ exports.inscribirPersona = async (req, res) => {
     // 4. Reglas de inscripción según tipo de persona y evento
     let registroEvento = null;
     if (esEstudiante) {
-      if (modoEvento !== 'PRIVADO') {
-        return res.status(400).json({ error: 'Solo estudiantes pueden inscribirse en eventos privados' });
-      }
-      // Buscar REGISTRO_EVENTO con ese ID_NIV
-      registroEvento = await sequelize.query(
-        `SELECT ID_REG_EVT, ID_DET FROM REGISTRO_EVENTO WHERE ID_DET IN (:idsDet) AND ID_NIV = :idNivel`,
+      if (modoEvento == 'PRIVADO') {
+        registroEvento = await sequelize.query(
+        `SELECT ID_REG_EVT, ID_DET FROM REGISTRO_EVENTO WHERE ID_DET IN (:idsDet) AND ID_NIV = :idNivel OR ID_NIV IS NULL`,
         {
           replacements: { idsDet: detalleEvento.map(d => d.ID_DET), idNivel },
           type: Sequelize.QueryTypes.SELECT,
         }
       );
+      }else{
+        registroEvento = await sequelize.query(
+        `SELECT ID_REG_EVT, ID_DET FROM REGISTRO_EVENTO WHERE ID_DET IN (:idsDet) AND ID_NIV IS NULL`,
+        {
+          replacements: { idsDet: detalleEvento.map(d => d.ID_DET) },
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+
+      }
+      // Buscar REGISTRO_EVENTO con ese ID_NIV
+      
     } else {
       if (modoEvento !== 'PUBLICO') {
         return res.status(400).json({ error: 'Solo estudiantes pueden inscribirse en eventos privados' });
