@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const autoridadesController = require('../controllers/autoridadesController');
+const autoridadesController = require('../Controllers/autoridadesController');
 
 router.get('/', autoridadesController.getAll);
 router.get('/:id', autoridadesController.getOne);

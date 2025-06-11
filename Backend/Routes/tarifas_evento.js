@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const tarifas_eventoController = require('../controllers/tarifas_eventoController');
+const tarifas_eventoController = require('../Controllers/tarifas_eventoController');
 
 router.get('/', tarifas_eventoController.getAll);
 router.get('/:id', tarifas_eventoController.getOne);
