@@ -1,4 +1,4 @@
-import connection from '../DB/connection.js';
+import connection from "../DB/connection.js";
 
 export const getWebContent = async (req, res) => {
   try {
