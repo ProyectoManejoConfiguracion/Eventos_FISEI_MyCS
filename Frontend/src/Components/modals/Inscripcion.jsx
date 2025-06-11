@@ -46,7 +46,7 @@ const ModalInscripcion = ({
     }
 
     try {
-      await axios.post("http://localhost:3000/api/registro_personas/register/", {
+      await axios.post("https://eventos-fisei-mycs.onrender.com/api/registro_personas/register/", {
         cedula: user.id,
         idEvento: evento.ID_EVT
       });

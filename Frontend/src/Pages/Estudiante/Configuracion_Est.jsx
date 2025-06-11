@@ -26,11 +26,11 @@ const Configuracion_Est = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`http://localhost:3000/api/personas/${user?.id}`)
+    fetch(`https://eventos-fisei-mycs.onrender.com/api/personas/${user?.id}`)
       .then(res => res.json())
       .then(data => {
         const fotoUrl = data.FOT_PER
-          ? `http://localhost:3000/${data.FOT_PER.replace(/\\/g, "/")}`
+          ? `https://eventos-fisei-mycs.onrender.com/${data.FOT_PER.replace(/\\/g, "/")}`
           : "";
         setProfileData({
           nombres: data.NOM_PER || "",
@@ -65,7 +65,7 @@ const Configuracion_Est = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/personas/${user?.id}`,
+        `https://eventos-fisei-mycs.onrender.com/api/personas/${user?.id}`,
         data
       );
 
@@ -82,7 +82,7 @@ const Configuracion_Est = () => {
           ...prev,
           fotoOriginal: updated.FOT_PER || prev.fotoOriginal,
           foto: updated.FOT_PER
-            ? `http://localhost:3000/${updated.FOT_PER.replace(/\\/g, "/")}`
+            ? `https://eventos-fisei-mycs.onrender.com/${updated.FOT_PER.replace(/\\/g, "/")}`
             : prev.foto,
         }));
         await refreshUser();

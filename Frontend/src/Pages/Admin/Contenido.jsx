@@ -27,7 +27,7 @@ const Contenido = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/web`);
+        const response = await fetch(`https://eventos-fisei-mycs.onrender.com/api/web`);
         if (!response.ok) {
           throw new Error('No se pudo cargar el contenido');
         }
@@ -56,7 +56,7 @@ const Contenido = () => {
     setLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:3000/api/web/${formData.ID}`, {
+      const response = await fetch(`https://eventos-fisei-mycs.onrender.com/api/web/${formData.ID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -10,7 +10,7 @@ const Notas = () => {
 
   useEffect(() => {
     if (user?.id) {
-      axios.get(`http://localhost:3000/api/informes/${user.id}`)
+      axios.get(`https://eventos-fisei-mycs.onrender.com/api/informes/${user.id}`)
         .then(response => setEventos(response.data))
         .catch(error => console.error('Error al obtener eventos:', error));
     }
@@ -24,7 +24,7 @@ const Notas = () => {
 
   const handleGuardarNota = async (cedula, nota) => {
     try {
-      await axios.post('http://localhost:3000/api/informes/nota', {
+      await axios.post('https://eventos-fisei-mycs.onrender.com/api/informes/nota', {
         CED_PER: cedula,
         NOT_INF: nota
       });

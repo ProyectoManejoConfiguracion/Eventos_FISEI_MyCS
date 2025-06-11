@@ -11,7 +11,7 @@ const Cursos = () => {
   useEffect(() => {
     if (user?.id) {
       axios
-        .get(`http://localhost:3000/api/detalle_informe/${user.id}`)
+        .get(`https://eventos-fisei-mycs.onrender.com/api/detalle_informe/${user.id}`)
         .then((response) => setEventos(response.data))
         .catch((error) =>
           console.error("Error al obtener asistencias:", error)
@@ -22,7 +22,7 @@ const Cursos = () => {
   const handleAsignarAsistencia = async (cedula, idEvento) => {
     try {
       const fecha = new Date().toISOString().split("T")[0];
-      await axios.post("http://localhost:3000/api/detalle_informe/asistencia", {
+      await axios.post("https://eventos-fisei-mycs.onrender.com/api/detalle_informe/asistencia", {
         cedula,
         idEvento,
         fecha,

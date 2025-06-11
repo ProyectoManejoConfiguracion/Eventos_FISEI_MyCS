@@ -19,7 +19,7 @@ const EditAutoridad = ({
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/facultades")
+      .get("https://eventos-fisei-mycs.onrender.com/api/facultades")
       .then((res) => setFacultades(res.data))
       .catch((err) => console.error("Error al cargar facultades:", err));
   }, []);
@@ -45,7 +45,7 @@ const EditAutoridad = ({
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:3000/api/autoridades/${autoridadData.ID_AUT}`,
+        `https://eventos-fisei-mycs.onrender.com/api/autoridades/${autoridadData.ID_AUT}`,
         autoridadData
       );
       onSave();

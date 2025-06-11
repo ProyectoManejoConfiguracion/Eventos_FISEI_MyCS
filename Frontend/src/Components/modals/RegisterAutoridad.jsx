@@ -28,7 +28,7 @@ const RegisterAutoridad = ({ isOpen, closeModal }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/facultades")
+      .get("https://eventos-fisei-mycs.onrender.com/api/facultades")
       .then((resp) => setFacultades(resp.data))
       .catch((err) => console.error("Error al cargar facultades:", err));
   }, []);
@@ -128,14 +128,14 @@ const RegisterAutoridad = ({ isOpen, closeModal }) => {
 
     try {
       const resp1 = await axios.post(
-        "http://localhost:3000/api/personas",
+        "https://eventos-fisei-mycs.onrender.com/api/personas",
         dataPersona,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
       const resp2 = await axios.post(
-        "http://localhost:3000/api/autoridades",
+        "https://eventos-fisei-mycs.onrender.com/api/autoridades",
         dataAutoridad,
         {
           headers: { "Content-Type": "application/json" },

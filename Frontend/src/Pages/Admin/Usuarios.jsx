@@ -18,7 +18,7 @@ const Usuarios = () => {
 
   const obtenerAutoridades = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/autoridades");
+      const res = await axios.get("https://eventos-fisei-mycs.onrender.com/api/autoridades");
       setAutoridades(res.data);
     } catch (error) {
       console.error("Error al obtener autoridades:", error);
@@ -32,7 +32,7 @@ const Usuarios = () => {
     if (!confirmar) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/autoridades/${id}`);
+      await axios.delete(`https://eventos-fisei-mycs.onrender.com/api/autoridades/${id}`);
       obtenerAutoridades(); 
     } catch (error) {
       console.error("Error al eliminar autoridad:", error);

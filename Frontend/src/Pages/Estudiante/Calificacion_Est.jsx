@@ -17,7 +17,7 @@ const Calificaciones_Est = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`http://localhost:3000/api/notas/${user.id}`);
+      const res = await axios.get(`https://eventos-fisei-mycs.onrender.com/api/notas/${user.id}`);
       const datosDB = res.data;
 
       const cursosConEstado = datosDB.map(curso => {
