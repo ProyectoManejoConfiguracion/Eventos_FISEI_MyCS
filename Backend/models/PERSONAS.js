@@ -29,6 +29,11 @@ module.exports = function(sequelize, DataTypes) {
     FOT_PER: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    EST_PER: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+      defaultValue: "PENDIENTE"
     }
   }, {
     sequelize,

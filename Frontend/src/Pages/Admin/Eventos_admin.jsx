@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../../Styles/Evento.css";
+import { BACK_URL } from "../../../config"; 
 
 const Evento = () => {
   const navigate = useNavigate();
@@ -38,17 +39,17 @@ const Evento = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("https://eventos-fisei-mycs.onrender.com/api/autoridades")
+    fetch(`${BACK_URL}/api/autoridades`)
       .then((res) => res.json())
       .then((data) => setAutoridades(data))
       .catch((err) => console.error("Error cargando autoridades:", err));
 
-    fetch("https://eventos-fisei-mycs.onrender.com/api/carreras")
+    fetch(`${BACK_URL}/api/carreras`)
       .then((res) => res.json())
       .then((data) => setCarreras(data))
       .catch((err) => console.error("Error cargando carreras:", err));
 
-    fetch("https://eventos-fisei-mycs.onrender.com/api/nivel")
+    fetch(`${BACK_URL}/api/nivel`)
       .then((res) => res.json())
       .then((data) => setTodosLosNiveles(data)) // Almacena todos los niveles
       .catch((err) => console.error("Error cargando niveles:", err));
@@ -148,7 +149,7 @@ const handleAgregar = () => {
       if (formData.FOT_EVT) data.append("FOT_EVT", formData.FOT_EVT);
 
       const response = await axios.post(
-        "https://eventos-fisei-mycs.onrender.com/api/eventos",
+        `${BACK_URL}/api/eventos`,
         data
       );
       const nuevoID_EVT = response.data.ID_EVT;
@@ -165,7 +166,7 @@ const handleAgregar = () => {
       };
       console.log("Datos que se enviarán:", detalleData);
       await axios.post(
-        "https://eventos-fisei-mycs.onrender.com/api/detalle_eventos",
+        `${BACK_URL}/api/detalle_eventos`,
         detalleData
       );
 

@@ -17,6 +17,7 @@ import sponsorScopus   from '../../assets/sponsor_scopus.png'
 import sponsorRedcedia from '../../assets/sponsor_redcedia.png'
 import sponsorDide     from '../../assets/sponsor_dide.jpg'
 import '../../Styles/Certificados_Est.css'
+import { BACK_URL } from '../../../config' // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Certificados_Est = () => {
   const { user } = useAuth()
@@ -30,7 +31,7 @@ const Certificados_Est = () => {
   useEffect(() => {
     if (!user) return
     setLoading(true)
-    axios.get(`https://eventos-fisei-mycs.onrender.com/api/certificado/${user.id}`)
+    axios.get(`${BACK_URL}/api/certificado/${user.id}`)
       .then(({ data }) => {
         setCerts(data)
         setError(null)

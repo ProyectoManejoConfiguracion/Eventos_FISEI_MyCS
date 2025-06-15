@@ -5,6 +5,7 @@ import EditAutoridad from "../../Components/modals/EditAutoridad";
 import "../../Styles/Usuarios.css";
 import { FaPlus } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
+import { BACK_URL } from "../../../config"; 
 
 const Usuarios = () => {
   const [autoridades, setAutoridades] = useState([]);
@@ -18,7 +19,7 @@ const Usuarios = () => {
 
   const obtenerAutoridades = async () => {
     try {
-      const res = await axios.get("https://eventos-fisei-mycs.onrender.com/api/autoridades");
+      const res = await axios.get(`${BACK_URL}/api/autoridades`);
       setAutoridades(res.data);
     } catch (error) {
       console.error("Error al obtener autoridades:", error);
@@ -32,7 +33,7 @@ const Usuarios = () => {
     if (!confirmar) return;
 
     try {
-      await axios.delete(`https://eventos-fisei-mycs.onrender.com/api/autoridades/${id}`);
+      await axios.delete(`${BACK_URL}/api/autoridades/${id}`);
       obtenerAutoridades(); 
     } catch (error) {
       console.error("Error al eliminar autoridad:", error);

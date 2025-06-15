@@ -3,6 +3,7 @@ import { Users, Target, Eye, Heart, Award, BookOpen, Building, Calendar, Graduat
 import '../Styles/Nosotros.css';
 import US from '../assets/arduino.png';
 import Fisei from '../assets/fisei.png';
+import { BACK_URL } from '../../config'; 
 
 const AboutFaculty = () => {
   const [content, setContent] = useState(null);
@@ -12,7 +13,7 @@ const AboutFaculty = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://eventos-fisei-mycs.onrender.com/api/web');
+        const response = await fetch(`${BACK_URL}/api/web`);
         if (!response.ok) {
           throw new Error('No se pudo cargar el contenido');
         }

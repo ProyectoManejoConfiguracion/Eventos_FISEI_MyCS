@@ -25,6 +25,10 @@ module.exports = function(sequelize, DataTypes) {
     VAL_PAG: {
       type: DataTypes.DECIMAL(5,2),
       allowNull: false
+    },
+    FOT_PAG: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,

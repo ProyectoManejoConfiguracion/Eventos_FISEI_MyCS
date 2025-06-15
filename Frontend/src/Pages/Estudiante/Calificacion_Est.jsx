@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../Styles/Calificacion_Est.css';
 import { useAuth } from '../../auth/AuthContext';
+import { BACK_URL } from '../../../config'; 
 
 const Calificaciones_Est = () => {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ const Calificaciones_Est = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`https://eventos-fisei-mycs.onrender.com/api/notas/${user.id}`);
+      const res = await axios.get(`${BACK_URL}/api/notas/${user.id}`);
       const datosDB = res.data;
 
       const cursosConEstado = datosDB.map(curso => {

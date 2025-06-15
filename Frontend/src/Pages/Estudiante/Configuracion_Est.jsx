@@ -6,6 +6,7 @@ import "../../Styles/Configuracion_Est.css";
 import { useAuth } from "../../auth/AuthContext";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { BACK_URL } from "../../../config"; // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Configuracion_Est = () => {
   const { user, refreshUser } = useAuth();
@@ -26,11 +27,11 @@ const Configuracion_Est = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`https://eventos-fisei-mycs.onrender.com/api/personas/${user?.id}`)
+    fetch(`${BACK_URL}/api/personas/${user?.id}`)
       .then(res => res.json())
       .then(data => {
         const fotoUrl = data.FOT_PER
-          ? `https://eventos-fisei-mycs.onrender.com/${data.FOT_PER.replace(/\\/g, "/")}`
+          ? `${BACK_URL}/${data.FOT_PER.replace(/\\/g, "/")}`
           : "";
         setProfileData({
           nombres: data.NOM_PER || "",
@@ -65,7 +66,7 @@ const Configuracion_Est = () => {
 
     try {
       const res = await axios.put(
-        `https://eventos-fisei-mycs.onrender.com/api/personas/${user?.id}`,
+        `${BACK_URL}/api/personas/${user?.id}`,
         data
       );
 
@@ -82,7 +83,7 @@ const Configuracion_Est = () => {
           ...prev,
           fotoOriginal: updated.FOT_PER || prev.fotoOriginal,
           foto: updated.FOT_PER
-            ? `https://eventos-fisei-mycs.onrender.com/${updated.FOT_PER.replace(/\\/g, "/")}`
+            ? `${BACK_URL}/${updated.FOT_PER.replace(/\\/g, "/")}`
             : prev.foto,
         }));
         await refreshUser();

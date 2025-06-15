@@ -9,6 +9,7 @@ import defaultImg from "../assets/imagen_defecto.jpg";
 import cursosimg from '../assets/Cursos.jpg';
 import ModalInscripcion from "../Components/modals/Inscripcion";
 import { useAuth } from "../auth/AuthContext";
+import { BACK_URL } from "../../config"; 
 
 const badgeColor = (tipo) => {
   switch (tipo) {
@@ -58,9 +59,9 @@ const Eventos = () => {
 
   useEffect(() => {
     Promise.all([
-      axios.get("https://eventos-fisei-mycs.onrender.com/api/eventos"),
-      axios.get("https://eventos-fisei-mycs.onrender.com/api/detalle_eventos"),
-      axios.get("https://eventos-fisei-mycs.onrender.com/api/tarifas_evento"),
+      axios.get(`${BACK_URL}`/api/eventos``),
+      axios.get(`${BACK_URL}/api/detalle_eventos`),
+      axios.get(`${BACK_URL}/api/tarifas_evento`),
     ])
       .then(([resEventos, resDetalles, resTarifas]) => {
         setEventos(resEventos.data);
@@ -134,7 +135,7 @@ const Eventos = () => {
           const detalle = getDetalleEvento(evento.ID_EVT);
           const tarifasEvento = getTarifaEvento(evento.ID_EVT);
           const imagenUrl = evento.FOT_EVT
-            ? `https://eventos-fisei-mycs.onrender.com/${evento.FOT_EVT.replace(/\\/g, "/")}`
+            ? `${BACK_URL}/${evento.FOT_EVT.replace(/\\/g, "/")}`
             : defaultImg;
 
           return (

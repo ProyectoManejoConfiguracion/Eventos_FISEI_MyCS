@@ -3,6 +3,7 @@ import "../Styles/Registro.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { BACK_URL } from "../../config"; 
 
 const registroEstudiante = () => {
 
@@ -81,7 +82,7 @@ const registroEstudiante = () => {
 
     // Obtener niveles asociados
     try {
-      const response = await fetch(`https://eventos-fisei-mycs.onrender.com/api/nivel/${idCarrera}`);
+      const response = await fetch(`${BACK_URL}/api/nivel/${idCarrera}`);
       if (!response.ok) throw new Error('No se encontraron niveles');
       const data = await response.json();
       setNiveles(data);
@@ -111,7 +112,7 @@ const registroEstudiante = () => {
 
   useEffect(() => {
     // Cargar carreras al iniciar
-    fetch('https://eventos-fisei-mycs.onrender.com/api/carreras')
+    fetch(`${BACK_URL}/api/carreras`)
       .then((res) => res.json())
       .then((data) => setCarreras(data))
       .catch((err) => console.error('Error cargando carreras:', err));
@@ -149,7 +150,7 @@ const registroEstudiante = () => {
       }
 
       const response = await axios.post(
-        "https://eventos-fisei-mycs.onrender.com/api/personas",
+        `${BACK_URL}/api/personas`,
         data,
         {
           headers: {
@@ -168,7 +169,7 @@ const registroEstudiante = () => {
       await new Promise(res => setTimeout(res, 100));
 
       const estudianteResponse = await axios.post(
-        "https://eventos-fisei-mycs.onrender.com/api/estudiantes",
+        `${BACK_URL}/api/estudiantes`,
         {
           ID_EST: formData2.ID_EST,
           ID_NIV: formData2.ID_NIV,

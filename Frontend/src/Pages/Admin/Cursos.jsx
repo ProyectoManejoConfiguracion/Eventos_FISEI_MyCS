@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../auth/AuthContext";
 import "../../Styles/Notas.css";
+import { BACK_URL } from "../../../config"; // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Cursos = () => {
   const { user } = useAuth();
@@ -11,7 +12,7 @@ const Cursos = () => {
   useEffect(() => {
     if (user?.id) {
       axios
-        .get(`https://eventos-fisei-mycs.onrender.com/api/detalle_informe/${user.id}`)
+        .get(`${BACK_URL}/api/detalle_informe/${user.id}`)
         .then((response) => setEventos(response.data))
         .catch((error) =>
           console.error("Error al obtener asistencias:", error)
@@ -22,7 +23,7 @@ const Cursos = () => {
   const handleAsignarAsistencia = async (cedula, idEvento) => {
     try {
       const fecha = new Date().toISOString().split("T")[0];
-      await axios.post("https://eventos-fisei-mycs.onrender.com/api/detalle_informe/asistencia", {
+      await axios.post(`${BACK_URL}/api/detalle_informe/asistencia`, {
         cedula,
         idEvento,
         fecha,

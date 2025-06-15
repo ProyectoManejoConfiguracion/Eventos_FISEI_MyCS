@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../auth/AuthContext';
 import "../../Styles/Notas.css"; 
+import { BACK_URL } from '../../../config'; // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Notas = () => {
   const { user } = useAuth();
@@ -10,7 +11,7 @@ const Notas = () => {
 
   useEffect(() => {
     if (user?.id) {
-      axios.get(`https://eventos-fisei-mycs.onrender.com/api/informes/${user.id}`)
+      axios.get(`${BACK_URL}/api/informes/${user.id}`)
         .then(response => setEventos(response.data))
         .catch(error => console.error('Error al obtener eventos:', error));
     }
@@ -24,7 +25,7 @@ const Notas = () => {
 
   const handleGuardarNota = async (cedula, nota) => {
     try {
-      await axios.post('https://eventos-fisei-mycs.onrender.com/api/informes/nota', {
+      await axios.post(`${BACK_URL}/api/informes/nota`, {
         CED_PER: cedula,
         NOT_INF: nota
       });

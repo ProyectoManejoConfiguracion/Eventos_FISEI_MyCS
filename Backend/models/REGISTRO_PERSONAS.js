@@ -33,6 +33,11 @@ module.exports = function(sequelize, DataTypes) {
     FEC_REG_PER: {
       type: DataTypes.DATEONLY,
       allowNull: false
+    },
+    EST_REG: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+      defaultValue: "PENDIENTE"
     }
   }, {
     sequelize,
