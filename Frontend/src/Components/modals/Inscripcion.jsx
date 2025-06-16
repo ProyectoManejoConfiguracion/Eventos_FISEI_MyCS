@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useAuth } from '../../auth/AuthContext';
 import axios from "axios";
-import { BACK_URL } from "../../../config"; // Asegúrate de tener la URL del backend configurada
+import { BACK_URL } from "../../../config.js"; 
 
 const ModalInscripcion = ({
   isOpen,

@@ -59,7 +59,7 @@ const Eventos = () => {
 
   useEffect(() => {
     Promise.all([
-      axios.get(`${BACK_URL}`/api/eventos``),
+      axios.get(`${BACK_URL}/api/eventos`),
       axios.get(`${BACK_URL}/api/detalle_eventos`),
       axios.get(`${BACK_URL}/api/tarifas_evento`),
     ])
