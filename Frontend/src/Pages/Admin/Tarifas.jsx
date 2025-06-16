@@ -3,7 +3,7 @@ import { BsPencilFill } from "react-icons/bs";
 import { FaSave } from "react-icons/fa";
 import axios from "axios";
 import "../../Styles/Tarifas.css";
-
+import { BACK_URL } from "../../../config"; 
 const Tarifas = () => {
   const [eventos, setEventos] = useState([]);
   const [editando, setEditando] = useState(null);
@@ -11,7 +11,7 @@ const Tarifas = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/eventos/tarifas")
+      .get(`${BACK_URL}/api/eventos/tarifas`)
       .then((res) => setEventos(res.data))
       .catch((err) => console.error("Error al obtener eventos:", err));
   }, []);
@@ -32,7 +32,7 @@ const Tarifas = () => {
 
     if (tarifasTemp.Estudiante !== "") {
       peticiones.push(
-        axios.post("http://localhost:3000/api/eventos/asignar_tarifa", {
+        axios.post(`${BACK_URL}/api/eventos/asignar_tarifa`, {
           ID_EVT: id,
           TIP_PAR: "ESTUDIANTE",
           VAL_EVT: tarifasTemp.Estudiante,
@@ -42,7 +42,7 @@ const Tarifas = () => {
 
     if (modalidad === "PUBLICO" && tarifasTemp.Persona !== "") {
       peticiones.push(
-        axios.post("http://localhost:3000/api/eventos/asignar_tarifa", {
+        axios.post(`${BACK_URL}/api/eventos/asignar_tarifa`, {
           ID_EVT: id,
           TIP_PAR: "PERSONA",
           VAL_EVT: tarifasTemp.Persona,

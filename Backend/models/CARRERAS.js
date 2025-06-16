@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     NOM_CAR: {
-      type: DataTypes.STRING(25),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     ID_FAC: {

@@ -1,0 +1,1 @@
+export const BACK_URL = import.meta.env.BACK_URL || 'http://localhost:3000';

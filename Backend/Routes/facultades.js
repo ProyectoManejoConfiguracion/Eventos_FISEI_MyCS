@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const facultadesController = require('../controllers/facultadesController');
+const facultadesController = require('../Controllers/facultadesController');
 
 router.get('/', facultadesController.getAll);
 router.get('/:id', facultadesController.getOne);

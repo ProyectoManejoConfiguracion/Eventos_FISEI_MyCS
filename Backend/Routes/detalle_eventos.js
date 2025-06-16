@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const detalle_eventosController = require('../controllers/detalle_eventosController');
+const detalle_eventosController = require('../Controllers/detalle_eventosController');
 
 router.get('/', detalle_eventosController.getAll);
 router.get('/:id', detalle_eventosController.getByEvent);

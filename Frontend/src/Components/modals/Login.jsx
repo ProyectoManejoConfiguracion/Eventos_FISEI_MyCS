@@ -3,7 +3,7 @@ import "../../Styles/Login.css";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"; // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Login = ({ isOpen, closeModal }) => {
   const { login } = useAuth();
@@ -47,7 +47,7 @@ const Login = ({ isOpen, closeModal }) => {
         icon: "success",
         draggable: true,
       }).then(() => {
-        if (loggedUser?.role == "Admin") {
+        if (loggedUser?.role == "Admin"||loggedUser?.role == "Docente") {
           navigate("/Administrador");
           closeModal();
         }else if(loggedUser?.role=="Estudiante"){

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import "../Styles/Contactos.css";
 import img from "../assets/facultad1.jpg";
+import { BACK_URL } from "../../config"; // Asegúrate de que la ruta sea correcta
 
 const Contactos = () => {
   const [contactData, setContactData] = useState({
@@ -15,7 +16,7 @@ const Contactos = () => {
   useEffect(() => {
     const fetchContactData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/web');
+        const response = await fetch(`${BACK_URL}/api/web`);
         if (!response.ok) {
           throw new Error('No se pudo cargar la información de contacto');
         }

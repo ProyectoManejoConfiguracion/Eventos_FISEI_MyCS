@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, data } from 'react-router-dom';
 import '../../Styles/Contenido.css'; 
+import { BACK_URL } from '../../../config'; // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Contenido = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const Contenido = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/web`);
+        const response = await fetch(`${BACK_URL}/api/web`);
         if (!response.ok) {
           throw new Error('No se pudo cargar el contenido');
         }
@@ -56,7 +57,7 @@ const Contenido = () => {
     setLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:3000/api/web/${formData.ID}`, {
+      const response = await fetch(`${BACK_URL}/api/web/${formData.ID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
