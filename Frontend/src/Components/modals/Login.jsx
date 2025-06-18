@@ -121,6 +121,7 @@ const Login = ({ isOpen, closeModal }) => {
               ¿No tienes cuenta?
               <a href="/Restudiante" className="login-register-link">
                 {""}
+                <br></br>
                 Regístrate 
               </a>
             </p>
