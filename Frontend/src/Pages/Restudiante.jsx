@@ -273,7 +273,7 @@ const RegistroEstudiante = () => {
   return (
     <div className="registro-container">
       <div className="registro-header">
-        <h1>Registro de Estudiante</h1>
+        <h1>Registro</h1>
         <p>Únete a nuestra comunidad académica</p>
       </div>
 
