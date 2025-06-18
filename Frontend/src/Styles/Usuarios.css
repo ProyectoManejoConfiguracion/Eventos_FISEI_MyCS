@@ -1,0 +1,90 @@
+.usuarios-container {
+    padding: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.usuarios-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.tabla-autoridades {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.tabla-autoridades thead {
+    background-color: #5a1616;
+    color: #fff;
+}
+
+.tabla-autoridades th,
+.tabla-autoridades td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.fila-autoridad:hover {
+    background-color: #f5f5f5;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: right;
+    margin-top: 20px;
+}
+
+.btn_LogingR {
+    background-color: #5a1616;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+}
+.btn-container:hover .btn_LogingR {
+    background-color: #991d1d;
+}
+
+.eliminar-btn {
+  background-color: transparent;
+  border: none;
+  color: #e74c3c; /* rojo */
+  font-size: 1.2rem;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.eliminar-btn:hover {
+  color: #c0392b;
+}
+
+.tabla-autoridades td button {
+    background-color: #5a1616;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tabla-autoridades td button:hover {
+    background-color: #991d1d;
+}

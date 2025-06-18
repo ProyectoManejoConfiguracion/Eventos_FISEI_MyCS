@@ -1,0 +1,276 @@
+.admin-layout {
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  grid-template-rows: 110px 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header-principal {
+  grid-area: header;
+  height: 110px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0 2rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+.header-logo {
+  height: 65px;
+  width: auto;
+}
+
+.panel-text {
+  font-size: 1.4rem;
+  color: #333;
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 600;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.welcome-text {
+  font-size: 1.1rem;
+  color: #333;
+  text-align: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+
+}
+
+.sidebar-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #581517, #722022);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(88, 21, 23, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+.avatar-icon {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.profile-info {
+  text-align: center;
+}
+
+.profile-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.profile-role {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: #f8f9fa;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+.sidebar-navbar {
+  flex: 1;
+}
+
+.sidebar-navbar_item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar_items {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: black;
+  text-decoration: none;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 20px;
+}
+
+.navbar_items:hover {
+  background-color: #581517;
+  color: white;
+  transform: translateX(5px);
+}
+
+.navbar_items.active {
+  background-color: #581517;
+  color: white;
+}
+
+.btn_Logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 1.2rem;
+  background-color: #581517;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn_Logout:hover {
+  background-color: #722022;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.main-content {
+  grid-area: main;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  min-height: 0; 
+}
+
+.content-placeholder {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content-placeholder h2 {
+  color: #333;
+  margin-top: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.content-placeholder p {
+  color: #666;
+  line-height: 1.6;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.estado-activo {
+  background-color: #581517;
+  color: white ;
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 110px 1fr;
+    grid-template-areas:
+      "header"
+      "main";
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .header-content {
+    padding: 0 1rem;
+  }
+
+  .welcome-text {
+    font-size: 1rem;
+  }
+
+  .btn_Logout {
+    height: 36px;
+    padding: 0 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-right {
+    gap: 1rem;
+  }
+
+  .welcome-text {
+    display: none;
+  }
+}
+
+.profile-avatar.with-image {
+  background: none;
+  overflow: hidden;
+}
+
+.profile-avatar.with-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}

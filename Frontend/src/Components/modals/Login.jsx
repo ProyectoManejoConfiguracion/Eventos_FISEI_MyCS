@@ -3,7 +3,7 @@ import "../../Styles/Login.css";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2"; // Asegúrate de que la URL del backend esté configurada correctamente
 
 const Login = ({ isOpen, closeModal }) => {
   const { login } = useAuth();
@@ -24,11 +24,11 @@ const Login = ({ isOpen, closeModal }) => {
   }, [isOpen]);
 
   if (!isOpen) return null;
-  
-  const handleLogin = async ()=>{
+
+  const handleLogin = async () => {
     try {
-        await login(email, password);
-        const Toast = Swal.mixin({
+      const loggedUser= await login(email, password);
+      const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
@@ -42,33 +42,38 @@ const Login = ({ isOpen, closeModal }) => {
           toast.onmouseleave = Swal.resumeTimer;
         },
       });
-       Swal.fire({
+      Swal.fire({
         title: "Inicio de sesion Correcto!",
         icon: "success",
         draggable: true,
       }).then(() => {
-                navigate('/Administrador');
-                 closeModal();
-            });
-
+        if (loggedUser?.role == "Admin"||loggedUser?.role == "Docente") {
+          navigate("/Administrador");
+          closeModal();
+        }else if(loggedUser?.role=="Estudiante"){
+          navigate("/");
+          closeModal();
+        }
+      });
     } catch (error) {
-         console.error("Error en login:", error.response?.data || error.message || error);
-        Swal.fire({
+      console.error(
+        "Error en login:",
+        error.response?.data || error.message || error
+      );
+      Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Error al iniciar sesión",
         icon: "error",
         confirmButtonColor: "#d33",
       });
     }
-
-
   };
 
   return (
     <>
       <div className="overlay" onClick={closeModal} />
-      <div className="Container-Modal">
-        <div className="modal-content">
+      <div className="Container-ModalL">
+        <div className="modal-contentL">
           <button className="close-button" onClick={closeModal}>
             &times;
           </button>
@@ -106,7 +111,9 @@ const Login = ({ isOpen, closeModal }) => {
               </a>
             </div>
 
-            <button className="login-button" onClick={handleLogin}>Iniciar Sesión</button>
+            <button className="login-button" onClick={handleLogin}>
+              Iniciar Sesión
+            </button>
           </div>
 
           <div className="login-register-container">

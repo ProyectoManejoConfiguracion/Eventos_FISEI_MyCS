@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const credencialesController = require('../controllers/credencialesController');
+const credencialesController = require('../Controllers/credencialesController');
 
 router.get('/', credencialesController.getAll);
 router.get('/:id', credencialesController.getOne);

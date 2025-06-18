@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const carrerasController = require('../controllers/carrerasController');
+const carrerasController = require('../Controllers/carrerasController');
 
 router.get('/', carrerasController.getAll);
 router.get('/:id', carrerasController.getOne);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const personasController = require('../controllers/personasController');
+const personasController = require('../Controllers/personasController');
 
 router.get('/', personasController.getAll);
 router.get('/:id', personasController.getOne);

@@ -1,4 +1,4 @@
-require('dotenv').config(); 
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
@@ -8,16 +8,17 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads')); // para servir imágenes
+app.use('/uploads', express.static(path.join('C:', 'uploads')));
+
 
 app.get('/', (req, res) => {
-  res.send('Servidor Backend activo ✅');
+  res.send('Servidor Backend activo');
 });
 
-const routesPath = path.join(__dirname, 'routes');
+const routesPath = path.join(__dirname, 'Routes');
 fs.readdirSync(routesPath).forEach(file => {
   if (file.endsWith('.js')) {
-    const route = require(`./routes/${file}`);
+    const route = require(`./Routes/${file}`);
     const routeName = file.replace('.js', '');
     app.use(`/api/${routeName}`, route);
   }

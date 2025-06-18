@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const requerimientosController = require('../controllers/requerimientosController');
+const requerimientosController = require('../Controllers/requerimientosController');
 
 router.get('/', requerimientosController.getAll);
 router.get('/:id', requerimientosController.getOne);

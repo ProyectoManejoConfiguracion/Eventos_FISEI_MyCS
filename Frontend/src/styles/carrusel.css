@@ -1,211 +1,180 @@
+/* Estilos base del carrusel */
+.discovery-carousel {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  overflow: hidden;
+}
 
-.carusell-container{
-    position: relative;
-    width: 80%;
-    max-width: 1000px; 
-    margin: 0 auto; 
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    
-  }
-  
-  .carusell{
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    width: 100%;
-    font-family: Helvetica, sans-serif;
-  }
-  
-  .carusell-imagen{
-    flex: 0 0 100%;
-    position: relative;
-    text-align: center;
-    cursor: pointer;  
-  }
-  
-  .carusell-imagen.active{
-    opacity: 1;
-  }
-  .carusell-imagen img{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    display: block;
-    
-  }
-  .carusell-caption{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 40px;
-    color: white;
-    text-align: left;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0,0,0,0));
-  }
+.discovery-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+  will-change: transform;
+}
 
-  .carusell-caption h3{
-    font-size: 1.8rem;
-    margin: 0 0 5px 0;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-  }
-  .carusell-caption p{
-    font-size: 1rem;
-    margin: 0 0 15px 0;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-  }
+.discovery-carousel-slide {
+  flex: 0 0 100%;
+  position: relative;
+  height: 100%;
+}
 
-  .carrusel-button {
-  display: inline-block;
-  background-color: #581517;
+.discovery-carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Captions - Más minimalista */
+.discovery-carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 5% 10%;
+  color: white;
+  text-align: left;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.discovery-carousel-slide.active .discovery-carousel-caption {
+  opacity: 1;
+}
+
+.discovery-carousel-caption h3 {
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  font-weight: 300;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.discovery-carousel-caption p {
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+  margin: 0 0 1.5rem 0;
+  font-weight: 300;
+  max-width: 600px;
+}
+
+.discovery-carousel-button {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 0;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.discovery-carousel-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Controles - Más sutiles */
+.discovery-carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 1rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  z-index: 10;
+  opacity: 0.7;
 }
 
-.carrusel-button:hover {
-  background-color: #470e10;
+.discovery-carousel-control:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-  .carusell-control{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    z-index: 10;
-    
-  }
-
-  .carusell-control:hover{
-    background-color: rgba(0, 0, 0, 0.8);
-  }
-
-  .carusell-control.prev{
-    left: 15px;
-  }
-  .carusell-control.next{
-    right: 15px;
-  }
-
-  .flecha-izquierda,
-.flecha-derecha {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border-top: 3px solid white;
-  border-left: 3px solid white;
-  position: relative;
-  
+.discovery-carousel-control.prev {
+  left: 2%;
 }
 
-.flecha-izquierda {
-  transform: rotate(-45deg);
-  margin-right: -5px;
+.discovery-carousel-control.next {
+  right: 2%;
 }
 
-.flecha-derecha {
-  transform: rotate(135deg);
-  margin-left: -5px;
-}
-
-  .carrusel-indicators {
+/* Indicadores - Más discretos */
+.discovery-carousel-indicators {
   position: absolute;
-  bottom: 15px;
+  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  gap: 0.75rem;
   z-index: 10;
 }
 
-.carrusel-dot {
-  width: 12px;
-  height: 12px;
+.discovery-carousel-indicator {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   padding: 0;
 }
 
-.carrusel-dot:hover {
+.discovery-carousel-indicator:hover {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-.carrusel-dot.active {
+.discovery-carousel-indicator.active {
   background-color: white;
+  transform: scale(1.2);
 }
-  
+
+/* Responsive */
 @media (max-width: 768px) {
-  .carrusel-container {
-    max-width: 100%;
-    aspect-ratio: 16/9;
+  .discovery-carousel {
+    height: 80vh;
   }
   
-  .carrusel-imagen img {
-    height: 400px;
-    object-fit: cover;
+  .discovery-carousel-caption {
+    padding: 10% 5%;
   }
   
-  .carrusel-caption h3 {
-    font-size: 1.5rem;
-  }
-  
-  .carrusel-caption p {
-    font-size: 0.9rem;
-  }
-  
-  .carrusel-control {
-    width: 35px;
-    height: 35px;
-    font-size: 18px;
+  .discovery-carousel-control {
+    width: 40px;
+    height: 40px;
   }
 }
 
 @media (max-width: 480px) {
-  .carrusel-imagen img {
-    height: 300px;
-    aspect-ratio: 16/10;
+  .discovery-carousel {
+    height: 60vh;
   }
   
-  .carrusel-caption h3 {
+  .discovery-carousel-caption h3 {
     font-size: 1.2rem;
   }
   
-  .carrusel-caption p {
+  .discovery-carousel-caption p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .discovery-carousel-button {
+    padding: 0.4rem 1rem;
     font-size: 0.8rem;
   }
   
-  .carrusel-control {
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
-  }
-  
-  .carrusel-dot {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .carrusel-playpause {
-    width: 25px;
-    height: 25px;
-    font-size: 10px;
+  .discovery-carousel-indicator {
+    width: 6px;
+    height: 6px;
   }
 }

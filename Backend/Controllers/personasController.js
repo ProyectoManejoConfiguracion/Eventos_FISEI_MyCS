@@ -4,10 +4,13 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const uploadPath = path.join('C:', 'uploads');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    fs.mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -49,7 +52,7 @@ exports.create = async (req, res) => {
 
       // Si se subió una imagen
       if (req.file) {
-        imagePath = req.file.path;
+        imagePath = path.join('uploads', req.file.filename).replace(/\\/g, '/');
       }
 
       const hashedPassword = await bcrypt.hash(CON_PER, 10);
@@ -161,17 +164,18 @@ exports.login = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await PERSONAS.update(req.body, { where: { id: req.params.id } });
+    const [updated] = await PERSONAS.update(req.body, { where: { CED_PER: req.params.id } });
     if (updated) {
       const updatedRecord = await PERSONAS.findByPk(req.params.id);
       res.json(updatedRecord);
     } else {
-      res.status(404).json({ error: 'No encontrado' });
+      res.status(404).json({ error: 'Persona no encontrada' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.delete = async (req, res) => {
   try {

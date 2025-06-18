@@ -1,12 +1,14 @@
 import React from "react";
-import { useState } from "react";
 import "../Styles/Registro.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { BACK_URL } from "../../config"; 
 
 const registroEstudiante = () => {
 
-
+  const [carreras, setCarreras] = useState([]);
+  const [niveles, setNiveles] = useState([]);
 
   const [formData, setFormData] = useState({
     CED_PER: "",
@@ -22,7 +24,6 @@ const registroEstudiante = () => {
     ID_EST: "",
     CED_EST: "",
     ID_NIV: ""
-
   })
 
 
@@ -91,18 +92,57 @@ const registroEstudiante = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
+
   };
-  const handleChange2 = (e) => {
-    const { name, value } = e.target;
-    setFormData2({
-      ...formData2,
-      [name]: value
-    });
+
+  // Cuando cambia la carrera
+  const handleCarreraChange = async (e) => {
+    const idCarrera = e.target.value;
+
+    setFormData2(prev => ({
+      ...prev,
+      ID_CAR: idCarrera
+    }));
+
+    // Obtener niveles asociados
+    try {
+      const response = await fetch(`${BACK_URL}/api/nivel/${idCarrera}`);
+      if (!response.ok) throw new Error('No se encontraron niveles');
+      const data = await response.json();
+      setNiveles(data);
+    } catch (error) {
+      console.error(error);
+      setNiveles([]);
+    }
   };
+
+  // Cuando cambia el nivel
+  const handleNivelChange = (e) => {
+    const idNivel = e.target.value;
+    setFormData2(prev => ({
+      ...prev,
+      ID_NIV: idNivel
+    }));
+  };
+
+  // Para ID_EST
+  const handleEstudianteIDChange = (e) => {
+    const idEst = e.target.value;
+    setFormData2(prev => ({
+      ...prev,
+      ID_EST: idEst
+    }));
+  };
+
+  useEffect(() => {
+    // Cargar carreras al iniciar
+    fetch(`${BACK_URL}/api/carreras`)
+      .then((res) => res.json())
+      .then((data) => setCarreras(data))
+      .catch((err) => console.error('Error cargando carreras:', err));
+  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,12 +150,13 @@ const registroEstudiante = () => {
     setError("");
 
     // Validación básica de campos
-    if (!formData.CED_PER || !formData.NOM_PER || !formData.APE_PER ||
-      !formData.COR_PER || !formData.CON_PER) {
+    if (!formData.CED_PER || !formData.NOM_PER || !formData.APE_PER ||!formData.FOT_PER||
+      !formData.COR_PER || !formData.CON_PER || !formData2.ID_EST || !formData2.ID_NIV || !formData2.ID_CAR) {
       setError("Todos los campos marcados con * son obligatorios");
       setLoading(false);
       return;
     }
+
 
     try {
       const data = new FormData();
@@ -134,7 +175,7 @@ const registroEstudiante = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:3000/personas",
+        `${BACK_URL}/api/personas`,
         data,
         {
           headers: {
@@ -143,19 +184,33 @@ const registroEstudiante = () => {
         }
       );
 
-      if (response.status === 201 || response.status === 200) {
-        const estudianteResponse = await axios.post("http://localhost:3000/estudiantes", {
-          ID_EST: formData2.ID_EST,
-          ID_CAR: formData2.ID_CAR,
-          CED_PER: formData.CED_PER  // se asume que es clave foránea
-        });
+      // Verificar que la persona fue creada exitosamente
+      if (![200, 201].includes(response.status)) {
+        setError("Error al registrar la persona");
+        return;
+      }
 
-      }
-      if (estudianteResponse.status === 200 || estudianteResponse.status === 201) {
-        console.log("Registro exitoso:", response.data);
-        alert("¡Registro completo!");
-        navigate("/");
-      }
+      // ✅ Esperar 100ms opcional (a veces ayuda con bases de datos lentas)
+      await new Promise(res => setTimeout(res, 100));
+
+      const estudianteResponse = await axios.post(
+        `${BACK_URL}/api/estudiantes`,
+        {
+          ID_EST: formData2.ID_EST,
+          ID_NIV: formData2.ID_NIV,
+          CED_EST: formData.CED_PER
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+            if (estudianteResponse.status === 200 || estudianteResponse.status === 201) {
+              console.log("Registro exitoso:", estudianteResponse.data);
+              alert("¡Registro completo!");
+              navigate("/");
+            }
     } catch (error) {
       const serverError = error.response?.data?.error || "Error en el registro";
       setError(serverError);
@@ -166,37 +221,38 @@ const registroEstudiante = () => {
   };
 
   return (
-        <div className="registro-container">
-            <div className="registro-header">
-                <h1>Crear Cuenta estudiante</h1>
-                <p>Únete a nuestra comunidad académica</p>
+    <div className="registro-container">
+      <div className="registro-header">
+        <h1>Crear Cuenta estudiante</h1>
+        <p>Únete a nuestra comunidad académica</p>
+      </div>
+
+      <form className="formulario" onSubmit={handleSubmit}>
+        <div className="form-container">
+          {/* Columna izquierda - Imagen */}
+          <div className="columna izquierda">
+            <div className="form-group imagen-upload">
+              <label htmlFor="foto">Foto de perfil:</label>
+              <div className="file-input-container">
+                <input
+                  type="file"
+                  id="foto"
+                  accept="image/*"
+                  onChange={manejarCambioImagen}
+                  required
+                />
+                <label htmlFor="foto" className="file-label">
+                  Seleccionar imagen
+                </label>
+              </div>
+              <p className="file-hint">Formatos: JPEG, PNG, GIF (Máx. 5MB)</p>
             </div>
-            
-            <form className="formulario" onSubmit={handleSubmit}>
-                <div className="form-container">
-                    {/* Columna izquierda - Imagen */}
-                    <div className="columna izquierda">
-                        <div className="form-group imagen-upload">
-                            <label htmlFor="foto">Foto de perfil:</label>
-                            <div className="file-input-container">
-                                <input 
-                                    type="file" 
-                                    id="foto" 
-                                    accept="image/*" 
-                                    onChange={manejarCambioImagen} 
-                                />
-                                <label htmlFor="foto" className="file-label">
-                                    Seleccionar imagen
-                                </label>
-                            </div>
-                            <p className="file-hint">Formatos: JPEG, PNG, GIF (Máx. 5MB)</p>
-                        </div>
-                        {imagenPreview && (
-                            <div className="imagen-preview">
-                                <img src={imagenPreview} alt="Vista previa" />
-                            </div>
-                        )}
-                    </div>
+            {imagenPreview && (
+              <div className="imagen-preview">
+                <img src={imagenPreview} alt="Vista previa" />
+              </div>
+            )}
+          </div>
 
           {/* Columna derecha - Formulario de registro */}
           <div className="columna derecha">
@@ -310,27 +366,27 @@ const registroEstudiante = () => {
           </div>
         </div>
 
-                {error && <div className="error-message">{error}</div>}
+        {error && <div className="error-message">{error}</div>}
 
-                <div className="form-submit">
-                    <button 
-                        type="submit" 
-                        className="submit-button"
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <span className="spinner"></span>
-                        ) : (
-                            'Crear Cuenta'
-                        )}
-                    </button>
-                    
-                    <p className="login-link">
-                        ¿Ya tienes una cuenta? <a href="/login">Inicia sesión</a>
-                    </p>
-                </div>
-            </form>
+        <div className="form-submit">
+          <button
+            type="submit"
+            className="submit-button"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="spinner"></span>
+            ) : (
+              'Crear Cuenta'
+            )}
+          </button>
+
+          <p className="login-link">
+            ¿Ya tienes una cuenta? <a href="/login">Inicia sesión</a>
+          </p>
         </div>
+      </form>
+    </div>
   )
 }
 

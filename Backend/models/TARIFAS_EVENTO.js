@@ -11,12 +11,17 @@ module.exports = function(sequelize, DataTypes) {
     },
     TIP_PAR: {
       type: DataTypes.STRING(10),
-      allowNull: true,
-      unique: "TIP_PAR"
+      allowNull: true
     },
     VAL_EVT: {
       type: DataTypes.DOUBLE,
       allowNull: false
+    },
+    ID_TAR: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
     }
   }, {
     sequelize,
@@ -24,11 +29,11 @@ module.exports = function(sequelize, DataTypes) {
     timestamps: false,
     indexes: [
       {
-        name: "TIP_PAR",
+        name: "PRIMARY",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "TIP_PAR" },
+          { name: "ID_TAR" },
         ]
       },
       {

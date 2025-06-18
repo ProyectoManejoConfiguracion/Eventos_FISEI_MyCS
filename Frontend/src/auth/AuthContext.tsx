@@ -1,77 +1,84 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
+import {BACK_URL } from '../../config';
 
-// Tipo del usuario
 interface User {
   id: string;
-  email: string;
   name: string;
+  lastname: string;
+  email: string;
+  role: string;
 }
 
-// Tipo de respuesta del backend
-interface AuthResponse {
-  ok: boolean;
-  token: string;
-  user: User;
-}
-
-// Definición del contexto
 interface AuthContextType {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-// Hook para acceder fácilmente al contexto
 export const useAuth = () => useContext(AuthContext);
 
-// Provider
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<User | null>(null);
+  const isAuthenticated = !!user;
 
-  const isAuthenticated = !!token;
-
-  useEffect(() => {
-    if (!token) return;
-
-    axios
-      .get<AuthResponse>('http://localhost:3000/api/', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then((res) => {
-        setUser(res.data.user);
-      })
-      .catch(() => {
-        logout(); // Token inválido
-      });
-  }, [token]);
-
-  const login = async (email: string, password: string) => {
-    const res = await axios.post<AuthResponse>('http://localhost:3000/api/personas/login', {
+  const login = async (email: string, password: string): Promise<User> => {
+    const res = await axios.post('${BACK_URL}/api/personas/login', {
       email,
-      password
+      password,
     });
 
-    const { token, user } = res.data;
-    localStorage.setItem('token', token);
-    setToken(token);
+    const raw = res.data.user;
+
+    const user: User = {
+      id: raw.CED_PER,
+      name: raw.NOM_PER,
+      lastname: raw.APE_PER,
+      email: raw.COR_PER,
+      role: raw.ROL_EST,
+    };
+
     setUser(user);
+    localStorage.setItem('user', JSON.stringify(user));
+
+    return user;
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
     setUser(null);
+    localStorage.removeItem('user');
   };
 
+  
+  const refreshUser = async () => {
+    if (!user?.id) return;
+    const res = await axios.get(`${BACK_URL}/api/personas/${user.id}`);
+    const raw = res.data;
+    const updatedUser: User = {
+      id: raw.CED_PER,
+      name: raw.NOM_PER,
+      lastname: raw.APE_PER,
+      email: raw.COR_PER,
+      role: raw.ROL_EST,
+    };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

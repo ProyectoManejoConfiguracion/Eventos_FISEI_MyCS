@@ -7,21 +7,17 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    REG_ASI: {
-      type: DataTypes.DATEONLY,
-      allowNull: true
-    },
-    NOT_DET: {
-      type: DataTypes.DECIMAL(5,2),
-      allowNull: false
-    },
     NUM_INF: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'INFORMES',
-        key: 'NUM_INF'
+        key: 'NUM_IFN'
       }
+    },
+    REG_ASI: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,

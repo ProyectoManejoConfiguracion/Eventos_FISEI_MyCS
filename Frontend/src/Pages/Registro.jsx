@@ -1,8 +1,9 @@
-import React from "react";
+import React, { use } from "react";
 import { useState } from "react";
 import "../Styles/Registro.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BACK_URL } from "../../config"; 
 
 const Registro = () => {
     const [imagenPreview, setImagenPreview] = useState(null);
@@ -17,7 +18,7 @@ const Registro = () => {
         FOT_PER: null
     });
 
-
+    const navigate = useNavigate();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -94,7 +95,7 @@ const handleSubmit = async (e) => {
             }
             
             const response = await axios.post(
-                "http://localhost:3000/api/PERSONAS", 
+                `${BACK_URL}/api/PERSONAS`, 
                 data,
                 {
                     headers: {
