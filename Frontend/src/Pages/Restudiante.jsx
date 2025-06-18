@@ -26,12 +26,37 @@ const registroEstudiante = () => {
   })
 
 
+  const [isUta, setIsUta] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
-
   const [imagenPreview, setImagenPreview] = useState(null);
+
+    const handleChangeCorreo = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === "COR_PER") {
+      const pattern = /^(.+)@uta\.edu\.ec$/i;
+      const match = value.match(pattern);
+      if (match) {
+        setIsUta(true);
+        setFormData2(prev => ({
+          ...prev,
+          ID_EST: match[1],
+          CED_EST: formData.CED_PER
+        }));
+      } else {
+        setIsUta(false);
+        setFormData2(prev => ({
+          ...prev,
+          ID_EST: "",
+          ID_NIV: "",
+          ID_CAR: ""
+        }));
+      }
+    }
+  };
 
   const manejarCambioImagen = (e) => {
     const archivo = e.target.files[0];
@@ -173,103 +198,117 @@ const registroEstudiante = () => {
                         )}
                     </div>
 
-                    {/* Columna derecha - Formulario de registro */}
-                    <div className="columna derecha">
-                        <div className="form-group">
-                            <label>Cédula: <span className="required">*</span></label>
-                            <input 
-                                type="text" 
-                                name="CED_PER"
-                                value={formData.CED_PER}
-                                onChange={handleChange}
-                                placeholder="Ingresa tu cédula"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Nombre: <span className="required">*</span></label>
-                            <input 
-                                type="text" 
-                                name="NOM_PER"
-                                value={formData.NOM_PER}
-                                onChange={handleChange}
-                                placeholder="Ingresa tu nombre"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Apellido: <span className="required">*</span></label>
-                            <input 
-                                type="text" 
-                                name="APE_PER"
-                                value={formData.APE_PER}
-                                onChange={handleChange}
-                                placeholder="Ingresa tu apellido"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Teléfono:</label>
-                            <input 
-                                type="text" 
-                                name="TEL_PER"
-                                value={formData.TEL_PER}
-                                onChange={handleChange}
-                                placeholder="Ingresa tu teléfono"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Correo electrónico: <span className="required">*</span></label>
-                            <input 
-                                type="email" 
-                                name="COR_PER"
-                                value={formData.COR_PER}
-                                onChange={handleChange}
-                                placeholder="ejemplo@uta.edu.ec"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Contraseña: <span className="required">*</span></label>
-                            <input 
-                                type="password" 
-                                name="CON_PER"
-                                value={formData.CON_PER}
-                                onChange={handleChange}
-                                placeholder="Crea una contraseña segura"
-                                required
-                            />
-                            <p className="password-hint">Mínimo 8 caracteres, con letras y números</p>
-                        </div>
-                    </div>
-
-                            <div className="columna estudiante">
-          <div>
+          {/* Columna derecha - Formulario de registro */}
+          <div className="columna derecha">
             <div className="form-group">
-              <label>ID ESTUDIANTE:</label>
+              <label>Cédula: <span className="required">*</span></label>
               <input
                 type="text"
-                name="ID_EST"
-                value={formData2.ID_EST}
-                onChange={handleChange2}
-                placeholder="Ingresa tu ID de estudiante"
+                name="CED_PER"
+                value={formData.CED_PER}
+                onChange={handleChange}
+                placeholder="Ingresa tu cédula"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Carrera :</label>
+              <label>Nombre: <span className="required">*</span></label>
               <input
                 type="text"
-                name="ID_CAR"
-                value={formData2.ID_CAR}
-                onChange={handleChange2}
-                placeholder="ingresa tu carrera"
+                name="NOM_PER"
+                value={formData.NOM_PER}
+                onChange={handleChange}
+                placeholder="Ingresa tu nombre"
                 required
               />
+            </div>
+            <div className="form-group">
+              <label>Apellido: <span className="required">*</span></label>
+              <input
+                type="text"
+                name="APE_PER"
+                value={formData.APE_PER}
+                onChange={handleChange}
+                placeholder="Ingresa tu apellido"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Teléfono:</label>
+              <input
+                type="text"
+                name="TEL_PER"
+                value={formData.TEL_PER}
+                onChange={handleChange}
+                placeholder="Ingresa tu teléfono"
+              />
+            </div>
+            <div className="form-group">
+              <label>Correo electrónico: <span className="required">*</span></label>
+              <input
+                type="email"
+                name="COR_PER"
+                value={formData.COR_PER}
+                onChange={handleChangeCorreo}
+                placeholder="ejemplo@uta.edu.ec"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Contraseña: <span className="required">*</span></label>
+              <input
+                type="password"
+                name="CON_PER"
+                value={formData.CON_PER}
+                onChange={handleChange}
+                placeholder="Crea una contraseña segura"
+                required
+              />
+              <p className="password-hint">Mínimo 8 caracteres, con letras y números</p>
+            </div>
+          </div>
+
+          <div className="columna estudiante">
+            <div>
+                  {isUta && (
+        <div className="columna estudiante">
+
+          <div className="form-group">
+            <label>Carrera:<span>*</span></label>
+            <select
+              name="ID_CAR"
+              value={formData2.ID_CAR}
+              onChange={handleCarreraChange}
+              required
+            >
+              <option value="">Seleccione una carrera</option>
+              {carreras.map(c => (
+                <option key={c.ID_CAR} value={c.ID_CAR}>
+                  {c.NOM_CAR}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Nivel:<span>*</span></label>
+            <select
+              name="ID_NIV"
+              value={formData2.ID_NIV}
+              onChange={handleNivelChange}
+              required
+            >
+              <option value="">Seleccione un nivel</option>
+              {niveles.map(n => (
+                <option key={n.ID_NIV} value={n.ID_NIV}>{n.NOM_NIV}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
             </div>
           </div>
         </div>
-                </div>
 
                 {error && <div className="error-message">{error}</div>}
 
