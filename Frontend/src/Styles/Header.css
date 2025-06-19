@@ -1,40 +1,42 @@
-
 .header {
-    background-color:white;
+    background-color: white;
     color: white;
-    padding: 10px ;
+    padding: 10px 20px;
     padding-top: 20px;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     position: relative;
     z-index: 10;
     width: 100%;
-    height: 120px;
+    min-height: 120px;
     box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
-
 
 .header__container {
     display: flex;
-    justify-content: left;
-    align-items: left  ;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
-
 
 .logo {
     width: 330px;
     height: auto;
+    max-width: 100%;
+    transition: transform 0.3s ease;
 }
-.logo:hover{
-     transform: scale(0.9);
+
+.logo:hover {
+    transform: scale(0.9);
 }
+
 .header__nav {
     display: flex;
-    text-align: center;
+    align-items: center;
     padding-left: 60px;
-    padding-top: 20px;
-    
-
 }
 
 .header__nav-list {
@@ -43,6 +45,7 @@
     gap: 50px;
     padding: 0;
     margin: 0;
+    align-items: center;
 }
 
 .header__nav-item {
@@ -50,64 +53,53 @@
     font-size: 20px;
     cursor: pointer;
     font-weight: 450;
-    font-family: Helvetica;
-    
+    font-family: Helvetica, sans-serif;
     transition: color 0.3s ease, transform 0.3s ease;
     text-decoration: none;
     display: inline-block;
-}
-.btn_cerrar{ 
-    align-items: center; 
-  justify-content: center; 
-  gap: 8px; 
-  height: 50px;
-  width: 120px;
-  background-color: #581517;
-  color: white;
-  border: 2px solid black;
-  border-radius: 5px;
-  margin-left: 450px;
-  font-family: Helvetica, sans-serif;
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
 }
 
-.btn_cerrar:hover {
- 
-  transform: scale(0.9);
-}
 .header__nav-item:hover {
     color: #581517;
     transform: scale(0.9);
 }
-.container-botton{
-padding-top: 12px;
+
+.container-botton {
+    padding-top: 12px;
 }
+
+.btn_cerrar,
 .btn_Loging {
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  gap: 8px; 
-  height: 50px;
-  width: 150px;
-  background-color: #581517;
-  color: white;
-  border: 2px solid black;
-  border-radius: 5px;
-  margin-left: 450px;
-  font-family: Helvetica, sans-serif;
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 50px;
+    width: 120px;
+    background-color: #581517;
+    color: white;
+    border: 2px solid black;
+    border-radius: 5px;
+    font-family: Helvetica, sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
+.btn_Loging {
+    width: 150px;
+}
+
+.btn_cerrar span,
+.btn_Loging span {
+    display: inline;
+}
+
+.btn_cerrar:hover,
 .btn_Loging:hover {
- 
-  transform: scale(0.9);
+    transform: scale(0.9);
 }
-
-
 
 .mobile-menu-toggle {
     display: none;
@@ -116,8 +108,9 @@ padding-top: 12px;
     width: 30px;
     height: 21px;
     cursor: pointer;
-    margin-left: auto;
-    margin-right: 20px;
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .mobile-menu-toggle span {
@@ -126,16 +119,26 @@ padding-top: 12px;
     width: 100%;
     background-color: black;
     border-radius: 3px;
+    transition: all 0.3s ease;
 }
 
-/* Media queries for responsiveness */
+/* Animación del menú hamburguesa */
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Media queries para responsividad */
+
+/* Tablets grandes y pantallas medianas */
 @media screen and (max-width: 1200px) {
-    .btn_Loging {
-        margin-left: 250px;
-    }
-}
-
-@media screen and (max-width: 992px) {
     .header__nav {
         padding-left: 30px;
     }
@@ -144,53 +147,212 @@ padding-top: 12px;
         gap: 30px;
     }
     
-    .btn_Loging {
-        margin-left: 100px;
+    .logo {
+        width: 280px;
     }
 }
 
-@media screen and (max-width: 768px) {
-    .header__container {
-        justify-content: space-between;
+/* Tablets */
+@media screen and (max-width: 992px) {
+    .header__nav {
+        padding-left: 20px;
+    }
+    
+    .header__nav-list {
+        gap: 25px;
+    }
+    
+    .header__nav-item {
+        font-size: 18px;
     }
     
     .logo {
-        max-width: 250px;
+        width: 250px;
+    }
+}
+
+/* Estilos para botones de autenticación */
+.desktop-auth-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.mobile-auth-buttons {
+    display: none;
+    width: 100%;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.mobile-auth-buttons .btn_cerrar,
+.mobile-auth-buttons .btn_Loging {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+/* Overlay para menú móvil */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    display: none;
+}
+
+/* Móviles grandes y tablets pequeñas */
+@media screen and (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+        min-height: auto;
+    }
+    
+    .header__container {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo {
+        width: 200px;
     }
     
     .mobile-menu-toggle {
         display: flex;
     }
     
+    .desktop-auth-buttons {
+        display: none;
+    }
+    
     .header__nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         width: 100%;
-        padding-left: 0;
-        display: none; 
+        height: 100vh;
+        padding: 100px 20px 40px;
+        margin: 0;
+        display: none;
+        background-color: white;
+        z-index: 15;
+        overflow-y: auto;
     }
     
     .header__nav.active {
-        display: block; 
+        display: block;
+        animation: slideDown 0.3s ease-in-out;
     }
     
     .header__nav-list {
         flex-direction: column;
-        gap: 20px;
-        padding: 20px 0;
-    }
-    
-    .btn_Loging {
-        margin: 20px auto;
-        width: 80%;
-        max-width: 200px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .logo {
-        max-width: 200px;
+        gap: 0;
+        align-items: stretch;
+        height: 100%;
     }
     
     .header__nav-item {
         font-size: 18px;
+        padding: 20px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        width: 100%;
+        text-align: left;
+        display: block;
+    }
+    
+    .mobile-auth-buttons {
+        display: block;
+        margin-top: auto;
+    }
+    
+    .mobile-menu-overlay {
+        display: block;
+    }
+}
+
+/* Móviles pequeños */
+@media screen and (max-width: 480px) {
+    .header {
+        padding: 10px 15px;
+    }
+    
+    .logo {
+        width: 180px;
+    }
+    
+    .header__nav {
+        padding-top: 80px;
+    }
+    
+    .header__nav-item {
+        font-size: 16px;
+        padding: 18px 15px;
+    }
+    
+    .mobile-auth-buttons .btn_cerrar,
+    .mobile-auth-buttons .btn_Loging {
+        width: 100%;
+        height: 45px;
+        font-size: 14px;
+        max-width: none;
+    }
+    
+    .mobile-auth-buttons .btn_cerrar span,
+    .mobile-auth-buttons .btn_Loging span {
+        display: inline;
+    }
+}
+
+/* Móviles muy pequeños */
+@media screen and (max-width: 360px) {
+    .header {
+        padding: 8px 10px;
+    }
+    
+    .logo {
+        width: 160px;
+    }
+    
+    .mobile-menu-toggle {
+        width: 25px;
+        height: 18px;
+    }
+    
+    .header__nav {
+        padding-top: 70px;
+    }
+    
+    .header__nav-item {
+        font-size: 15px;
+        padding: 16px 12px;
+    }
+    
+    .mobile-auth-buttons .btn_cerrar,
+    .mobile-auth-buttons .btn_Loging {
+        height: 40px;
+        font-size: 13px;
+    }
+    
+    .mobile-auth-buttons .btn_cerrar span,
+    .mobile-auth-buttons .btn_Loging span {
+        font-size: 12px;
+    }
+}
+
+/* Animación para el menú desplegable */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
