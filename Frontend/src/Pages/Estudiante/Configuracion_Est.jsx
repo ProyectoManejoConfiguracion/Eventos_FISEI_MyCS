@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import {
-  FaUserCircle, FaUser, FaEnvelope, FaPhone, FaPen, FaSave, FaTimes, FaUpload
+  FaUserCircle, FaUser, FaEnvelope, FaPhone, FaPen, FaSave, FaTimes, FaUpload, FaChevronLeft
 } from "react-icons/fa";
 import "../../Styles/Configuracion_Est.css";
 import { useAuth } from "../../auth/AuthContext";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { BACK_URL } from "../../../config"; // Asegúrate de que la URL del backend esté configurada correctamente
+import { BACK_URL } from "../../../config";
+import { useNavigate } from "react-router-dom"; // <-- Agrega esto
 
 const Configuracion_Est = () => {
   const { user, refreshUser } = useAuth();
   const [editingProfile, setEditingProfile] = useState(false);
   const [error, setError] = useState("");
   const [imagenPreview, setImagenPreview] = useState("");
+  const navigate = useNavigate(); // <-- Agrega esto
 
   const [profileData, setProfileData] = useState({
     nombres: "",
@@ -42,13 +44,11 @@ const Configuracion_Est = () => {
           foto: fotoUrl,
           fotoOriginal: data.FOT_PER || "",
         });
-        setImagenPreview(""); 
+        setImagenPreview("");
       });
   }, [user?.id]);
 
-
   const handleProfileSave = async () => {
-    
     let fotoRuta = profileData.fotoOriginal;
     if (fotoRuta.startsWith("http")) {
       const partes = fotoRuta.split("/uploads/");
@@ -61,7 +61,7 @@ const Configuracion_Est = () => {
       COR_PER: profileData.email,
       TEL_PER: profileData.telefono,
       CON_PER: profileData.contra,
-      FOT_PER: fotoRuta, 
+      FOT_PER: fotoRuta,
     };
 
     try {
@@ -72,12 +72,12 @@ const Configuracion_Est = () => {
 
       if (res.status === 200) {
         const updated = res.data;
-         Swal.fire({
-                title: "Perfil actualizado con éxito",
-                icon: "success",
-                draggable: true,
-              });
-     
+        Swal.fire({
+          title: "Perfil actualizado con éxito",
+          icon: "success",
+          draggable: true,
+        });
+
         setEditingProfile(false);
         setProfileData((prev) => ({
           ...prev,
@@ -89,26 +89,43 @@ const Configuracion_Est = () => {
         await refreshUser();
       } else {
         Swal.fire({
-                title: "Error",
-                text: "Error al actualizar el perfil.",
-                icon: "error",
-                confirmButtonColor: "#d33",
-              });
+          title: "Error",
+          text: "Error al actualizar el perfil.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
       }
-    } catch (error) { 
+    } catch (error) {
       Swal.fire({
-              title: "Error",
-              text: error || "Ocurrió un error en la actualización.",
-              icon: "error",
-              confirmButtonColor: "#d33",
-            });
-      
-          }
+        title: "Error",
+        text: error || "Ocurrió un error en la actualización.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
 
   return (
     <div className="perfil-page-full">
       <div className="perfil-card">
+        {/* Flecha para regresar */}
+        <button
+          className="perfil-back-btn"
+          onClick={() => navigate("/Estudiante")}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            marginBottom: "10px",
+            display: "flex",
+            alignItems: "center",
+            fontSize: "1.1rem"
+          }}
+        >
+          <FaChevronLeft size={22} style={{ marginRight: 6 }} />
+          Regresar
+        </button>
+
         <h2 className="perfil-title">Configuración del Perfil</h2>
 
         <div className="perfil-avatar-section">

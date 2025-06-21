@@ -67,7 +67,7 @@ const DiscoveryHome = () => {
         </div>
       </section>
 
-      {/* Courses Section */}
+      {/* Courses Section 
       <section className="discovery-section">
         <div className="section-container">
           <header className="section-header">
@@ -83,7 +83,9 @@ const DiscoveryHome = () => {
             ))}
           </div>
         </div>
+        
       </section>
+      */}
 
       {/* Features Section */}
       <section className="discovery-section features-section">
@@ -112,8 +114,7 @@ const StatCard = ({ stat }) => (
     <div className="stat-text">{stat.text}</div>
   </div>
 );
-
-const CourseCard = ({ course }) => (
+  const CourseCard = ({ course }) => (
   <article className="discovery-card">
     <div className="card-image-container">
       <img 
@@ -149,6 +150,8 @@ const CourseCard = ({ course }) => (
       </div>
     </div>
   </article>
-);
+  );
+
+
 
 export default DiscoveryHome;
