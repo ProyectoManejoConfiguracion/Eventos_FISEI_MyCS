@@ -6,7 +6,8 @@ import Features from '../Components/Home/DetalleFeature';
 import Tecnologias from '../Components/Tecnologias';
 import Categorias from '../Components/Home/Carreras';
 
-// Cambiar por la URL de tu backend
+// FUTURA CONEXIÓN: Aquí se implementará la conexión al backend cuando esté disponible
+// Actualmente está comentada para usar solo datos locales
 //const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Mapeo de iconos
@@ -20,88 +21,268 @@ const ICON_MAP = {
 
 // Datos por defecto como fallback
 const DEFAULT_STATS = [
-  { number: '5,000+', text: 'Estudiantes Formados', icon: 'Users' },
-  { number: '120+', text: 'Eventos Anuales', icon: 'Calendar' },
-  { number: '85%', text: 'Tasa de Empleabilidad', icon: 'Award' },
-  { number: '40+', text: 'Empresas Colaboradoras', icon: 'Globe' }
+  { id: 1, number: '5,000+', text: 'Estudiantes Formados', icon: 'Users' },
+  { id: 2, number: '120+', text: 'Eventos Anuales', icon: 'Calendar' },
+  { id: 3, number: '85%', text: 'Tasa de Empleabilidad', icon: 'Award' },
+  { id: 4, number: '40+', text: 'Empresas Colaboradoras', icon: 'Globe' }
+];
+
+const DEFAULT_COURSES = [
+  {
+    id: 1,
+    title: 'Introducción a la Inteligencia Artificial',
+    description: 'Aprende los fundamentos de IA y machine learning en este curso intensivo.',
+    type: 'curso',
+    fecha: '2023-11-15',
+    lugar: 'Online',
+    image: '/images/cursos/ia.jpg',
+    featured: true,
+    estado: 'abierto'
+  },
+  {
+    id: 2,
+    title: 'Hackathon de Desarrollo Web',
+    description: 'Participa en nuestro evento anual de desarrollo web y compite por grandes premios.',
+    type: 'evento',
+    fecha: '2023-12-05',
+    lugar: 'Campus Principal',
+    image: '/images/cursos/hackathon.jpg',
+    featured: true,
+    estado: 'abierto'
+  },
+  {
+    id: 3,
+    title: 'Workshop de React',
+    description: 'Aprende React desde cero en este workshop intensivo.',
+    type: 'evento',
+    fecha: '2023-12-10',
+    lugar: 'Online',
+    image: '/images/cursos/react.jpg',
+    featured: true,
+    estado: 'abierto'
+  },
+  {
+    id: 4,
+    title: 'Curso de Python',
+    description: 'Domina Python para ciencia de datos y desarrollo web.',
+    type: 'curso',
+    fecha: '2023-12-15',
+    lugar: 'Campus Principal',
+    image: '/images/cursos/python.jpg',
+    featured: true,
+    estado: 'abierto'
+  },
+  {
+    id: 5,
+    title: 'Seminario de Blockchain',
+    description: 'Descubre las aplicaciones de blockchain en diferentes industrias.',
+    type: 'evento',
+    fecha: '2023-12-20',
+    lugar: 'Online',
+    image: '/images/cursos/blockchain.jpg',
+    featured: true,
+    estado: 'abierto'
+  },
+  {
+    id: 6,
+    title: 'Curso de DevOps',
+    description: 'Aprende las mejores prácticas de DevOps y automatización.',
+    type: 'curso',
+    fecha: '2023-12-25',
+    lugar: 'Campus Principal',
+    image: '/images/cursos/devops.jpg',
+    featured: true,
+    estado: 'abierto'
+  },
+  {
+    id: 7,
+    title: 'Workshop de UI/UX',
+    description: 'Mejora tus habilidades de diseño de interfaces.',
+    type: 'evento',
+    fecha: '2023-12-30',
+    lugar: 'Online',
+    image: '/images/cursos/uiux.jpg',
+    featured: true,
+    estado: 'abierto'
+  }
 ];
 
 const DEFAULT_CONFIG = {
   coursesSection: {
     title: 'Eventos y Cursos Destacados',
     subtitle: 'Descubre las últimas oportunidades para desarrollar tus habilidades tecnológicas'
+  },
+  features: {
+    title: 'Por qué elegirnos',
+    subtitle: 'Ofrecemos la mejor formación tecnológica con un enfoque práctico'
   }
 };
 
 const DiscoveryHome = () => {
   const [coursesData, setCoursesData] = useState([]);
-  const [statsData, setStatsData] = useState([]);
+  const [statsData, setStatsData] = useState(DEFAULT_STATS);
   const [homeConfig, setHomeConfig] = useState(DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para obtener datos del backend
+  // Función para obtener el usuario actual del localStorage
+  const getCurrentUser = () => {
+    try {
+      const user = localStorage.getItem('user');
+      return user ? JSON.parse(user) : null;
+    } catch (error) {
+      console.error('Error al obtener usuario del localStorage:', error);
+      return null;
+    }
+  };
+
+  // Función para obtener eventos guardados del usuario
+  const getSavedEvents = () => {
+    try {
+      const user = getCurrentUser();
+      if (!user || !user.id) return null;
+
+      const savedEvents = localStorage.getItem(`userEvents_${user.id}`);
+      return savedEvents ? JSON.parse(savedEvents) : null;
+    } catch (error) {
+      console.error('Error al obtener eventos guardados:', error);
+      return null;
+    }
+  };
+
+  // Función para guardar eventos del usuario
+  const saveUserEvents = (events) => {
+    try {
+      const user = getCurrentUser();
+      if (!user || !user.id) {
+        console.warn('No hay usuario logueado para guardar eventos');
+        return;
+      }
+
+      // Guardar solo los IDs de los eventos (máximo 6)
+      const eventIds = events.slice(0, 6).map(event => event.id);
+      localStorage.setItem(`userEvents_${user.id}`, JSON.stringify(eventIds));
+      
+      console.log(`Eventos guardados para usuario ${user.id}:`, eventIds);
+    } catch (error) {
+      console.error('Error al guardar eventos:', error);
+    }
+  };
+
+  // Función para obtener eventos abiertos desde la base de datos
+  const fetchOpenEvents = async () => {
+    try {
+      // Simulación de llamada a la API (reemplaza con tu endpoint real)
+      /*
+      const response = await fetch(`${API_BASE_URL}/events?status=open&limit=6`);
+      if (!response.ok) throw new Error('Error al obtener eventos');
+      const events = await response.json();
+      return events;
+      */
+      
+      // Por ahora usamos datos mock filtrados
+      const openEvents = DEFAULT_COURSES
+        .filter(course => course.estado === 'abierto')
+        .slice(0, 6);
+      
+      return openEvents;
+    } catch (error) {
+      console.error('Error al obtener eventos abiertos:', error);
+      throw error;
+    }
+  };
+
+  // Función para obtener eventos por IDs
+  const fetchEventsByIds = async (eventIds) => {
+    try {
+      // Simulación de llamada a la API (reemplaza con tu endpoint real)
+      /*
+      const response = await fetch(`${API_BASE_URL}/events/by-ids`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: eventIds })
+      });
+      if (!response.ok) throw new Error('Error al obtener eventos por IDs');
+      const events = await response.json();
+      return events;
+      */
+      
+      // Por ahora filtramos de los datos mock
+      const events = DEFAULT_COURSES.filter(course => 
+        eventIds.includes(course.id)
+      );
+      
+      return events;
+    } catch (error) {
+      console.error('Error al obtener eventos por IDs:', error);
+      throw error;
+    }
+  };
+
+  // Función principal para cargar datos
   const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Realizar todas las peticiones en paralelo
-      const [coursesRes, statsRes, configRes] = await Promise.all([
-        // Filtrar solo eventos/cursos destacados para el home
-        fetch(`${API_BASE_URL}/courses-events?featured=true`).catch(() => null),
-        fetch(`${API_BASE_URL}/stats`).catch(() => null),
-        fetch(`${API_BASE_URL}/home-config`).catch(() => null)
-      ]);
+      // Obtener estadísticas (esto no cambia)
+      setStatsData(DEFAULT_STATS);
+      setHomeConfig(DEFAULT_CONFIG);
 
-      // Procesar respuesta de cursos/eventos destacados
-      let courses = [];
-      if (coursesRes && coursesRes.ok) {
-        const coursesFromAPI = await coursesRes.json();
-        // Doble filtro: por si el backend no filtra, filtrar en frontend también
-        courses = coursesFromAPI.filter(course => 
-          course.featured === true || course.destacado === true || course.isFeatured === true
-        );
+      // Verificar si hay eventos guardados para el usuario
+      const savedEventIds = getSavedEvents();
+      
+      let eventsToShow = [];
+
+      if (savedEventIds && savedEventIds.length > 0) {
+        console.log('Cargando eventos guardados del usuario:', savedEventIds);
+        // Si hay eventos guardados, cargarlos
+        eventsToShow = await fetchEventsByIds(savedEventIds);
+      } else {
+        console.log('No hay eventos guardados, cargando eventos abiertos');
+        // Si no hay eventos guardados, cargar eventos abiertos
+        eventsToShow = await fetchOpenEvents();
         
-        // Limitar a máximo 6 elementos para el home (opcional)
-        courses = courses.slice(0, 6);
-      }
-
-      // Procesar respuesta de estadísticas
-      let stats = DEFAULT_STATS;
-      if (statsRes && statsRes.ok) {
-        const statsFromAPI = await statsRes.json();
-        if (statsFromAPI && statsFromAPI.length > 0) {
-          stats = statsFromAPI;
+        // Guardar estos eventos para el usuario si está logueado
+        if (eventsToShow.length > 0) {
+          saveUserEvents(eventsToShow);
         }
       }
 
-      // Procesar respuesta de configuración
-      let config = DEFAULT_CONFIG;
-      if (configRes && configRes.ok) {
-        const configFromAPI = await configRes.json();
-        if (configFromAPI) {
-          config = { ...DEFAULT_CONFIG, ...configFromAPI };
-        }
-      }
-
-      // Actualizar estados
-      setCoursesData(courses);
-      setStatsData(stats);
-      setHomeConfig(config);
-
+      setCoursesData(eventsToShow);
+      
     } catch (err) {
       console.error('Error fetching data:', err);
       setError('Error al cargar los datos');
-      
-      setStatsData(DEFAULT_STATS);
-      setHomeConfig(DEFAULT_CONFIG);
+      // En caso de error, usar datos por defecto
+      const fallbackEvents = DEFAULT_COURSES.slice(0, 6);
+      setCoursesData(fallbackEvents);
     } finally {
       setLoading(false);
     }
   };
 
-  // Cargar datos al montar el componente
+  // Función para limpiar eventos guardados (útil para testing)
+  const clearSavedEvents = () => {
+    try {
+      const user = getCurrentUser();
+      if (user && user.id) {
+        localStorage.removeItem(`userEvents_${user.id}`);
+        console.log('Eventos guardados eliminados');
+        // Recargar datos
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error al limpiar eventos guardados:', error);
+    }
+  };
+
+  // Función para actualizar eventos del usuario
+  const updateUserEvents = (newEvents) => {
+    saveUserEvents(newEvents);
+    setCoursesData(newEvents.slice(0, 6));
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -112,15 +293,13 @@ const DiscoveryHome = () => {
     icon: ICON_MAP[stat.icon] || Users
   }));
 
+  // Filtrar solo cursos destacados (máximo 6)
+  const featuredCourses = coursesData.slice(0, 6);
+
   if (loading) {
     return (
       <div className="discovery-container">
-        <div className="loading-container" style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '400px' 
-        }}>
+        <div className="loading-container">
           <p>Cargando contenido...</p>
         </div>
       </div>
@@ -131,15 +310,15 @@ const DiscoveryHome = () => {
     <div className="discovery-container">
       {/* Hero Section */}
       <section className="discovery-hero">
-         <Carrusel />
+        <Carrusel />
       </section>
       
       {/* Stats Section */}
       <section className="discovery-stats">
         <div className="stats-container">
           <div className="stats-grid">
-            {processedStats.map((stat, index) => (
-              <StatCard key={stat.id || index} stat={stat} />
+            {processedStats.map((stat) => (
+              <StatCard key={stat.id} stat={stat} />
             ))}
           </div>
         </div>
@@ -150,87 +329,65 @@ const DiscoveryHome = () => {
         <div className="section-container">
           <header className="section-header">
             <h2 className="section-title">
-              {homeConfig.coursesSection?.title}
+              {homeConfig.coursesSection?.title || 'Eventos y Cursos Destacados'}
             </h2>
             <p className="section-subtitle">
-              {homeConfig.coursesSection?.subtitle}
+              {homeConfig.coursesSection?.subtitle || 'Descubre nuestras oportunidades de aprendizaje'}
             </p>
           </header>
           
+          {/* Botones de control para testing 
+          <div className="control-buttons" style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+            <button onClick={fetchData} className="btn-secondary">
+              Recargar Eventos
+            </button>
+            <button onClick={clearSavedEvents} className="btn-secondary">
+              Limpiar Eventos Guardados
+            </button>
+          </div>*/}
+          
           <div className="courses-grid">
-            {coursesData.map(course => (
-              <CourseCard key={course.id} course={course} />
-            ))}
+            {featuredCourses.length > 0 ? (
+              featuredCourses.map(course => (
+                <CourseCard key={course.id} course={course} />
+              ))
+            ) : (
+              <div className="no-courses-message">
+                <p>No hay cursos o eventos disponibles en este momento.</p>
+                <button onClick={fetchData}>
+                  Recargar
+                </button>
+              </div>
+            )}
           </div>
-
-          {/* Mostrar mensaje si no hay cursos */}
-          {coursesData.length === 0 && !loading && (
-            <div className="no-courses-message" style={{ 
-              textAlign: 'center', 
-              padding: '2rem',
-              color: '#666' 
-            }}>
-              <p>No hay cursos o eventos disponibles en este momento.</p>
-              <button 
-                onClick={fetchData}
-                style={{
-                  marginTop: '1rem',
-                  padding: '0.5rem 1rem',
-                  background: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Recargar
-              </button>
-            </div>
-          )}
+          
+          
         </div>
       </section>
 
       {/* Features Section */}
       <section className="discovery-section features-section">
-        <Features />
+        <Features 
+          title={homeConfig.features?.title} 
+          subtitle={homeConfig.features?.subtitle} 
+        />
       </section>
 
-      {/* Technologies Section */}
+      {/* Technologies Section
       <section className="discovery-section tech-section">
-        {/*<Tecnologias />*/}
-      </section>
+        <Tecnologias />
+      </section> */}
 
-      {/* Categories Section */}
+      {/* Categories Section 
       <section className="discovery-section categories-section">
-       {/* <Categorias />*/}
-      </section>
+        <Categorias />
+      </section>*/}
 
       {/* Error Message */}
       {error && (
-        <div className="error-banner" style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          background: '#f8d7da',
-          color: '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-          zIndex: 1000
-        }}>
+        <div className="error-banner">
           <p>{error}</p>
-          <button 
-            onClick={() => setError(null)}
-            style={{
-              marginLeft: '1rem',
-              background: 'transparent',
-              border: 'none',
-              color: '#721c24',
-              cursor: 'pointer'
-            }}
-          >
-            ×
-          </button>
+          <button onClick={() => setError(null)}>×</button>
         </div>
       )}
     </div>
