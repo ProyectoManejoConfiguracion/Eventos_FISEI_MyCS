@@ -3,9 +3,6 @@ import logo from "../assets/logo.png";
 import {
   FaUserAlt,
   FaBookOpen,
-  FaGraduationCap,
-  FaCalendarCheck,
-  FaCertificate,
   FaCog,
   FaRegClock,
   FaChevronDown,
@@ -26,6 +23,7 @@ const Estudiante = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const cedula = user?.cedula;
 
   const handleLogout = async () => {
     setMenuOpen(false);
@@ -77,20 +75,21 @@ const Estudiante = () => {
       <span>Cargando cursos...</span>
     </div>
   );
-  const fotoUrl = user?.FOT_PER
-    ? `${BACK_URL}/${user.FOT_PER.replace(/\\/g, "/")}`
-    : user?.photo ||
-      "https://ui-avatars.com/api/?name=" +
-        encodeURIComponent(`${user?.name || ""} ${user?.lastname || ""}`);
+const fotoUrl = user?.img
+  ? `${BACK_URL}/${user?.img.replace(/\\/g, "/")}`
+  : user?.photo ||
+    "https://ui-avatars.com/api/?name=" +
+      encodeURIComponent(`${user?.name || ""} ${user?.lastname || ""}`);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`${BACK_URL}/api/cursos/${user?.id}`)
-      .then((res) => res.json())
-      .then((data) => setCursos(data))
-      .catch(() => setCursos([]))
-      .finally(() => setLoading(false));
-  }, [user?.id]);
+  if (!user?.id) return; 
+  setLoading(true);
+  fetch(`${BACK_URL}/api/cursos/${user.id}`)
+    .then((res) => res.json())
+    .then((data) => setCursos(data))
+    .catch(() => setCursos([]))
+    .finally(() => setLoading(false));
+}, [user?.id]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -152,33 +151,34 @@ const Estudiante = () => {
             <h1 className="cursos-title">Mis Cursos y Eventos</h1>
             {loading ? (
               <Loader />
-            ) : cursos.length === 0 ? (
+            ) : !Array.isArray(cursos) || cursos.length === 0 ? (
               <div className="sin-cursos-msg">
                 No tienes cursos por el momento
+                
               </div>
             ) : (
               <div className="cursos-grid">
                 {cursos.map((item, idx) => (
-                  <div className="curso-card" key={item.curso.id || idx}>
+                  <div className="curso-card" key={item.curso?.id || idx}>
                     <div className="curso-header">
-                      <h2 className="curso-nombre">{item.curso.nombre}</h2>
+                      <h2 className="curso-nombre">{item.curso?.nombre}</h2>
                       <span
                         className={`curso-estado ${badgeEstado(
-                          item.curso.categoria
+                          item.curso?.categoria
                         )}`}
                       >
-                        {item.curso.categoria}
+                        {item.curso?.categoria}
                       </span>
                     </div>
 
                     <div className="curso-instructor">
                       <FaBookOpen className="curso-icon" />
-                      <span>{item.curso.area}</span>
+                      <span>{item.curso?.area}</span>
                     </div>
 
                     <div className="curso-progreso">
                       <label>
-                        Horas: <b>{item.curso.horas}</b>
+                        Horas: <b>{item.curso?.horas}</b>
                       </label>
                       <div className="curso-barra">
                         <div
@@ -189,7 +189,7 @@ const Estudiante = () => {
                     </div>
 
                     <div className="curso-info">
-                      <FaRegClock /> <span>Fecha: {item.curso.fecha}</span>
+                      <FaRegClock /> <span>Fecha: {item.curso?.fecha}</span>
                     </div>
 
                     <div className="curso-actions">

@@ -14,8 +14,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const isEstudiante =
-    user?.role === "Estudiante" || user?.role === "ESTUDIANTE";
-  const isDashboard = location.pathname.startsWith("/Estudiante");
+  ["estudiante", "invitado"].includes((user?.role || "").toLowerCase());
+const isDashboard = location.pathname.startsWith("/Estudiante");
 
   const handleLogout = async () => {
     // Si está en dashboard, el mensaje ya lo muestra el componente Estudiante
