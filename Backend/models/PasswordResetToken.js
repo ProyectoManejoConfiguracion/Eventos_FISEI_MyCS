@@ -18,10 +18,12 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
   });
 
-  // Si quieres la relación con PERSONAS (opcional):
-  // PasswordResetToken.associate = (models) => {
-  //   PasswordResetToken.belongsTo(models.PERSONAS, { foreignKey: 'CED_PER' });
-  // };
+  PasswordResetToken.associate = (models) => {
+    PasswordResetToken.belongsTo(models.PERSONAS, {
+      foreignKey: 'CED_PER',
+      targetKey: 'CED_PER',
+    });
+  };
 
   return PasswordResetToken;
 };
