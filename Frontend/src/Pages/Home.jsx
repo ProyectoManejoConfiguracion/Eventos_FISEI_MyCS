@@ -6,9 +6,9 @@ import Features from '../Components/Home/DetalleFeature';
 import Tecnologias from '../Components/Tecnologias';
 import Categorias from '../Components/Home/Carreras';
 
-// FUTURA CONEXIÓN: Aquí se implementará la conexión al backend cuando esté disponible
-// Actualmente está comentada para usar solo datos locales
-//const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// CONFIGURACIÓN DE API: Preparado para conexión futura
+// Descomentar cuando el backend esté disponible
+// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Mapeo de iconos
 const ICON_MAP = {
@@ -27,7 +27,8 @@ const DEFAULT_STATS = [
   { id: 4, number: '40+', text: 'Empresas Colaboradoras', icon: 'Globe' }
 ];
 
-const DEFAULT_COURSES = [
+// Datos de eventos mock (para desarrollo)
+const MOCK_EVENTS = [
   {
     id: 1,
     title: 'Introducción a la Inteligencia Artificial',
@@ -119,25 +120,25 @@ const DEFAULT_CONFIG = {
 };
 
 const DiscoveryHome = () => {
-  const [coursesData, setCoursesData] = useState([]);
+  const [eventsData, setEventsData] = useState([]);
   const [statsData, setStatsData] = useState(DEFAULT_STATS);
   const [homeConfig, setHomeConfig] = useState(DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para obtener el usuario actual del localStorage
+  // Obtener el usuario actual del localStorage
   const getCurrentUser = () => {
     try {
-      const user = localStorage.getItem('user');
-      return user ? JSON.parse(user) : null;
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
     } catch (error) {
       console.error('Error al obtener usuario del localStorage:', error);
       return null;
     }
   };
 
-  // Función para obtener eventos guardados del usuario
-  const getSavedEvents = () => {
+  // Obtener eventos guardados del usuario
+  const getSavedEventIds = () => {
     try {
       const user = getCurrentUser();
       if (!user || !user.id) return null;
@@ -150,67 +151,68 @@ const DiscoveryHome = () => {
     }
   };
 
-  // Función para guardar eventos del usuario
-  const saveUserEvents = (events) => {
+  // Guardar IDs de eventos para el usuario actual
+  const saveUserEventIds = (eventIds) => {
     try {
       const user = getCurrentUser();
-      if (!user || !user.id) {
-        console.warn('No hay usuario logueado para guardar eventos');
-        return;
-      }
+      if (!user || !user.id) return;
 
-      // Guardar solo los IDs de los eventos (máximo 6)
-      const eventIds = events.slice(0, 6).map(event => event.id);
       localStorage.setItem(`userEvents_${user.id}`, JSON.stringify(eventIds));
-      
       console.log(`Eventos guardados para usuario ${user.id}:`, eventIds);
     } catch (error) {
       console.error('Error al guardar eventos:', error);
     }
   };
 
-  // Función para obtener eventos abiertos desde la base de datos
-  const fetchOpenEvents = async () => {
+  // Función para obtener eventos desde la API (simulada por ahora)
+  const fetchEventsFromAPI = async () => {
     try {
-      // Simulación de llamada a la API (reemplaza con tu endpoint real)
-      /*
-      const response = await fetch(`${API_BASE_URL}/events?status=open&limit=6`);
-      if (!response.ok) throw new Error('Error al obtener eventos');
-      const events = await response.json();
-      return events;
-      */
+      // SIMULACIÓN: Esta función será reemplazada con la llamada real a la API
+      // En una implementación real, esto sería:
+      // const response = await fetch(`${API_BASE_URL}/events?status=open&limit=6`);
+      // if (!response.ok) throw new Error('Error al obtener eventos');
+      // return await response.json();
       
-      // Por ahora usamos datos mock filtrados
-      const openEvents = DEFAULT_COURSES
-        .filter(course => course.estado === 'abierto')
-        .slice(0, 6);
+      // Por ahora, simulamos un delay para imitar la llamada a la API
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      return openEvents;
+      // Retornamos datos mock
+      return MOCK_EVENTS.filter(event => event.estado === 'abierto').slice(0, 6);
     } catch (error) {
-      console.error('Error al obtener eventos abiertos:', error);
+      console.error('Error al obtener eventos desde la API:', error);
       throw error;
     }
   };
 
-  // Función para obtener eventos por IDs
+  // Función para obtener eventos por IDs (simulada por ahora)
   const fetchEventsByIds = async (eventIds) => {
     try {
-      // Simulación de llamada a la API (reemplaza con tu endpoint real)
-      /*
-      const response = await fetch(`${API_BASE_URL}/events/by-ids`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: eventIds })
-      });
-      if (!response.ok) throw new Error('Error al obtener eventos por IDs');
-      const events = await response.json();
-      return events;
-      */
+      // SIMULACIÓN: Esta función será reemplazada con la llamada real a la API
+      // En una implementación real, esto sería algo como:
+      // const response = await fetch(`${API_BASE_URL}/events/by-ids`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ ids: eventIds })
+      // });
+      // if (!response.ok) throw new Error('Error al obtener eventos por IDs');
+      // return await response.json();
       
-      // Por ahora filtramos de los datos mock
-      const events = DEFAULT_COURSES.filter(course => 
-        eventIds.includes(course.id)
-      );
+      // Por ahora, simulamos un delay para imitar la llamada a la API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Filtramos los eventos mock por ID
+      const events = MOCK_EVENTS.filter(event => eventIds.includes(event.id));
+      
+      // Si no encontramos suficientes eventos, completamos hasta 6
+      if (events.length < 6) {
+        const remainingCount = 6 - events.length;
+        const existingIds = events.map(e => e.id);
+        const additionalEvents = MOCK_EVENTS
+          .filter(event => !existingIds.includes(event.id) && event.estado === 'abierto')
+          .slice(0, remainingCount);
+        
+        return [...events, ...additionalEvents];
+      }
       
       return events;
     } catch (error) {
@@ -220,43 +222,56 @@ const DiscoveryHome = () => {
   };
 
   // Función principal para cargar datos
-  const fetchData = async () => {
+  const loadEvents = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Obtener estadísticas (esto no cambia)
+      // Cargar configuración y estadísticas (estáticas por ahora)
       setStatsData(DEFAULT_STATS);
       setHomeConfig(DEFAULT_CONFIG);
 
-      // Verificar si hay eventos guardados para el usuario
-      const savedEventIds = getSavedEvents();
+      // Verificar si hay eventos guardados para el usuario actual
+      const savedEventIds = getSavedEventIds();
       
-      let eventsToShow = [];
+      let events = [];
 
       if (savedEventIds && savedEventIds.length > 0) {
         console.log('Cargando eventos guardados del usuario:', savedEventIds);
-        // Si hay eventos guardados, cargarlos
-        eventsToShow = await fetchEventsByIds(savedEventIds);
+        // Cargar eventos guardados por IDs
+        events = await fetchEventsByIds(savedEventIds);
       } else {
-        console.log('No hay eventos guardados, cargando eventos abiertos');
-        // Si no hay eventos guardados, cargar eventos abiertos
-        eventsToShow = await fetchOpenEvents();
+        console.log('No hay eventos guardados, cargando eventos recomendados');
+        // Cargar eventos recomendados/destacados
+        events = await fetchEventsFromAPI();
         
         // Guardar estos eventos para el usuario si está logueado
-        if (eventsToShow.length > 0) {
-          saveUserEvents(eventsToShow);
+        if (events.length > 0 && getCurrentUser()) {
+          saveUserEventIds(events.map(event => event.id));
         }
       }
 
-      setCoursesData(eventsToShow);
+      // Asegurarnos de que siempre tenemos exactamente 6 eventos
+      if (events.length < 6) {
+        // Si no tenemos suficientes eventos, completar con eventos adicionales
+        const additionalEvents = await fetchEventsFromAPI();
+        const existingIds = events.map(e => e.id);
+        const newEvents = additionalEvents.filter(e => !existingIds.includes(e.id));
+        
+        events = [...events, ...newEvents].slice(0, 6);
+      } else if (events.length > 6) {
+        // Si tenemos más de 6 eventos, mostrar solo los primeros 6
+        events = events.slice(0, 6);
+      }
+
+      setEventsData(events);
       
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Error al cargar los datos');
-      // En caso de error, usar datos por defecto
-      const fallbackEvents = DEFAULT_COURSES.slice(0, 6);
-      setCoursesData(fallbackEvents);
+      console.error('Error al cargar eventos:', err);
+      setError('Ha ocurrido un error al cargar los eventos. Por favor, inténtalo de nuevo más tarde.');
+      
+      // En caso de error, usar datos mock como fallback
+      setEventsData(MOCK_EVENTS.slice(0, 6));
     } finally {
       setLoading(false);
     }
@@ -269,22 +284,16 @@ const DiscoveryHome = () => {
       if (user && user.id) {
         localStorage.removeItem(`userEvents_${user.id}`);
         console.log('Eventos guardados eliminados');
-        // Recargar datos
-        fetchData();
+        loadEvents(); // Recargar eventos
       }
     } catch (error) {
       console.error('Error al limpiar eventos guardados:', error);
     }
   };
 
-  // Función para actualizar eventos del usuario
-  const updateUserEvents = (newEvents) => {
-    saveUserEvents(newEvents);
-    setCoursesData(newEvents.slice(0, 6));
-  };
-
+  // Cargar datos al montar el componente
   useEffect(() => {
-    fetchData();
+    loadEvents();
   }, []);
 
   // Procesar estadísticas con íconos
@@ -293,14 +302,13 @@ const DiscoveryHome = () => {
     icon: ICON_MAP[stat.icon] || Users
   }));
 
-  // Filtrar solo cursos destacados (máximo 6)
-  const featuredCourses = coursesData.slice(0, 6);
-
+  // Preparar skeleton loader para estado de carga
   if (loading) {
     return (
       <div className="discovery-container">
         <div className="loading-container">
           <p>Cargando contenido...</p>
+          {/* Aquí podrías agregar un spinner o skeleton loader */}
         </div>
       </div>
     );
@@ -324,7 +332,7 @@ const DiscoveryHome = () => {
         </div>
       </section>
 
-      {/* Courses Section */}
+      {/* Eventos Section */}
       <section className="discovery-section">
         <div className="section-container">
           <header className="section-header">
@@ -336,32 +344,28 @@ const DiscoveryHome = () => {
             </p>
           </header>
           
-          {/* Botones de control para testing 
-          <div className="control-buttons" style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-            <button onClick={fetchData} className="btn-secondary">
-              Recargar Eventos
-            </button>
-            <button onClick={clearSavedEvents} className="btn-secondary">
-              Limpiar Eventos Guardados
-            </button>
-          </div>*/}
-          
+          {/* Contenedor de eventos (siempre muestra exactamente 6) */}
           <div className="courses-grid">
-            {featuredCourses.length > 0 ? (
-              featuredCourses.map(course => (
-                <CourseCard key={course.id} course={course} />
+            {eventsData.length > 0 ? (
+              eventsData.map(event => (
+                <EventCard key={event.id} event={event} />
               ))
             ) : (
               <div className="no-courses-message">
-                <p>No hay cursos o eventos disponibles en este momento.</p>
-                <button onClick={fetchData}>
-                  Recargar
+                <p>No hay eventos disponibles en este momento.</p>
+                <button onClick={loadEvents} className="reload-button">
+                  Intentar de nuevo
                 </button>
               </div>
             )}
           </div>
           
-          
+          {/* Botón para ver más eventos (opcional) */}
+          <div className="view-more-container">
+            <button className="view-more-button">
+              Ver todos los eventos
+            </button>
+          </div>
         </div>
       </section>
 
@@ -373,21 +377,11 @@ const DiscoveryHome = () => {
         />
       </section>
 
-      {/* Technologies Section
-      <section className="discovery-section tech-section">
-        <Tecnologias />
-      </section> */}
-
-      {/* Categories Section 
-      <section className="discovery-section categories-section">
-        <Categorias />
-      </section>*/}
-
       {/* Error Message */}
       {error && (
         <div className="error-banner">
           <p>{error}</p>
-          <button onClick={() => setError(null)}>×</button>
+          <button onClick={() => setError(null)} className="close-error">×</button>
         </div>
       )}
     </div>
@@ -404,8 +398,8 @@ const StatCard = ({ stat }) => (
   </div>
 );
 
-const CourseCard = ({ course }) => {
-  // Función para formatear fecha de manera segura
+const EventCard = ({ event }) => {
+  // Formatear fecha para mostrar día y mes
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
@@ -414,7 +408,7 @@ const CourseCard = ({ course }) => {
         month: 'short'
       });
     } catch {
-      return 'Fecha TBD';
+      return 'Fecha por confirmar';
     }
   };
 
@@ -422,8 +416,8 @@ const CourseCard = ({ course }) => {
     <article className="discovery-card">
       <div className="card-image-container">
         <img 
-          src={course.image || course.imageUrl || '/placeholder-image.jpg'} 
-          alt={course.title}
+          src={event.image || event.imageUrl || '/placeholder-image.jpg'} 
+          alt={event.title}
           className="card-image"
           loading="lazy"
           onError={(e) => {
@@ -435,26 +429,23 @@ const CourseCard = ({ course }) => {
       <div className="card-content">
         <div className="card-meta">
           <span className="card-date">
-            {formatDate(course.fecha || course.date)}
+            {formatDate(event.fecha || event.date)}
           </span>
           <span className="card-type">
-            {course.type === 'evento' || course.type === 'event' ? 'Evento' : 'Curso'}
+            {event.type === 'evento' || event.type === 'event' ? 'Evento' : 'Curso'}
           </span>
         </div>
         
-        <h3 className="card-title">{course.title}</h3>
-        <p className="card-description">{course.description}</p>
+        <h3 className="card-title">{event.title}</h3>
+        <p className="card-description">{event.description}</p>
         
         <div className="card-footer">
           <span className="card-location">
             <MapPin size={14} />
-            {course.lugar || course.location || 'Ubicación TBD'}
+            {event.lugar || event.location || 'Ubicación por confirmar'}
           </span>
           <button className="card-button">
-            {course.buttonText || 
-             (course.type === 'evento' || course.type === 'event' 
-               ? 'Inscribirse →' 
-               : 'Más información →')}
+            Inscribirse →
           </button>
         </div>
       </div>

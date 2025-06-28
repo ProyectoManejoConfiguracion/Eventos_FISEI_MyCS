@@ -28,26 +28,23 @@ function Carrusel() {
   const defaultImagenes = [
     { 
       id: 1,
-      img: "/assets/carusel1.jpg", 
-      label: "EVENTOS Y CURSOS", 
-      desc: 'Incentivar la investigación en los campos afines',
-      buttonText: 'Ver más',
+      imagen: "/assets/carusel1.jpg", 
+      titulo: "EVENTOS Y CURSOS", 
+      descripcion: 'Incentivar la investigación en los campos afines',
       redirectUrl: '/Eventos'
     },
     { 
       id: 2,
-      img: "/assets/carusel2.png", 
-      label: 'EVENTOS Y CURSOS', 
-      desc: 'Disponibilidad para todas la personas',
-      buttonText: 'Ver más',
+      imagen: "/assets/carusel2.png", 
+      titulo: 'EVENTOS Y CURSOS', 
+      descripcion: 'Disponibilidad para todas la personas',
       redirectUrl: '/Eventos'
     },
     { 
       id: 3,
-      img: "/assets/carusel3.jpg", 
-      label: 'EVENTOS Y CURSOS', 
-      desc: 'Compromiso con el desarrollo Tecnológico',
-      buttonText: 'Ver más',
+      imagen: "/assets/carusel3.jpg", 
+      titulo: 'EVENTOS Y CURSOS', 
+      descripcion: 'Compromiso con el desarrollo Tecnológico',
       redirectUrl: '/Eventos'
     }
   ];
@@ -61,7 +58,7 @@ function Carrusel() {
     height: '100vh'
   };
 
-  // 🌐 FUNCIÓN PARA CARGAR DATOS DESDE EL BACKEND
+  //CARGAR DATOS DESDE EL BACKEND
   const fetchCarouselData = async () => {
     try {
       setLoading(true);
@@ -97,12 +94,12 @@ function Carrusel() {
     }
   };
 
-  // 🔄 FUNCIÓN PARA REFRESCAR DATOS (útil para admin panel)
+  // REFRESCAR DATOS (útil para admin panel)
   const refreshCarouselData = () => {
     fetchCarouselData();
   };
 
-  // 📱 FUNCIONES DE NAVEGACIÓN
+  //FUNCIONES DE NAVEGACIÓN
   const cambiarSlide = useCallback((index) => {
     if (isTransitioning || imagenes.length === 0) return;
     setIsTransitioning(true);
@@ -122,14 +119,14 @@ function Carrusel() {
 
   const handleDotClick = (index) => cambiarSlide(index);
 
-  // 🔗 FUNCIÓN PARA MANEJAR CLICS EN IMÁGENES (URLs editables desde backend)
+  //FUNCIÓN PARA MANEJAR CLICS EN IMÁGENES (URLs editables desde backend)
   const handleImageClick = (slide) => {
     if (slide.redirectUrl) {
       window.location.href = slide.redirectUrl;
     }
   };
 
-  // ⏱️ EFECTO PARA AUTO-PLAY
+  //PARA AUTO-PLAY
   useEffect(() => {
     if (!isPaused && carouselConfig.enableAutoPlay && imagenes.length > 0) {
       timerRef.current = setInterval(handleNext, carouselConfig.autoPlayInterval || 5000);
@@ -137,7 +134,7 @@ function Carrusel() {
     return () => clearInterval(timerRef.current);
   }, [handleNext, isPaused, carouselConfig.enableAutoPlay, carouselConfig.autoPlayInterval, imagenes.length]);
 
-  // ⌨️ EFECTO PARA NAVEGACIÓN CON TECLADO
+  // NAVEGACIÓN CON TECLADO
   useEffect(() => {
     if (!carouselConfig.enableKeyboardNavigation) return;
 
@@ -154,12 +151,12 @@ function Carrusel() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev, carouselConfig.enableKeyboardNavigation]);
 
-  // 🚀 CARGAR DATOS AL MONTAR EL COMPONENTE
+  //CARGAR DATOS AL MONTAR EL COMPONENTE
   useEffect(() => {
     fetchCarouselData();
   }, []);
 
-  // 💫 ESTADO DE CARGA
+  //ESTADO DE CARGA
   if (loading) {
     return (
       <div className="discovery-carousel loading-state">
@@ -171,7 +168,7 @@ function Carrusel() {
     );
   }
 
-  // ❌ ESTADO DE ERROR
+  //ESTADO DE ERROR
   if (error) {
     return (
       <div className="discovery-carousel error-state">
@@ -185,7 +182,7 @@ function Carrusel() {
     );
   }
 
-  // 📷 RENDERIZADO PRINCIPAL
+  //RENDERIZADO PRINCIPAL
   return (
     <div 
       className='discovery-carousel'

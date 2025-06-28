@@ -7,7 +7,7 @@
 
 .us-container{
   width: 100%;
-  max-width: 1200px;
+  max-width: auto;
   margin: auto;
   overflow: hidden;
   padding-top: 30px; 
@@ -34,12 +34,12 @@
 }
 
 .hero-overlay {
-  position: relative;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(104, 103, 103, 0.9);
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
   z-index: 2;
 }
 
@@ -301,15 +301,47 @@
   align-items: center;
 }
 
+
+.history-text {
+  order: 1;
+}
+
+.history-paragraph {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+/* Añade esto para prevenir que los bullets aparezcan */
+.history-text ul,
+.history-text li {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+.history-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.8;
+  margin: 0 auto; /* Centra la imagen */
+  max-width: 500px; /* Limita el ancho máximo */
+}
+
+@media (max-width: 768px) {
+  .history-image-container {
+    aspect-ratio: 1.5; /* Más cuadrada en móviles */
+    max-width: 100%; /* Ocupa todo el ancho */
+  }
+}
+
 @media (min-width: 768px) {
   .history-content {
     grid-template-columns: 1fr 350px; /* Aumentado de 300px a 350px para más espacio cuadrado */
   }
 }
 
-.history-text {
-  order: 1;
-}
+
 
 .history-paragraph {
   color: #6b7280;
@@ -366,6 +398,13 @@
     max-width: 300px; 
     margin: 0 auto; 
   }
+  .us-container{
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  overflow: hidden;
+  padding-top: 30px; 
+}
 }
 
 @media (max-width: 480px) {
@@ -435,6 +474,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .main-content {
+    max-width:700px ;
+  }
+
   .hero-title {
     font-size: 2rem; 
   }
