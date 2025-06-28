@@ -1,0 +1,99 @@
+.reset-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px 28px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.reset-container h2 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.reset-container input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-bottom: 18px;
+    transition: border-color 0.3s;
+}
+
+.reset-container input[type="password"]:focus {
+    border-color: #3c4042;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.16);
+}
+
+.reset-container button {
+    width: 100%;
+    padding: 13px 0;
+    background: #5a1616;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 5px;
+}
+
+.reset-container button:hover:not(:disabled) {
+    background: #991d1d;
+}
+
+.reset-container button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.reset-container .error-message {
+    padding: 12px;
+    background: #fee;
+    border: 1px solid #fad2d2;
+    border-radius: 6px;
+    color: #5a1616;
+    margin: 12px 0 16px 0;
+    text-align: center;
+    font-weight: 500;
+}
+
+@media (max-width: 500px) {
+    .reset-container {
+        padding: 16px 8px;
+        max-width: 98vw;
+    }
+    .reset-container h2 {
+        font-size: 1.3rem;
+    }
+}
+
+.reset-flex-wrapper {
+    
+    min-height: 71.8vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* Centra verticalmente si hay poco contenido */
+    background: #fff;
+}
+
+.reset-container {
+    max-width: 400px;
+    margin: 40px auto 0 auto;
+    padding: 30px 28px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.reset-flex-wrapper > .Footer {
+    margin-top: auto;
+}
