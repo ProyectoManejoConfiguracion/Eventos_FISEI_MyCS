@@ -12,6 +12,8 @@ const ModalDetalles = ({ show, item, onClose }) => {
   const [loadingNota, setLoadingNota] = useState(false);
   const [loadingDocente, setLoadingDocente] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [asistenciaCertificado, setAsistenciaCertificado] = useState(null);
+  const [loadingAsistencia, setLoadingAsistencia] = useState(false);
 
   const obtenerNota = useCallback(async () => {
     if (!user?.id || !item) return;
@@ -21,7 +23,6 @@ const ModalDetalles = ({ show, item, onClose }) => {
     const nombre = evento.nombre || evento.NOM_EVT;
     
     if (!eventoId && !nombre) return;
-    
     setLoadingNota(true);
     try {
       const response = await fetch(`${BACK_URL}/api/notas/${user.id}`);
@@ -56,63 +57,88 @@ const ModalDetalles = ({ show, item, onClose }) => {
     }
   }, [user?.id, item]);
 
- const obtenerDetalleYDocente = useCallback(async () => {
-  if (!item) return;
-  
-  const evento = item.detalles || item.curso || item;
-  const eventoId = evento.id || evento.ID_EVT;
-  
-  if (!eventoId) return;
-  
-  setLoadingDocente(true);
-  try {
-    const detalleResponse = await fetch(`${BACK_URL}/api/detalle_eventos/${eventoId}`);
+  const obtenerDetalleYDocente = useCallback(async () => {
+    if (!item) return;
     
-    if (detalleResponse.ok) {
-      const detalles = await detalleResponse.json();
+    const evento = item.detalles || item.curso || item;
+    const eventoId = evento.id || evento.ID_EVT;
+    
+    if (!eventoId) return;
+    
+    setLoadingDocente(true);
+    try {
+      const detalleResponse = await fetch(`${BACK_URL}/api/detalle_eventos/${eventoId}`);
       
-      let detalleEvento = null;
-      
-      if (Array.isArray(detalles)) {
-        // Filtrar por el evento específico
-        const detallesDelEvento = detalles.filter(detalle => detalle.ID_EVT === eventoId);
+      if (detalleResponse.ok) {
+        const detalles = await detalleResponse.json();
         
-        if (detallesDelEvento.length > 0) {
-          // Tomar el primer detalle del evento
-          detalleEvento = detallesDelEvento[0];
-          console.log(`📋 Encontrados ${detallesDelEvento.length} detalles para el evento ${eventoId}`);
-          console.log('📋 Usando el primer detalle:', detalleEvento);
+        let detalleEvento = null;
+        
+        if (Array.isArray(detalles)) {
+          // Filtrar por el evento específico
+          const detallesDelEvento = detalles.filter(detalle => detalle.ID_EVT === eventoId);
+          
+          if (detallesDelEvento.length > 0) {
+            // Tomar el primer detalle del evento
+            detalleEvento = detallesDelEvento[0];
+            console.log(`📋 Encontrados ${detallesDelEvento.length} detalles para el evento ${eventoId}`);
+            console.log('📋 Usando el primer detalle:', detalleEvento);
+          }
+        } else {
+          detalleEvento = detalles;
         }
-      } else {
-        detalleEvento = detalles;
-      }
-      
-      setDetalleEvento(detalleEvento);
-      
-      if (detalleEvento?.CED_AUT) {
-        const docenteResponse = await fetch(`${BACK_URL}/api/autoridades/cedula/${detalleEvento.CED_AUT}`);
         
-        if (docenteResponse.ok) {
-          const docenteInfo = await docenteResponse.json();
-          setDocenteData(docenteInfo);
+        setDetalleEvento(detalleEvento);
+        
+        if (detalleEvento?.CED_AUT) {
+          const docenteResponse = await fetch(`${BACK_URL}/api/autoridades/cedula/${detalleEvento.CED_AUT}`);
+          
+          if (docenteResponse.ok) {
+            const docenteInfo = await docenteResponse.json();
+            setDocenteData(docenteInfo);
+          } else {
+            setDocenteData(null);
+          }
         } else {
           setDocenteData(null);
         }
       } else {
+        setDetalleEvento(null);
         setDocenteData(null);
       }
-    } else {
+    } catch (error) {
+      console.error('Error al cargar detalle del evento o docente:', error);
       setDetalleEvento(null);
       setDocenteData(null);
+    } finally {
+      setLoadingDocente(false);
     }
-  } catch (error) {
-    console.error('Error al cargar detalle del evento o docente:', error);
-    setDetalleEvento(null);
-    setDocenteData(null);
-  } finally {
-    setLoadingDocente(false);
-  }
-}, [item]);
+  }, [item]);
+
+  // Nueva función para obtener la asistencia desde certificado
+  const obtenerAsistenciaCertificado = useCallback(async () => {
+    if (!user?.id || !item || !detalleEvento?.ID_DET) return;
+    setLoadingAsistencia(true);
+    try {
+      const response = await fetch(`${BACK_URL}/api/certificado/asistencia/${user.id}/${detalleEvento.ID_DET}`);
+      if (response.ok) {
+        const data = await response.json();
+        // data puede ser un array con un objeto { asistencia: { ... } }
+        if (Array.isArray(data) && data.length > 0 && data[0].asistencia) {
+          setAsistenciaCertificado(data[0].asistencia);
+        } else {
+          setAsistenciaCertificado(null);
+        }
+      } else {
+        setAsistenciaCertificado(null);
+      }
+    } catch (error) {
+      console.error('Error al cargar asistencia certificado:', error);
+      setAsistenciaCertificado(null);
+    } finally {
+      setLoadingAsistencia(false);
+    }
+  }, [user?.id, item, detalleEvento]);
 
   useEffect(() => {
     if (show && item) {
@@ -123,11 +149,20 @@ const ModalDetalles = ({ show, item, onClose }) => {
       setNotaData(null);
       setDocenteData(null);
       setDetalleEvento(null);
+      setAsistenciaCertificado(null);
       setLoadingNota(false);
       setLoadingDocente(false);
+      setLoadingAsistencia(false);
       setImageError(false);
     }
   }, [show, item, obtenerNota, obtenerDetalleYDocente]);
+
+  // Nuevo useEffect para asistencia certificado
+  useEffect(() => {
+    if (show && item && detalleEvento?.ID_DET) {
+      obtenerAsistenciaCertificado();
+    }
+  }, [show, item, detalleEvento, obtenerAsistenciaCertificado]);
 
   if (!show || !item) return null;
 
@@ -173,6 +208,25 @@ const ModalDetalles = ({ show, item, onClose }) => {
   };
 
   const nota = getNota();
+
+  // Render para asistencia certificado
+  const renderAsistenciaCertificado = () => {
+    if (loadingAsistencia) {
+      return (
+        <span className="modal-dato-valor loading">Cargando...</span>
+      );
+    }
+    if (asistenciaCertificado) {
+      return (
+        <span className="modal-dato-valor asistencia-valor">
+          {`${asistenciaCertificado.dias_asistidos} / ${asistenciaCertificado.dias_totales} días (${asistenciaCertificado.porcentaje}%)`}
+        </span>
+      );
+    }
+    return (
+      <span className="modal-dato-valor">No registrada</span>
+    );
+  };
 
   return (
     <div className="modal-overlay">
@@ -236,9 +290,7 @@ const ModalDetalles = ({ show, item, onClose }) => {
                   <FaClipboardCheck className="modal-icon" />
                   <span className="modal-dato-label">Asistencia</span>
                 </div>
-                <span className={`modal-dato-valor ${asistencia !== 'No registrada' ? 'asistencia-valor' : ''}`}>
-                  {asistencia}
-                </span>
+                {renderAsistenciaCertificado()}
               </div>
 
               {/* Información adicional del detalle del evento */}
@@ -253,9 +305,6 @@ const ModalDetalles = ({ show, item, onClose }) => {
                   </span>
                 </div>
               )}
-
-
-             
 
               {notaData?.fechaFinalizacion && (
                 <div className="modal-dato">

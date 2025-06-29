@@ -81,6 +81,7 @@ const Estudiante = () => {
   const formatDate = (dateString) => {
     if (!dateString) return "Fecha no disponible";
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Fecha inválida";
     return date.toLocaleDateString('es-ES', {
       year: 'numeric',
       month: 'long',
@@ -106,21 +107,18 @@ const Estudiante = () => {
       }
       return `${BACK_URL}/${evento.FOT_EVT.replace(/\\/g, "/")}`;
     }
-    
     if (evento.imagen) {
       if (evento.imagen.startsWith('http')) {
         return evento.imagen;
       }
       return `${BACK_URL}/${evento.imagen.replace(/\\/g, "/")}`;
     }
-    
     if (evento.foto) {
       if (evento.foto.startsWith('http')) {
         return evento.foto;
       }
       return `${BACK_URL}/${evento.foto.replace(/\\/g, "/")}`;
     }
-    
     return null;
   };
 
@@ -173,7 +171,6 @@ const Estudiante = () => {
   useEffect(() => {
     if (!user?.id) return;
     setLoading(true);
-    
     fetch(`${BACK_URL}/api/cursos/${user.id}`)
       .then((res) => res.json())
       .then(async (data) => {
@@ -211,6 +208,14 @@ const Estudiante = () => {
     if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
+
+  // Función para obtener fechas de inicio y fin de un evento de forma robusta
+  const getFechaInicioFin = (evento) => {
+    // Prioridad: FEC_EVT y FEC_FIN, luego alternativas
+    const fechaInicio = evento.FEC_EVT || evento.fechaInicio || evento.fecha || null;
+    const fechaFin = evento.FEC_FIN || evento.fechaFin || null;
+    return { fechaInicio, fechaFin };
+  };
 
   return (
     <div className="estudiante-container">
@@ -276,7 +281,11 @@ const Estudiante = () => {
                   const imagenUrl = getImageUrl(evento);
                   const hasImageError = imageErrors.has(eventoId);
                   const titulo = evento.nombre || evento.NOM_EVT || 'Sin título';
-                  
+
+                  // Usar función robusta para fechas
+                  const { fechaInicio, fechaFin } = getFechaInicioFin(evento);
+                  const lugar = evento.LUG_EVT || evento.lugar;
+
                   return (
                     <div className="curso-card" key={eventoId}>
                       <div className="curso-imagen-container">
@@ -317,26 +326,22 @@ const Estudiante = () => {
                             <FaBookOpen className="curso-icon" />
                             <span>Área: {evento.area || evento.CAR_MOT || 'No especificada'}</span>
                           </div>
-
                           <div className="curso-info-item">
                             <FaCalendarAlt className="curso-icon" />
-                            <span>Inicio: {formatDate(evento.fecha || evento.FEC_EVT)}</span>
+                            <span>Inicio: {formatDate(fechaInicio)}</span>
                           </div>
-
-                          {(evento.FEC_FIN || evento.fechaFin) && (
+                          {fechaFin && (
                             <div className="curso-info-item">
                               <FaRegClock className="curso-icon" />
-                              <span>Fin: {formatDate(evento.FEC_FIN || evento.fechaFin)}</span>
+                              <span>Fin: {formatDate(fechaFin)}</span>
                             </div>
                           )}
-
-                          {(evento.LUG_EVT || evento.lugar) && (
+                          {lugar && (
                             <div className="curso-info-item">
                               <FaMapMarkerAlt className="curso-icon" />
-                              <span>Lugar: {evento.LUG_EVT || evento.lugar}</span>
+                              <span>Lugar: {lugar}</span>
                             </div>
                           )}
-
                           {evento.horas && (
                             <div className="curso-info-item">
                               <FaRegClock className="curso-icon" />
