@@ -6,6 +6,11 @@ import { BACK_URL } from "../../config";
 
 const RegistroEstudiante = () => {
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({
+    TEL_PER: "",
+    NOM_PER: "",
+    APE_PER: ""
+  });
 
   // Form data
   const [formData, setFormData] = useState({
@@ -18,9 +23,14 @@ const RegistroEstudiante = () => {
     FOT_PER: null,
     ID_EST: "",
     ID_NIV: "",
-    ID_CAR: ""
+    ID_CAR: "",
+    ID_AUT: "",
+    DIR_AUT: "",
+    CAR_AUT: "",
+    ID_FAC: ""
   });
 
+  const [facultades, setFacultades] = useState([]);
   const [cedulaValida, setCedulaValida] = useState(true);
   const [carreras, setCarreras] = useState([]);
   const [niveles, setNiveles] = useState([]);
@@ -28,6 +38,8 @@ const RegistroEstudiante = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [imagenPreview, setImagenPreview] = useState(null);
+  const [tipoUsuario, setTipoUsuario] = useState(""); // "estudiante" o "autoridad"
+
 
   // Validación de cédula ecuatoriana
   const validarCedulaEcuatoriana = (CED_PER) => {
@@ -69,6 +81,47 @@ const RegistroEstudiante = () => {
     return resultado === digitoVerificador;
   };
 
+  const handleTelefonoChange = (e) => {
+    const value = e.target.value;
+    // Solo números permitidos
+    if (!/^\d{0,10}$/.test(value)) return;
+
+    setFormData({ ...formData, TEL_PER: value });
+
+    // Validar que empiece con 09 y tenga 10 dígitos
+    if (value.length > 0 && !value.startsWith("09")) {
+      setErrors((prev) => ({ ...prev, TEL_PER: "Debe comenzar con 09" }));
+    } else if (value.length === 10 && !/^09\d{8}$/.test(value)) {
+      setErrors((prev) => ({ ...prev, TEL_PER: "Debe tener 10 dígitos y comenzar con 09" }));
+    } else {
+      setErrors((prev) => ({ ...prev, TEL_PER: "" }));
+    }
+  };
+
+  const handleNombreChange = (e) => {
+    const value = e.target.value;
+    setFormData({ ...formData, NOM_PER: value });
+
+    // Solo letras y espacios
+    if (value && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value)) {
+      setErrors((prev) => ({ ...prev, NOM_PER: "Solo se permiten letras" }));
+    } else {
+      setErrors((prev) => ({ ...prev, NOM_PER: "" }));
+    }
+  };
+
+  const handleApellidoChange = (e) => {
+    const value = e.target.value;
+    setFormData({ ...formData, APE_PER: value });
+
+    if (value && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value)) {
+      setErrors((prev) => ({ ...prev, APE_PER: "Solo se permiten letras" }));
+    } else {
+      setErrors((prev) => ({ ...prev, APE_PER: "" }));
+    }
+  };
+
+
   // Manejar cambios en la cédula
   const handleCedulaChange = (e) => {
     const { value } = e.target;
@@ -93,28 +146,8 @@ const RegistroEstudiante = () => {
   const handleChangeCorreo = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    if (name === "COR_PER") {
-      const pattern = /^(.+)@uta\.edu\.ec$/i;
-      if (pattern.test(value)) {
-        setIsUta(true);
-
-        setFormData(prev => ({
-          ...prev,
-          ID_EST: value.split('@')[0]
-        }));
-      } else {
-        setIsUta(false);
-
-        setFormData(prev => ({
-          ...prev,
-          ID_EST: "",
-          ID_NIV: "",
-          ID_CAR: ""
-        }));
-      }
-    }
   };
+
 
 
   const handleChange = (e) => {
@@ -166,6 +199,7 @@ const RegistroEstudiante = () => {
       setError("Error al cargar niveles académicos");
     }
   };
+  //Carga de facultades
 
   // cargar carreras al inicio
   useEffect(() => {
@@ -181,13 +215,61 @@ const RegistroEstudiante = () => {
     };
 
     cargarCarreras();
+
+    const cargarFacultades = async () => {
+      try {
+        const response = await fetch(`${BACK_URL}/api/facultades`);
+        if (!response.ok) throw new Error('Error cargando facultades');
+        setFacultades(await response.json());
+      } catch (err) {
+        console.error('Error:', err);
+        setError("Error al cargar facultades");
+      }
+    };
+    cargarFacultades();
   }, []);
+
+  useEffect(() => {
+    const pattern = /^(.+)@uta\.edu\.ec$/i;
+    if (pattern.test(formData.COR_PER)) {
+      setIsUta(true);
+      if (tipoUsuario === "estudiante") {
+        setFormData(prev => ({
+          ...prev,
+          ID_EST: formData.COR_PER.split('@')[0],
+          ID_AUT: ""
+        }));
+      } else if (tipoUsuario === "autoridad") {
+        setFormData(prev => ({
+          ...prev,
+          ID_AUT: formData.COR_PER.split('@')[0],
+          ID_EST: ""
+        }));
+      }
+    } else {
+      setIsUta(false);
+      setFormData(prev => ({
+        ...prev,
+        ID_EST: "",
+        ID_AUT: "",
+        ID_NIV: "",
+        ID_CAR: ""
+      }));
+    }
+  }, [formData.COR_PER, tipoUsuario]);
+
 
   // form de submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    if (errors.NOM_PER || errors.APE_PER || errors.TEL_PER) {
+      setError("Por favor corrige los errores en el formulario.");
+      setLoading(false);
+      return;
+    }
 
     // validacion de campos requeridos
     const camposRequeridos = [
@@ -200,11 +282,20 @@ const RegistroEstudiante = () => {
     ];
 
     // campos espeficicos de estudiante
-    if (isUta) {
+    if (isUta && tipoUsuario === "estudiante") {
       camposRequeridos.push(
         formData.ID_EST,
         formData.ID_CAR,
         formData.ID_NIV
+      );
+    }
+
+    if (isUta && tipoUsuario === "autoridad") {
+      camposRequeridos.push(
+        formData.ID_AUT,
+        formData.DIR_AUT,
+        formData.CAR_AUT,
+        formData.ID_FAC
       );
     }
 
@@ -215,12 +306,15 @@ const RegistroEstudiante = () => {
     }
 
     // validacion de contraseña
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
     if (!passwordRegex.test(formData.CON_PER)) {
-      setError("La contraseña debe tener al menos 8 caracteres con letras y números");
+      setError("La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, un número y un carácter especial.");
       setLoading(false);
       return;
     }
+
+
 
     if (!cedulaValida) {
       setError("La cédula ingresada no es válida.");
@@ -228,7 +322,7 @@ const RegistroEstudiante = () => {
       return;
     }
 
-
+    let personaInsertada = false; //
 
     try {
       // se crea un objeto FormData para enviar la imagen
@@ -246,8 +340,9 @@ const RegistroEstudiante = () => {
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
+      personaInsertada = true;
       // registro de estudiante si es UTA
-      if (isUta) {
+      if (isUta && tipoUsuario === "estudiante") {
         await axios.post(`${BACK_URL}/api/estudiantes`, {
           ID_EST: formData.ID_EST,
           ID_NIV: formData.ID_NIV,
@@ -255,12 +350,31 @@ const RegistroEstudiante = () => {
         });
       }
 
+      // registro de autoridad si es UTA
+      if (isUta && tipoUsuario === "autoridad") {
+        await axios.post(`${BACK_URL}/api/autoridades`, {
+          ID_AUT: formData.ID_AUT,
+          CED_PER: formData.CED_PER,
+          DIR_AUT: formData.DIR_AUT,
+          CAR_AUT: formData.CAR_AUT,
+          ID_FAC: formData.ID_FAC
+        });
+      }
+
       // exito de registro
       alert("¡Registro exitoso! " +
-        (isUta ? "Tu cuenta de estudiante ha sido creada." : "Tu cuenta personal ha sido creada."));
+        (isUta ? "Tu cuenta de comunidad UTA ha sido creada." : "Tu cuenta personal ha sido creada."));
       navigate("/");
     } catch (error) {
-      console.error("Error en registro:", error);
+      if (personaInsertada) {
+        try {
+          // Cambia la URL según tu API (por ID o por cédula)
+          await axios.delete(`${BACK_URL}/api/personas/${formData.CED_PER}`);
+        } catch (deleteError) {
+          console.error("Error al eliminar persona luego de fallo:", deleteError);
+        }
+      }
+
       const serverError = error.response?.data?.error ||
         error.message ||
         "Error en el registro. Por favor intenta nuevamente.";
@@ -269,6 +383,8 @@ const RegistroEstudiante = () => {
       setLoading(false);
     }
   };
+
+  // <-- The missing closing brace for handleSubmit was added above
 
   return (
     <div className="registro-container">
@@ -314,6 +430,7 @@ const RegistroEstudiante = () => {
                 value={formData.CED_PER}
                 onChange={handleCedulaChange}
                 placeholder="Ingresa tu cédula"
+                maxLength={10}
                 required
               />
             </div>
@@ -324,35 +441,38 @@ const RegistroEstudiante = () => {
                 type="text"
                 name="NOM_PER"
                 value={formData.NOM_PER}
-                onChange={handleChange}
+                onChange={handleNombreChange}
                 placeholder="Ingresa tu nombre"
                 required
               />
             </div>
-
+            {errors.NOM_PER && <span className="error-message">{errors.NOM_PER}</span>}
             <div className="form-group">
               <label>Apellido: <span className="required">*</span></label>
               <input
                 type="text"
                 name="APE_PER"
                 value={formData.APE_PER}
-                onChange={handleChange}
+                onChange={handleApellidoChange}
                 placeholder="Ingresa tu apellido"
                 required
               />
             </div>
-
+            {errors.APE_PER && <span className="error-message">{errors.APE_PER}</span>}
             <div className="form-group">
               <label>Teléfono:</label>
               <input
                 type="text"
                 name="TEL_PER"
                 value={formData.TEL_PER}
-                onChange={handleChange}
+                onChange={handleTelefonoChange}
                 placeholder="Ingresa tu teléfono"
+                pattern="^09[0-9]{7,8}$"
+                maxLength={10}
+                required
               />
             </div>
-
+            {errors.TEL_PER && <span className="error-message">{errors.TEL_PER}</span>}
             <div className="form-group">
               <label>Correo electrónico: <span className="required">*</span></label>
               <input
@@ -363,8 +483,11 @@ const RegistroEstudiante = () => {
                 placeholder="ejemplo@uta.edu.ec"
                 required
               />
-              {isUta && (
+              {tipoUsuario === "estudiante" && isUta && (
                 <p className="input-hint">ID Estudiante: {formData.ID_EST}</p>
+              )}
+              {tipoUsuario === "autoridad" && isUta && (
+                <p className="input-hint">ID autoridad: {formData.ID_AUT}</p>
               )}
             </div>
 
@@ -384,49 +507,94 @@ const RegistroEstudiante = () => {
           </div>
 
           {/* datos estudiante */}
+
           {isUta && (
             <div className="columna derecha">
-
-
               <div className="form-group">
-                <label>Información de Estudiante</label>
-                <label>Carrera: <span className="required">*</span></label>
+                <label>Tipo de usuario: <span className="required">*</span></label>
                 <select
-                  name="ID_CAR"
-                  value={formData.ID_CAR}
-                  onChange={handleCarreraChange}
+                  value={tipoUsuario}
+                  onChange={e => setTipoUsuario(e.target.value)}
                   required
                 >
-                  <option value="">Seleccione una carrera</option>
-                  {carreras.map(c => (
-                    <option key={c.ID_CAR} value={c.ID_CAR}>
-                      {c.NOM_CAR}
-                    </option>
-                  ))}
+                  <option value="">Seleccione</option>
+                  <option value="estudiante">Estudiante</option>
+                  <option value="autoridad">Autoridad</option>
                 </select>
               </div>
+              {tipoUsuario === "estudiante" && (
+                <div className="form-group">
+                  <label>Información de Estudiante</label>
+                  <label>Carrera: <span className="required">*</span></label>
+                  <select
+                    name="ID_CAR"
+                    value={formData.ID_CAR}
+                    onChange={handleCarreraChange}
+                    required
+                  >
+                    <option value="">Seleccione una carrera</option>
+                    {carreras.map(c => (
+                      <option key={c.ID_CAR} value={c.ID_CAR}>
+                        {c.NOM_CAR}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {tipoUsuario === "estudiante" && (
+                <div className="form-group">
+                  <label>Nivel: <span className="required">*</span></label>
+                  <select
+                    name="ID_NIV"
+                    value={formData.ID_NIV}
+                    onChange={handleChange}
+                    required
+                    disabled={!formData.ID_CAR}
+                  >
+                    <option value="">Seleccione un nivel</option>
+                    {niveles.map(n => (
+                      <option key={n.ID_NIV} value={n.ID_NIV}>
+                        {n.NOM_NIV}
+                      </option>
+                    ))}
+                  </select>
+                  {!formData.ID_CAR && (
+                    <p className="input-hint">Seleccione una carrera primero</p>
+                  )}
+                </div>
+              )}
 
-              <div className="form-group">
-                <label>Nivel: <span className="required">*</span></label>
-                <select
-                  name="ID_NIV"
-                  value={formData.ID_NIV}
-                  onChange={handleChange}
-                  required
-                  disabled={!formData.ID_CAR}
-                >
-                  <option value="">Seleccione un nivel</option>
-                  {niveles.map(n => (
-                    <option key={n.ID_NIV} value={n.ID_NIV}>
-                      {n.NOM_NIV}
-                    </option>
-                  ))}
-                </select>
-                {!formData.ID_CAR && (
-                  <p className="input-hint">Seleccione una carrera primero</p>
-                )}
-              </div>
+              {tipoUsuario === "autoridad" && (
+                <>
+                  <div className="form-group">
+                    <label>Dirección:</label>
+                    <input type="text" name="DIR_AUT" value={formData.DIR_AUT || ""} onChange={handleChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Cargo:</label>
+                    <input type="text" name="CAR_AUT" value={formData.CAR_AUT || ""} onChange={handleChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Facultad: <span className="required">*</span></label>
+                    <select
+                      name="ID_FAC"
+                      value={formData.ID_FAC}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Seleccione facultad</option>
+                      {facultades.map(f => (
+                        <option key={f.ID_FAC} value={f.ID_FAC}>
+                          {f.ID_FAC}: {f.NOM_FAC}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
             </div>
+
+
           )}
         </div>
 

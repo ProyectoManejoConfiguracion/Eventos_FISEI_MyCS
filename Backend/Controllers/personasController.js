@@ -1,7 +1,5 @@
 const { PERSONAS, ESTUDIANTES, AUTORIDADES, PasswordResetToken } = require('../models');
 
-const { PERSONAS, ESTUDIANTES, AUTORIDADES, PasswordResetToken } = require('../models');
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
@@ -12,10 +10,6 @@ const uploadPath = path.join('C:', 'uploads');
 const crypto = require('crypto');
 const { sendRecoveryEmail } = require('../utils/mailer');
 
-
-
-const crypto = require('crypto');
-const { sendRecoveryEmail } = require('../utils/mailer');
 
 
 
@@ -105,6 +99,7 @@ exports.create = async (req, res) => {
     }
 
     try {
+        console.log("Body recibido en /api/personas:", req.body);
       const { CON_PER, ...rest } = req.body;
       let imagePath = null;
 
@@ -136,6 +131,7 @@ exports.create = async (req, res) => {
         }
       });
     } catch (error) {
+      console.error("Error en create PERSONAS:", error); // <<--- Aquí ve el error real
       res.status(500).json({ error: error.message });
     }
   });
@@ -241,10 +237,13 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const deleted = await PERSONAS.destroy({ where: { id: req.params.id } });
+    const deleted = await PERSONAS.destroy({ where: { CED_PER: req.params.id } });
     if (deleted) res.json({ message: 'Eliminado correctamente' });
     else res.status(404).json({ error: 'No encontrado' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(err);
+    res.status(500).json({ error: err.message }); // <-- muy útil para depurar
   }
 };
+
+
