@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user;
 
   const login = async (email: string, password: string): Promise<User> => {
-    const res = await axios.post('${BACK_URL}/api/personas/login', {
+    const res = await axios.post(`${BACK_URL}/api/personas/login`, {
       email,
       password,
     });
