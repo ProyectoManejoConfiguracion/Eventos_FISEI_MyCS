@@ -6,11 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Asegúrate de que la URL del backend esté configurada correctamente
 import { FaUserAlt } from "react-icons/fa";
 import Recuperacion from "./Recuperacion";
-import { FaUserAlt } from "react-icons/fa";
-import Recuperacion from "./Recuperacion";
 
 const Login = ({ isOpen, closeModal }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -34,7 +31,6 @@ const Login = ({ isOpen, closeModal }) => {
   const handleLogin = async () => {
     try {
       const loggedUser = await login(email, password);
-      const loggedUser = await login(email, password);
       const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
@@ -55,10 +51,8 @@ const Login = ({ isOpen, closeModal }) => {
         draggable: true,
       }).then(() => {
         if (loggedUser?.role == "Admin" || loggedUser?.role == "Docente") {
-        if (loggedUser?.role == "Admin" || loggedUser?.role == "Docente") {
           navigate("/Administrador");
           closeModal();
-        } else if (loggedUser?.role == "Estudiante") {
         } else if (loggedUser?.role == "Estudiante") {
           navigate("/");
           closeModal();
@@ -122,13 +116,6 @@ const Login = ({ isOpen, closeModal }) => {
                 <Recuperacion isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
                 />
               </>
-              <>
-                <button className="login-register-text" onClick={() => setIsModalOpen(true)}>
-                  Recuperar Contraseña
-                </button>
-                <Recuperacion isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
-                />
-              </>
             </div>
 
             <button className="login-button" onClick={handleLogin}>
@@ -138,13 +125,14 @@ const Login = ({ isOpen, closeModal }) => {
 
           <div className="login-register-container">
 
-
             <p className="login-register-text">
               ¿No tienes cuenta?
               <a href="/Restudiante" className="login-register-link">
                 {""}
                 <br></br>
                 Regístrate 
+
+                
               </a>
             </p>
           </div>
