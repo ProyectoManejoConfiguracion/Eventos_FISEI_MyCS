@@ -7,10 +7,12 @@ var _DETALLE_INFORME = require("./DETALLE_INFORME");
 var _ESTUDIANTES = require("./ESTUDIANTES");
 var _EVENTOS = require("./EVENTOS");
 var _FACULTADES = require("./FACULTADES");
+var _HOME = require("./HOME");
 var _INFORMES = require("./INFORMES");
 var _NIVEL = require("./NIVEL");
 var _PAGOS = require("./PAGOS");
 var _PERSONAS = require("./PERSONAS");
+var _PasswordResetTokens = require("./PasswordResetTokens");
 var _REGISTRO_EVENTO = require("./REGISTRO_EVENTO");
 var _REGISTRO_PERSONAS = require("./REGISTRO_PERSONAS");
 var _REQUERIMIENTOS = require("./REQUERIMIENTOS");
@@ -25,10 +27,12 @@ function initModels(sequelize) {
   var ESTUDIANTES = _ESTUDIANTES(sequelize, DataTypes);
   var EVENTOS = _EVENTOS(sequelize, DataTypes);
   var FACULTADES = _FACULTADES(sequelize, DataTypes);
+  var HOME = _HOME(sequelize, DataTypes);
   var INFORMES = _INFORMES(sequelize, DataTypes);
   var NIVEL = _NIVEL(sequelize, DataTypes);
   var PAGOS = _PAGOS(sequelize, DataTypes);
   var PERSONAS = _PERSONAS(sequelize, DataTypes);
+  var PasswordResetTokens = _PasswordResetTokens(sequelize, DataTypes);
   var REGISTRO_EVENTO = _REGISTRO_EVENTO(sequelize, DataTypes);
   var REGISTRO_PERSONAS = _REGISTRO_PERSONAS(sequelize, DataTypes);
   var REQUERIMIENTOS = _REQUERIMIENTOS(sequelize, DataTypes);
@@ -62,6 +66,8 @@ function initModels(sequelize) {
   PERSONAS.hasMany(DETALLE_EVENTOS, { as: "DETALLE_EVENTOs", foreignKey: "CED_AUT"});
   ESTUDIANTES.belongsTo(PERSONAS, { as: "CED_EST_PERSONA", foreignKey: "CED_EST"});
   PERSONAS.hasMany(ESTUDIANTES, { as: "ESTUDIANTEs", foreignKey: "CED_EST"});
+  PasswordResetTokens.belongsTo(PERSONAS, { as: "CED_PER_PERSONA", foreignKey: "CED_PER"});
+  PERSONAS.hasMany(PasswordResetTokens, { as: "PasswordResetTokens", foreignKey: "CED_PER"});
   REGISTRO_PERSONAS.belongsTo(PERSONAS, { as: "CED_PER_PERSONA", foreignKey: "CED_PER"});
   PERSONAS.hasMany(REGISTRO_PERSONAS, { as: "REGISTRO_PERSONAs", foreignKey: "CED_PER"});
   REGISTRO_PERSONAS.belongsTo(REGISTRO_EVENTO, { as: "ID_REG_EVT_REGISTRO_EVENTO", foreignKey: "ID_REG_EVT"});
@@ -82,10 +88,12 @@ function initModels(sequelize) {
     ESTUDIANTES,
     EVENTOS,
     FACULTADES,
+    HOME,
     INFORMES,
     NIVEL,
     PAGOS,
     PERSONAS,
+    PasswordResetTokens,
     REGISTRO_EVENTO,
     REGISTRO_PERSONAS,
     REQUERIMIENTOS,

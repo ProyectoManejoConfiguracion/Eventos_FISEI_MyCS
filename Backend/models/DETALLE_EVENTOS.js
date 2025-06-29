@@ -27,12 +27,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     NOT_DET: {
-      type: DataTypes.DECIMAL(4,2),
-      allowNull: false
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     HOR_DET: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     ARE_DET: {
       type: DataTypes.STRING(40),

@@ -1,12 +1,13 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('ESTUDIANTES', {
-    ID_EST: {
-      type: DataTypes.STRING(10),
+  return sequelize.define('PasswordResetTokens', {
+    id: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    CED_EST: {
+    CED_PER: {
       type: DataTypes.STRING(10),
       allowNull: false,
       references: {
@@ -14,47 +15,41 @@ module.exports = function(sequelize, DataTypes) {
         key: 'CED_PER'
       }
     },
-    ID_NIV: {
-      type: DataTypes.STRING(10),
+    token: {
+      type: DataTypes.STRING(128),
       allowNull: false,
-      references: {
-        model: 'NIVEL',
-        key: 'ID_NIV'
-      }
+      unique: "token"
     },
-    FOT_INS: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    ESTADO: {
-      type: DataTypes.STRING(20),
-      allowNull: true
+    expiresAt: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'ESTUDIANTES',
-    timestamps: false,
+    tableName: 'PasswordResetTokens',
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_EST" },
+          { name: "id" },
         ]
       },
       {
-        name: "CED_EST",
+        name: "token",
+        unique: true,
         using: "BTREE",
         fields: [
-          { name: "CED_EST" },
+          { name: "token" },
         ]
       },
       {
-        name: "ID_NIV",
+        name: "CED_PER",
         using: "BTREE",
         fields: [
-          { name: "ID_NIV" },
+          { name: "CED_PER" },
         ]
       },
     ]

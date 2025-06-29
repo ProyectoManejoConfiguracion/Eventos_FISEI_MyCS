@@ -41,6 +41,10 @@ module.exports = function(sequelize, DataTypes) {
     FEC_FIN: {
       type: DataTypes.DATEONLY,
       allowNull: true
+    },
+    CAR_MOT: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
