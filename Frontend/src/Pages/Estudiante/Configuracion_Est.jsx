@@ -11,7 +11,6 @@ import Swal from "sweetalert2";
 import { BACK_URL } from "../../../config";
 import { useNavigate } from "react-router-dom";
 
-// Hook personalizado para manejo de archivos
 const useFileManager = () => {
   const [cedulaFile, setCedulaFile] = useState(null);
   const [credencialFile, setCredencialFile] = useState(null);
@@ -78,8 +77,7 @@ const useFileManager = () => {
   };
 };
 
-// Hook personalizado para datos del perfil
-const useProfileData = (userId) => {
+const useProfileData = () => {
   const [profileData, setProfileData] = useState({
     nombres: "",
     apellidos: "",
@@ -114,7 +112,10 @@ const useProfileData = (userId) => {
   };
 
   const loadProfileData = async (user) => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setLoadingData(false);
+      return { cedulaUrl: "", credencialUrl: "" };
+    }
     
     setLoadingData(true);
     try {
@@ -122,7 +123,6 @@ const useProfileData = (userId) => {
       const isStudentRole = ['estudiante', 'student'].includes(userRole.toLowerCase());
       setIsStudent(isStudentRole);
 
-      // Cargar datos personales
       const personalResponse = await fetch(`${BACK_URL}/api/personas/${user.id}`);
       if (!personalResponse.ok) throw new Error('Error al cargar datos personales');
       
@@ -137,10 +137,8 @@ const useProfileData = (userId) => {
       let credencialUrl = "";
       let studentData = null;
 
-      // Datos específicos de estudiante
       if (isStudentRole) {
         try {
-          // Datos académicos
           const carreraResponse = await fetch(`${BACK_URL}/api/carrera-conf/${user.id}`);
           if (carreraResponse.ok) {
             const carreraData = await carreraResponse.json();
@@ -151,7 +149,6 @@ const useProfileData = (userId) => {
             }
           }
 
-          // Datos de estudiante
           const studentResponse = await fetch(`${BACK_URL}/api/estudiantes/cedula/${user.id}`);
           if (studentResponse.ok) {
             studentData = await studentResponse.json();
@@ -202,7 +199,6 @@ const useProfileData = (userId) => {
   };
 };
 
-// Componente para mostrar archivos existentes
 const ExistingFileDisplay = ({ fileUrl, type, onView, onDelete, onEdit, fileExists }) => {
   if (!fileUrl) return null;
 
@@ -260,20 +256,11 @@ const ExistingFileDisplay = ({ fileUrl, type, onView, onDelete, onEdit, fileExis
             <FaUpload size={14} />
           </button>
         )}
-        <button
-          type="button"
-          onClick={() => onDelete(type)}
-          className="file-action-btn delete-btn"
-          title="Eliminar referencia"
-        >
-          <FaTrash size={14} />
-        </button>
       </div>
     </div>
   );
 };
 
-// Componente Modal para archivos
 const FileModal = ({ show, onClose, fileUrl, title }) => {
   if (!show) return null;
 
@@ -317,7 +304,6 @@ const FileModal = ({ show, onClose, fileUrl, title }) => {
   );
 };
 
-// Componente principal refactorizado
 const Configuracion_Est = () => {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
@@ -352,27 +338,98 @@ const Configuracion_Est = () => {
   const [cedulaFileExists, setCedulaFileExists] = useState(true);
   const [credencialFileExists, setCredencialFileExists] = useState(true);
   const [verifyingFiles, setVerifyingFiles] = useState(false);
+  
+  // Estados para controlar cambios
+  const [originalData, setOriginalData] = useState({});
+  const [hasChanges, setHasChanges] = useState(false);
 
-  // Cargar datos al montar el componente
+  // Efecto para restaurar el scroll después de cargar
   useEffect(() => {
-    if (user?.id) {
-      loadProfileData(user)
-        .then(({ cedulaUrl, credencialUrl }) => {
-          setExistingCedulaFile(cedulaUrl);
-          setExistingCredencialFile(credencialUrl);
-        })
-        .catch((error) => {
-          Swal.fire({
-            title: 'Error',
-            text: 'No se pudieron cargar los datos del perfil.',
-            icon: 'error',
-            confirmButtonColor: '#581517'
-          });
-        });
-    }
-  }, [user?.id]);
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
-  // Verificar archivos existentes
+  // Efecto principal de carga de datos
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        document.body.style.overflow = 'auto';
+        
+        const { cedulaUrl, credencialUrl } = await loadProfileData(user);
+        setExistingCedulaFile(cedulaUrl);
+        setExistingCredencialFile(credencialUrl);
+        
+        setTimeout(() => {
+          document.body.style.overflow = 'auto';
+          document.documentElement.style.overflow = 'auto';
+        }, 100);
+      } catch (error) {
+        console.error('Error loading profile data:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudieron cargar los datos del perfil.',
+          icon: 'error',
+          confirmButtonColor: '#581517'
+        });
+        
+        document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = 'auto';
+      }
+    };
+
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  // Efecto para guardar datos originales cuando se inicia la edición - CORREGIDO
+  useEffect(() => {
+    if (editingProfile && profileData.nombres !== undefined && profileData.nombres !== "") {
+      // Solo establecer originalData si no está ya establecido
+      if (Object.keys(originalData).length === 0) {
+        console.log('Guardando datos originales:', {
+          nombres: profileData.nombres,
+          apellidos: profileData.apellidos,
+          telefono: profileData.telefono
+        });
+        setOriginalData({
+          nombres: profileData.nombres,
+          apellidos: profileData.apellidos,
+          telefono: profileData.telefono
+        });
+      }
+    }
+  }, [editingProfile, profileData.nombres, profileData.apellidos, profileData.telefono, originalData]);
+
+  // Efecto para detectar cambios - CORREGIDO
+  useEffect(() => {
+    if (editingProfile && Object.keys(originalData).length > 0) {
+      const dataChanged = 
+        profileData.nombres.trim() !== originalData.nombres.trim() ||
+        profileData.apellidos.trim() !== originalData.apellidos.trim() ||
+        profileData.telefono.trim() !== originalData.telefono.trim();
+      
+      const filesChanged = cedulaFile !== null || credencialFile !== null;
+      
+      console.log('Detectando cambios:', {
+        dataChanged,
+        filesChanged,
+        current: { nombres: profileData.nombres, apellidos: profileData.apellidos, telefono: profileData.telefono },
+        original: originalData
+      });
+      
+      setHasChanges(dataChanged || filesChanged);
+    } else if (!editingProfile) {
+      setHasChanges(false);
+    }
+  }, [profileData.nombres, profileData.apellidos, profileData.telefono, originalData, cedulaFile, credencialFile, editingProfile]);
+
+  // Efecto para verificar archivos
   useEffect(() => {
     const verifyFiles = async () => {
       if (!existingCedulaFile && !existingCredencialFile) return;
@@ -402,6 +459,11 @@ const Configuracion_Est = () => {
         console.error('Error verificando archivos:', error);
       } finally {
         setVerifyingFiles(false);
+        
+        setTimeout(() => {
+          document.body.style.overflow = 'auto';
+          document.documentElement.style.overflow = 'auto';
+        }, 200);
       }
     };
 
@@ -411,7 +473,6 @@ const Configuracion_Est = () => {
     }
   }, [existingCedulaFile, existingCredencialFile, isStudent, loadingData]);
 
-  // Funciones auxiliares
   const verifyFileExists = async (filePath) => {
     if (!filePath) return false;
     try {
@@ -455,147 +516,145 @@ const Configuracion_Est = () => {
     }
   };
 
-  const deleteExistingFile = async (type) => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: `¿Quieres eliminar la ${type === 'cedula' ? 'cédula' : 'credencial'} actual?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    });
-    
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`${BACK_URL}/api/delete-document/${user?.id}/${type}`);
-        if (type === 'cedula') {
-          setExistingCedulaFile("");
-          setCedulaFileExists(true);
-          setProfileData(prev => ({ ...prev, cedulaArchivo: "" }));
-        } else {
-          setExistingCredencialFile("");
-          setCredencialFileExists(true);
-          setProfileData(prev => ({ ...prev, credencialArchivo: "" }));
-        }
-        Swal.fire('Eliminado', 'El archivo ha sido eliminado correctamente', 'success');
-      } catch (error) {
-        console.error('Error deleting file:', error);
-        Swal.fire('Error', 'No se pudo eliminar el archivo', 'error');
+  const handleProfileSave = async () => {
+    if (!hasChanges) {
+      Swal.fire({
+        title: 'Sin cambios',
+        text: 'No hay cambios para guardar.',
+        icon: 'info',
+        confirmButtonColor: '#581517'
+      });
+      return;
+    }
+
+    if (!profileData.nombres.trim()) {
+      Swal.fire({
+        title: 'Error',
+        text: 'El nombre es obligatorio.',
+        icon: 'error',
+        confirmButtonColor: '#581517'
+      });
+      return;
+    }
+
+    if (!profileData.apellidos.trim()) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Los apellidos son obligatorios.',
+        icon: 'error',
+        confirmButtonColor: '#581517'
+      });
+      return;
+    }
+
+    try {
+      setError("");
+      setVerifyingFiles(true);
+
+      if (!personaCompleteData) {
+        throw new Error('No se pudieron cargar los datos completos de la persona');
       }
+
+      const personaFormData = new FormData();
+      personaFormData.append('CED_PER', profileData.numeroCedula || personaCompleteData.CED_PER);
+      personaFormData.append('NOM_PER', profileData.nombres.trim());
+      personaFormData.append('APE_PER', profileData.apellidos.trim());
+      personaFormData.append('TEL_PER', profileData.telefono.trim() || personaCompleteData.TEL_PER);
+      personaFormData.append('COR_PER', profileData.email || personaCompleteData.COR_PER);
+      personaFormData.append('FOT_PER', personaCompleteData.FOT_PER || '');
+      personaFormData.append('EST_PER', personaCompleteData.EST_PER || 'PENDIENTE');
+      
+      if (cedulaFile) {
+        personaFormData.append('FOT_CED', cedulaFile);
+      }
+
+      const personasResponse = await axios.put(
+        `${BACK_URL}/api/personas/${user?.id}`,
+        personaFormData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+      );
+
+      if (isStudent && credencialFile) {
+        const estudianteFormData = new FormData();
+        estudianteFormData.append('FOT_INS', credencialFile);
+        await axios.put(
+          `${BACK_URL}/api/estudiantes/upload/${user?.id}`,
+          estudianteFormData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          }
+        );
+      }
+
+      Swal.fire({
+        title: "Perfil actualizado con éxito",
+        icon: "success",
+        confirmButtonColor: '#581517'
+      });
+
+      // Resetear estados
+      setEditingProfile(false);
+      setHasChanges(false);
+      clearFiles();
+      setOriginalData({}); // Limpiar originalData
+      
+      // Actualizar archivos existentes si se subieron nuevos
+      if (personasResponse?.data?.FOT_CED) {
+        setExistingCedulaFile(`${BACK_URL}/${personasResponse.data.FOT_CED.replace(/\\/g, "/")}`);
+        setCedulaFileExists(true);
+      }
+
+      if (isStudent && credencialFile) {
+        const studentResponse = await fetch(`${BACK_URL}/api/estudiantes/cedula/${user?.id}`);
+        if (studentResponse.ok) {
+          const updatedStudent = await studentResponse.json();
+          if (updatedStudent.FOT_INS) {
+            setExistingCredencialFile(`${BACK_URL}/${updatedStudent.FOT_INS.replace(/\\/g, "/")}`);
+            setCredencialFileExists(true);
+          }
+        }
+      }
+      
+      setPersonaCompleteData(personasResponse.data);
+      await refreshUser();
+
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      Swal.fire({
+        title: "Error",
+        text: error?.response?.data?.error || error.message || "Ocurrió un error al actualizar el perfil.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setVerifyingFiles(false);
     }
   };
-
-  const handleProfileSave = async () => {
-  try {
-    setError("");
-    setVerifyingFiles(true);
-
-    if (!personaCompleteData) {
-      throw new Error('No se pudieron cargar los datos completos de la persona');
-    }
-
-    // 1. SUBIDA DE ARCHIVOS (si hay archivo nuevo)
-    let fotoCedulaPath = personaCompleteData.FOT_CED;
-    if (cedulaFile) {
-      // Aquí deberías tener un endpoint para subir archivos, ej: /api/upload
-      // Esto es solo un ejemplo, ajusta según tu backend de subida:
-      const cedulaForm = new FormData();
-      cedulaForm.append('file', cedulaFile);
-      const cedulaUpload = await axios.post(`${BACK_URL}/api/upload`, cedulaForm, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      fotoCedulaPath = cedulaUpload.data.path; // ajusta según la respuesta de tu backend
-    }
-
-    // 2. PUT PERSONA (solo JSON, con path del archivo)
-    const personaPayload = {
-      CED_PER: profileData.numeroCedula || personaCompleteData.CED_PER,
-      NOM_PER: profileData.nombres || personaCompleteData.NOM_PER,
-      APE_PER: profileData.apellidos || personaCompleteData.APE_PER,
-      TEL_PER: profileData.telefono || personaCompleteData.TEL_PER,
-      COR_PER: profileData.email || personaCompleteData.COR_PER,
-      CON_PER: profileData.contra || personaCompleteData.CON_PER,
-      FOT_PER: personaCompleteData.FOT_PER,
-      EST_PER: personaCompleteData.EST_PER || 'PENDIENTE',
-      FOT_CED: fotoCedulaPath || null
-    };
-
-    const personasResponse = await axios.put(
-      `${BACK_URL}/api/personas/${user?.id}`,
-      personaPayload
-    );
-
-    // 3. PUT ESTUDIANTE (si corresponde, solo para credencial)
-    if (isStudent && studentCompleteData) {
-      let credencialPath = studentCompleteData.FOT_INS;
-      if (credencialFile) {
-        // Subir archivo de credencial
-        const credencialForm = new FormData();
-        credencialForm.append('file', credencialFile);
-        const credencialUpload = await axios.post(`${BACK_URL}/api/upload`, credencialForm, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-        credencialPath = credencialUpload.data.path; // ajusta según la respuesta de tu backend
-      }
-
-      const estudiantePayload = {
-        ID_EST: studentCompleteData.ID_EST,
-        CED_EST: studentCompleteData.CED_EST || user?.id,
-        ID_NIV: studentCompleteData.ID_NIV,
-        FOT_INS: credencialPath || null,
-        ESTADO: studentCompleteData.ESTADO
-      };
-
-      await axios.put(
-        `${BACK_URL}/api/estudiantes/cedula/${user?.id}`,
-        estudiantePayload
-      );
-    }
-
-    Swal.fire({
-      title: "Perfil actualizado con éxito",
-      icon: "success",
-      draggable: true,
-    });
-
-    setEditingProfile(false);
-    clearFiles();
-
-    // Actualizar URLs de archivos localmente
-    if (fotoCedulaPath) {
-      setExistingCedulaFile(`${BACK_URL}/${fotoCedulaPath.replace(/\\/g, "/")}`);
-      setCedulaFileExists(true);
-    }
-    if (isStudent && credencialFile && studentCompleteData) {
-      setExistingCredencialFile(`${BACK_URL}/${studentCompleteData.FOT_INS.replace(/\\/g, "/")}`);
-      setCredencialFileExists(true);
-    }
-
-    setPersonaCompleteData(personasResponse.data);
-    await refreshUser();
-  } catch (error) {
-    console.error('Error saving profile:', error);
-    Swal.fire({
-      title: "Error",
-      text: error.message || "Ocurrió un error al actualizar el perfil.",
-      icon: "error",
-      confirmButtonColor: "#d33",
-    });
-  } finally {
-    setVerifyingFiles(false);
-  }
-};
 
   const handleCancelEdit = () => {
+    // Restaurar datos originales
+    if (Object.keys(originalData).length > 0) {
+      console.log('Restaurando datos originales:', originalData);
+      setProfileData(prev => ({
+        ...prev,
+        nombres: originalData.nombres,
+        apellidos: originalData.apellidos,
+        telefono: originalData.telefono
+      }));
+    }
+    
     setEditingProfile(false);
+    setHasChanges(false);
     clearFiles();
+    setOriginalData({}); // Limpiar originalData
   };
 
+  // Mostrar loading mientras se cargan los datos
   if (loadingData) {
     return (
-      <div className="perfil-page-full">
+      <div className="perfil-page-full" style={{ overflow: 'auto', height: 'auto' }}>
         <div className="perfil-card">
           <div className="loading-container">
             <p>Cargando datos del perfil...</p>
@@ -605,8 +664,22 @@ const Configuracion_Est = () => {
     );
   }
 
+  // Si no hay user, mostrar mensaje
+  if (!user) {
+    return (
+      <div className="perfil-page-full" style={{ overflow: 'auto', height: 'auto' }}>
+        <div className="perfil-card">
+          <div className="loading-container">
+            <p>No se pudo cargar la información del usuario.</p>
+            <button onClick={() => navigate("/")}>Ir al inicio</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="perfil-page-full">
+    <div className="perfil-page-full" style={{ overflow: 'auto', minHeight: '100vh' }}>
       <div className="perfil-card">
         <button
           className="perfil-back-btn"
@@ -649,7 +722,12 @@ const Configuracion_Est = () => {
             </button>
           ) : (
             <div className="perfil-edit-actions">
-              <button onClick={handleProfileSave} className="perfil-guardar-btn">
+              <button 
+                onClick={handleProfileSave} 
+                className={`perfil-guardar-btn ${!hasChanges ? 'disabled' : ''}`}
+                disabled={!hasChanges}
+                title={!hasChanges ? 'No hay cambios para guardar' : 'Guardar cambios'}
+              >
                 <FaSave style={{ marginRight: 6 }} /> Guardar
               </button>
               <button onClick={handleCancelEdit} className="perfil-cancelar-btn">
@@ -659,8 +737,21 @@ const Configuracion_Est = () => {
           )}
         </div>
 
+        {editingProfile && (
+          <div className="changes-indicator">
+            {hasChanges ? (
+              <div className="has-changes">
+                <span>✓ Hay cambios sin guardar</span>
+              </div>
+            ) : (
+              <div className="no-changes">
+                <span>No hay cambios</span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="perfil-info-section">
-          {/* Información Personal */}
           <div className="perfil-section">
             <h3 className="perfil-section-title">
               <FaUser className="perfil-section-icon" />
@@ -723,7 +814,6 @@ const Configuracion_Est = () => {
             </div>
           </div>
 
-          {/* Información de Identificación */}
           <div className="perfil-section">
             <h3 className="perfil-section-title">
               <FaIdCard className="perfil-section-icon" />
@@ -738,7 +828,6 @@ const Configuracion_Est = () => {
               </div>
             </div>
 
-            {/* Archivo de cédula */}
             {existingCedulaFile && !editingProfile && (
               <div className="perfil-file-section">
                 <h4 className="file-section-title">Documento de Cédula</h4>
@@ -746,7 +835,6 @@ const Configuracion_Est = () => {
                   fileUrl={existingCedulaFile}
                   type="cedula"
                   onView={viewExistingFile}
-                  onDelete={deleteExistingFile}
                   onEdit={() => setEditingProfile(true)}
                   fileExists={cedulaFileExists}
                 />
@@ -764,7 +852,6 @@ const Configuracion_Est = () => {
                     fileUrl={existingCedulaFile}
                     type="cedula"
                     onView={viewExistingFile}
-                    onDelete={deleteExistingFile}
                     onEdit={() => {}}
                     fileExists={cedulaFileExists}
                   />
@@ -791,7 +878,6 @@ const Configuracion_Est = () => {
             )}
           </div>
 
-          {/* Información Académica - Solo para estudiantes */}
           {isStudent && (
             <div className="perfil-section">
               <h3 className="perfil-section-title">
@@ -813,7 +899,6 @@ const Configuracion_Est = () => {
                 </div>
               </div>
 
-              {/* Archivo de credencial estudiantil */}
               {existingCredencialFile && !editingProfile && (
                 <div className="perfil-file-section">
                   <h4 className="file-section-title">Credencial Estudiantil</h4>
@@ -821,7 +906,6 @@ const Configuracion_Est = () => {
                     fileUrl={existingCredencialFile}
                     type="credencial"
                     onView={viewExistingFile}
-                    onDelete={deleteExistingFile}
                     onEdit={() => setEditingProfile(true)}
                     fileExists={credencialFileExists}
                   />
@@ -839,7 +923,6 @@ const Configuracion_Est = () => {
                       fileUrl={existingCredencialFile}
                       type="credencial"
                       onView={viewExistingFile}
-                      onDelete={deleteExistingFile}
                       onEdit={() => {}}
                       fileExists={credencialFileExists}
                     />
@@ -869,7 +952,6 @@ const Configuracion_Est = () => {
         </div>
       </div>
 
-      {/* Modales para ver archivos */}
       <FileModal
         show={showCedulaModal}
         onClose={() => setShowCedulaModal(false)}
