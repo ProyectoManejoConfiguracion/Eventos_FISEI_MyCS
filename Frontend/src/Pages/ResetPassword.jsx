@@ -13,14 +13,21 @@ export default function ResetPassword() {
     const navigate = useNavigate();
 
     const handleReset = async () => {
-        if (password.length < 6) {
-            Swal.fire("Error", "La contraseña debe tener al menos 6 caracteres.", "error");
+        if (password.length < 8) {
+            Swal.fire("Error", "La contraseña debe tener al menos 8 caracteres.", "error");
             return;
         }
         if (password !== password2) {
             Swal.fire("Error", "Las contraseñas no coinciden.", "error");
             return;
         }
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+            Swal.fire("La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, un número y un carácter especial.");
+            return;
+        }
+
         try {
             const res = await fetch(`${BACK_URL}/api/auth/reset-password`, {
                 method: "POST",
