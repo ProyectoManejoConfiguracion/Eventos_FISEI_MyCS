@@ -6,6 +6,9 @@ import {
   FaCog,
   FaRegClock,
   FaChevronDown,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaImage,
 } from "react-icons/fa";
 import "../Styles/Estudiante.css";
 import { useAuth } from "../auth/AuthContext";
@@ -13,17 +16,18 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { MdWavingHand, MdExitToApp } from "react-icons/md";
 import { BACK_URL } from "../../config";
-import ModalConstruccion from "../Components/modals/Construccion";
+import ModalDetalles from "../Components/modals/ModalDetalles";
 
 const Estudiante = () => {
   const { user, logout } = useAuth();
   const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [imageErrors, setImageErrors] = useState(new Set());
   const navigate = useNavigate();
   const location = useLocation();
-  const cedula = user?.cedula;
 
   const handleLogout = async () => {
     setMenuOpen(false);
@@ -59,13 +63,97 @@ const Estudiante = () => {
   };
 
   const badgeEstado = (categoria) => {
-    switch (categoria) {
+    switch (categoria?.toUpperCase()) {
       case "CURSO":
         return "badge-amarillo";
+      case "SEMINARIO":
       case "SEMINARIOS":
         return "badge-verde";
+      case "TALLER":
+        return "badge-azul";
+      case "CONFERENCIA":
+        return "badge-morado";
       default:
         return "badge-gris";
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Fecha no disponible";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const getTipoEvento = (tipEvt) => {
+    const tipos = {
+      'C': 'Curso',
+      'S': 'Seminario',
+      'T': 'Taller',
+      'CF': 'Conferencia',
+      'W': 'Workshop'
+    };
+    return tipos[tipEvt] || tipEvt || 'Evento';
+  };
+
+  const getImageUrl = (evento) => {
+    if (evento.FOT_EVT) {
+      if (evento.FOT_EVT.startsWith('http')) {
+        return evento.FOT_EVT;
+      }
+      return `${BACK_URL}/${evento.FOT_EVT.replace(/\\/g, "/")}`;
+    }
+    
+    if (evento.imagen) {
+      if (evento.imagen.startsWith('http')) {
+        return evento.imagen;
+      }
+      return `${BACK_URL}/${evento.imagen.replace(/\\/g, "/")}`;
+    }
+    
+    if (evento.foto) {
+      if (evento.foto.startsWith('http')) {
+        return evento.foto;
+      }
+      return `${BACK_URL}/${evento.foto.replace(/\\/g, "/")}`;
+    }
+    
+    return null;
+  };
+
+  const handleImageError = (eventoId) => {
+    setImageErrors(prev => new Set([...prev, eventoId]));
+  };
+
+  const ImagePlaceholder = ({ titulo }) => (
+    <div className="curso-imagen-placeholder">
+      <FaImage className="placeholder-icon" />
+      <span className="placeholder-text">{titulo || 'Sin imagen'}</span>
+    </div>
+  );
+
+  const handleVerDetalles = async (item) => {
+    try {
+      const eventoId = item.curso?.id || item.curso?.ID_EVT || item.ID_EVT;
+      if (eventoId) {
+        const response = await fetch(`${BACK_URL}/api/eventos/${eventoId}`);
+        if (response.ok) {
+          const eventoDetalle = await response.json();
+          setSelectedItem({ ...item, detalles: eventoDetalle });
+        } else {
+          setSelectedItem(item);
+        }
+      } else {
+        setSelectedItem(item);
+      }
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error al cargar detalles:', error);
+      setSelectedItem(item);
+      setShowModal(true);
     }
   };
 
@@ -75,21 +163,46 @@ const Estudiante = () => {
       <span>Cargando cursos...</span>
     </div>
   );
-const fotoUrl = user?.img
-  ? `${BACK_URL}/${user?.img.replace(/\\/g, "/")}`
-  : user?.photo ||
-    "https://ui-avatars.com/api/?name=" +
-      encodeURIComponent(`${user?.name || ""} ${user?.lastname || ""}`);
+
+  const fotoUrl = user?.img
+    ? `${BACK_URL}/${user?.img.replace(/\\/g, "/")}`
+    : user?.photo ||
+      "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(`${user?.name || ""} ${user?.lastname || ""}`);
 
   useEffect(() => {
-  if (!user?.id) return; 
-  setLoading(true);
-  fetch(`${BACK_URL}/api/cursos/${user.id}`)
-    .then((res) => res.json())
-    .then((data) => setCursos(data))
-    .catch(() => setCursos([]))
-    .finally(() => setLoading(false));
-}, [user?.id]);
+    if (!user?.id) return;
+    setLoading(true);
+    
+    fetch(`${BACK_URL}/api/cursos/${user.id}`)
+      .then((res) => res.json())
+      .then(async (data) => {
+        const cursosConImagenes = await Promise.all(
+          data.map(async (item) => {
+            try {
+              const eventoId = item.curso?.id || item.curso?.ID_EVT || item.ID_EVT;
+              if (eventoId) {
+                const response = await fetch(`${BACK_URL}/api/eventos/${eventoId}`);
+                if (response.ok) {
+                  const eventoDetalle = await response.json();
+                  return {
+                    ...item,
+                    curso: { ...item.curso, ...eventoDetalle }
+                  };
+                }
+              }
+              return item;
+            } catch (error) {
+              console.error(`Error cargando detalles del evento ${eventoId}:`, error);
+              return item;
+            }
+          })
+        );
+        setCursos(cursosConImagenes);
+      })
+      .catch(() => setCursos([]))
+      .finally(() => setLoading(false));
+  }, [user?.id]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -126,7 +239,6 @@ const fotoUrl = user?.img
               onClick={() => setMenuOpen((open) => !open)}
             >
               <img src={fotoUrl} alt="Perfil" className="avatar-img" />
-
               <FaChevronDown className="chevron-icon" />
             </div>
             {menuOpen && (
@@ -144,6 +256,7 @@ const fotoUrl = user?.img
           </div>
         </div>
       </header>
+
       {location.pathname !== "/Estudiante/Configuracion" && (
         <main className="main-content-est">
           <Outlet />
@@ -154,58 +267,100 @@ const fotoUrl = user?.img
             ) : !Array.isArray(cursos) || cursos.length === 0 ? (
               <div className="sin-cursos-msg">
                 No tienes cursos por el momento
-                
               </div>
             ) : (
               <div className="cursos-grid">
-                {cursos.map((item, idx) => (
-                  <div className="curso-card" key={item.curso?.id || idx}>
-                    <div className="curso-header">
-                      <h2 className="curso-nombre">{item.curso?.nombre}</h2>
-                      <span
-                        className={`curso-estado ${badgeEstado(
-                          item.curso?.categoria
-                        )}`}
-                      >
-                        {item.curso?.categoria}
-                      </span>
-                    </div>
+                {cursos.map((item, idx) => {
+                  const evento = item.curso || item;
+                  const eventoId = evento.id || evento.ID_EVT || idx;
+                  const imagenUrl = getImageUrl(evento);
+                  const hasImageError = imageErrors.has(eventoId);
+                  const titulo = evento.nombre || evento.NOM_EVT || 'Sin título';
+                  
+                  return (
+                    <div className="curso-card" key={eventoId}>
+                      <div className="curso-imagen-container">
+                        {imagenUrl && !hasImageError ? (
+                          <div className="curso-imagen">
+                            <img 
+                              src={imagenUrl} 
+                              alt={titulo}
+                              onError={() => handleImageError(eventoId)}
+                              loading="lazy"
+                            />
+                          </div>
+                        ) : (
+                          <ImagePlaceholder titulo={titulo} />
+                        )}
+                      </div>
+                      
+                      <div className="curso-content">
+                        <div className="curso-header">
+                          <h2 className="curso-nombre">
+                            {titulo}
+                          </h2>
+                          <span
+                            className={`curso-estado ${badgeEstado(
+                              evento.categoria || getTipoEvento(evento.TIP_EVT)
+                            )}`}
+                          >
+                            {evento.categoria || getTipoEvento(evento.TIP_EVT)}
+                          </span>
+                        </div>
 
-                    <div className="curso-instructor">
-                      <FaBookOpen className="curso-icon" />
-                      <span>{item.curso?.area}</span>
-                    </div>
+                        {evento.SUB_EVT && (
+                          <p className="curso-subtitulo">{evento.SUB_EVT}</p>
+                        )}
 
-                    <div className="curso-progreso">
-                      <label>
-                        Horas: <b>{item.curso?.horas}</b>
-                      </label>
-                      <div className="curso-barra">
-                        <div
-                          className="curso-barra-inner"
-                          style={{ width: "100%" }}
-                        ></div>
+                        <div className="curso-info-grid">
+                          <div className="curso-info-item">
+                            <FaBookOpen className="curso-icon" />
+                            <span>Área: {evento.area || evento.CAR_MOT || 'No especificada'}</span>
+                          </div>
+
+                          <div className="curso-info-item">
+                            <FaCalendarAlt className="curso-icon" />
+                            <span>Inicio: {formatDate(evento.fecha || evento.FEC_EVT)}</span>
+                          </div>
+
+                          {(evento.FEC_FIN || evento.fechaFin) && (
+                            <div className="curso-info-item">
+                              <FaRegClock className="curso-icon" />
+                              <span>Fin: {formatDate(evento.FEC_FIN || evento.fechaFin)}</span>
+                            </div>
+                          )}
+
+                          {(evento.LUG_EVT || evento.lugar) && (
+                            <div className="curso-info-item">
+                              <FaMapMarkerAlt className="curso-icon" />
+                              <span>Lugar: {evento.LUG_EVT || evento.lugar}</span>
+                            </div>
+                          )}
+
+                          {evento.horas && (
+                            <div className="curso-info-item">
+                              <FaRegClock className="curso-icon" />
+                              <span>Duración: {evento.horas} horas</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="curso-actions">
+                          <button
+                            className="btn-curso"
+                            onClick={() => handleVerDetalles(item)}
+                          >
+                            Ver Detalles
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="curso-info">
-                      <FaRegClock /> <span>Fecha: {item.curso?.fecha}</span>
-                    </div>
-
-                    <div className="curso-actions">
-                      <button
-                        className="btn-curso"
-                        onClick={() => setShowModal(true)}
-                      >
-                        Ver Detalles
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
-            <ModalConstruccion
+            <ModalDetalles
               show={showModal}
+              item={selectedItem}
               onClose={() => setShowModal(false)}
             />
           </div>
