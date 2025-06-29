@@ -1,5 +1,7 @@
 const { PERSONAS, ESTUDIANTES, AUTORIDADES, PasswordResetToken } = require('../models');
 
+const { PERSONAS, ESTUDIANTES, AUTORIDADES, PasswordResetToken } = require('../models');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
@@ -7,6 +9,11 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const uploadPath = path.join('C:', 'uploads');
+const crypto = require('crypto');
+const { sendRecoveryEmail } = require('../utils/mailer');
+
+
+
 const crypto = require('crypto');
 const { sendRecoveryEmail } = require('../utils/mailer');
 
