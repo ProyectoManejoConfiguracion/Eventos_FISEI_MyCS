@@ -4,6 +4,7 @@ const autoridadesController = require('../Controllers/autoridadesController');
 
 router.get('/', autoridadesController.getAll);
 router.get('/:id', autoridadesController.getOne);
+router.get('/cedula/:cedula', autoridadesController.getByCedula);
 router.post('/', autoridadesController.create);
 router.put('/:id', autoridadesController.update);
 router.delete('/:id', autoridadesController.delete);

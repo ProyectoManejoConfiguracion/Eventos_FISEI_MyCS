@@ -39,6 +39,22 @@ exports.create = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getByCedula = async (req, res) => {
+  try {
+    const data = await AUTORIDADES.findOne({
+      where: { CED_PER: req.params.cedula },
+      include: {
+        model: PERSONAS,
+        as: 'CED_PER_PERSONA',
+        attributes: ['NOM_PER', 'APE_PER']
+      }
+    });
+    if (data) res.json(data);
+    else res.status(404).json({ error: 'No encontrado' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.update = async (req, res) => {
   try {
