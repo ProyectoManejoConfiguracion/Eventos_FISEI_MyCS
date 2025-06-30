@@ -6,7 +6,6 @@ import "../../Styles/Usuarios.css";
 import { FaPlus } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
 import { BACK_URL } from "../../../config"; 
-import Swal from "sweetalert2";
 
 const Usuarios = () => {
   const [autoridades, setAutoridades] = useState([]);
@@ -28,40 +27,6 @@ const Usuarios = () => {
   };
 
   const eliminarAutoridad = async (id) => {
-  try {
-    const result = await Swal.fire({
-      title: "¿Estás seguro?",
-      text: "Esta acción eliminará permanentemente la autoridad.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#581517", // color vino
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar"
-    });
-
-    if (result.isConfirmed) {
-      await axios.delete(`${BACK_URL}/api/autoridades/${id}`);
-      await Swal.fire({
-        title: "Eliminado",
-        text: "La autoridad ha sido eliminada exitosamente.",
-        icon: "success",
-        confirmButtonColor: "#581517"
-      });
-      obtenerAutoridades(); // recargar datos
-    }
-  } catch (error) {
-    console.error("Error al eliminar autoridad:", error);
-    await Swal.fire({
-      title: "Error",
-      text: "Hubo un problema al eliminar la autoridad.",
-      icon: "error",
-      confirmButtonColor: "#581517"
-    });
-  }
-};
-
-  {/*const eliminarAutoridad = async (id) => {
     const confirmar = window.confirm(
       "¿Estás seguro de eliminar esta autoridad?"
     );
@@ -73,7 +38,7 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al eliminar autoridad:", error);
     }
-  };*/}
+  };
 
   const abrirModalEdicion = (autoridad) => {
     setAutoridadSeleccionada(autoridad);

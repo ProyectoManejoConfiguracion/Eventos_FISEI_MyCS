@@ -1,17 +1,14 @@
-/* Estilos base */
 body {
-  background: #fff;
-  font-family: "Helvetica", system-ui, sans-serif;
-  line-height: 1.6;
-  color: #444;
+  background: white;
+  
 }
 
-/* Hero Section */
 .tit-container {
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 2rem;
+  margin: auto;
+  overflow: hidden;
+  padding-top: 30px;
 }
 
 .tit-section {
@@ -20,10 +17,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 3rem;
-  border-radius: 0.5rem;
   overflow: hidden;
-  
+  margin-bottom: 60px;
 }
 
 .tit-imagen {
@@ -33,47 +28,42 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0.8;
-  mix-blend-mode: multiply;
 }
 
 .tit-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(88, 21, 23, 0.9) 0%,
-    rgba(88, 21, 23, 0.7) 100%
-  );
+  width: 100%;
+  height: 100%;
+  background-color: rgba(104, 103, 103, 0.9);
   z-index: 2;
 }
 
+
 .tit-content {
-  position: relative;
+  position: absolute;
   z-index: 3;
   text-align: center;
   color: #fff;
-  padding: 0 1.25rem;
+  padding: 0 20px;
   max-width: 800px;
 }
 
 .tit-title {
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .tit-subtitle {
   font-size: 1.1rem;
   font-weight: 300;
-  opacity: 0.9;
+  color: #fff;
 }
 
-/* Página de Eventos */
 .eventos-page {
   width: 100%;
   min-height: 100vh;
@@ -81,203 +71,195 @@ body {
   padding: 2rem 0;
 }
 
-/* Grid de Eventos */
-.eventos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+.eventos-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #581517;
+  letter-spacing: 1px;
 }
 
-/* Tarjeta de Evento */
+.eventos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 900px) {
+  .eventos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .eventos-grid {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+}
+
 .evento-card {
   background: #fff;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  border: 1px solid #f0f0f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.07);
+  padding: 2rem;
+  max-width: 400px;
+  margin: 2rem auto;
+  font-family: "Segoe UI", sans-serif;
+  transition: box-shadow 0.2s;
 }
 
 .evento-card:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 4px 16px rgba(88, 21, 23, 0.1);
-  border-color: #581517;
+  box-shadow: 0 4px 24px 0 rgba(88,21,23,0.13);
 }
 
 .evento-title {
   margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
-  color: #000000;
-  font-weight: 600;
+  font-size: 1.5rem;
+  color: #222;
 }
 
-/* Badges - Todos usando variaciones del color principal */
 .evento-badge {
   display: inline-block;
-  border-radius: 0.75rem;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  margin-bottom: 0.75rem;
+  border-radius: 12px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.7rem;
   font-weight: 500;
-  background: rgba(88, 21, 23, 0.1);
-  color: #581517;
-  border: 1px solid rgba(88, 21, 23, 0.2);
 }
 
-/* Imagen del Evento */
+.badge-tomato {
+  background: #ffe0e0;
+  color: tomato;
+}
+.badge-blue {
+  background: #e3e8fd;
+  color: #1976d2;
+}
+.badge-yellow {
+  background: #fffbe0;
+  color: #cfd219;
+}
+.badge-purple {
+  background: #f3e8fd;
+  color: #7919d2;
+}
+.badge-red {
+  background: #fde8e8;
+  color: #d21947;
+}
+.badge-vine {
+  background: #e3fcec;
+  color: #19d276c4;
+}
+.badge-pink {
+  background: #fde3fd;
+  color: #d219c99d;
+}
+.badge-greenwatter {
+  background: #e3fcec;
+  color: #19d276c4;
+}
+.badge-default {
+  background: #eee;
+  color: #333;
+}
+
 .evento-img {
   width: 100%;
-  height: 150px;
-  border-radius: 0.25rem;
-  margin: 0.75rem 0;
+  border-radius: 10px;
+  margin: 0.7rem 0;
   object-fit: cover;
-  background: #f8f8f8;
-  border: 1px solid #eee;
+  max-height: 180px;
+  background: #f7f7f7;
 }
 
 .evento-desc {
-  color: #555;
+  color: #444;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
-  flex-grow: 1;
+  min-height: 48px;
 }
 
-/* Información del Evento */
 .evento-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
   color: #666;
-  font-size: 0.85rem;
+  font-size: 0.97rem;
   margin-bottom: 1rem;
-}
-
-.evento-info i {
-  margin-right: 0.5rem;
-  color: #581517;
 }
 
 .evento-tec {
-  margin-bottom: 1rem;
-  font-size: 0.85rem;
-  color: #555;
+  margin-bottom: 1.2rem;
 }
 
-.evento-tec b {
-  color: #581517;
-}
-
-/* Badges de Tecnología/Tarifas */
 .tec-badge {
   display: inline-block;
-  background: rgba(88, 21, 23, 0.05);
-  color: #581517;
-  border-radius: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  margin: 0 0.25rem 0.25rem 0;
-  border: 1px solid rgba(88, 21, 23, 0.1);
+  background: #f3f6fa;
+  color: #1976d2;
+  border-radius: 8px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.88rem;
+  margin: 0 0.3rem 0.3rem 0;
 }
 
-/* Botones de Acción */
 .evento-actions {
   display: flex;
-  gap: 0.75rem;
-  margin-top: auto;
-}
-
-.btn-detalles, .btn-inscribirse {
-  border: none;
-  border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-  flex: 1;
-  text-align: center;
+  gap: 1rem;
 }
 
 .btn-detalles {
-  background: rgba(88, 21, 23, 0.05);
-  color: #581517;
-  border: 1px solid rgba(88, 21, 23, 0.2);
+  background: #e3e8fd;
+  color: #3f51b5;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
 }
 
 .btn-detalles:hover {
-  background: rgba(88, 21, 23, 0.1);
+  background: #c5cae9;
 }
 
 .btn-inscribirse {
-  background: #581517;
-  color: #fff;
+  background: #e8f5e9;
+  color: #388e3c;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
 }
 
 .btn-inscribirse:hover {
-  background: #4a1214;
+  background: #c8e6c9;
 }
 
-/* Loader */
 .loader-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 200px;
+  margin-top: 80px;
 }
 
 .loader {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #581517;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
   border-radius: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 60px;
+  height: 60px;
   animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .tit-section {
-    height: 250px;
-    margin-bottom: 2rem;
-  }
-  
-  .tit-title {
-    font-size: 2rem;
-  }
-  
-  .eventos-grid {
-    grid-template-columns: 1fr;
-    padding: 0 0.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .tit-section {
-    height: 200px;
-  }
-  
-  .tit-title {
-    font-size: 1.5rem;
-  }
-  
-  .evento-actions {
-    flex-direction: column;
-  }
-  
-  .btn-detalles, .btn-inscribirse {
-    width: 100%;
-  }
 }

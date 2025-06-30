@@ -1,263 +1,96 @@
-/* Notas.css */
-
-/* Estilos generales */
 .notas-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Helvetica', Tahoma, Geneva, Verdana, sans-serif;
-  box-sizing: border-box;
+    padding: 30px;
+    max-width: 1000px;
+    width: 1000px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.notas-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e0e0e0;
+.notas-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
 }
 
-.notas-header h1 {
-  color: #0c0c0c;
-  margin-bottom: 20px;
-  font-size: 28px;
-  text-align: center;
+.acordeon-evento {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-/* Busqueda */
-.busqueda-container {
-  width: 100%;
-  max-width: 1000px;
+.acordeon-header {
+    background-color: #f7f7f7;
+    padding: 15px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    transition: background 0.2s ease;
 }
 
-.busqueda-container input {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+.acordeon-header:hover {
+    background-color: #ececec;
 }
 
-/* Lista de eventos */
-.eventos-lista {
-  display: grid;
- 
-  gap: 20px;
-  margin-top: 20px;
+.acordeon-content {
+    padding: 15px 20px;
+    background-color: #fff;
 }
 
-.evento-card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  border-left: 4px solid #581517;
+.tabla-notas {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
 }
 
-.evento-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.tabla-notas thead {
+    background-color: #5a1616;
+    color: #fff;
 }
 
-.evento-info h2 {
-  color: #333;
-  margin-bottom: 8px;
-  font-size: 18px;
+.tabla-notas th,
+.tabla-notas td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.evento-tipo {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 8px;
+.tabla-notas tr:hover {
+    background-color: #f5f5f5;
 }
 
-.evento-estudiantes {
-  color: #666;
-  font-size: 14px;
-}
-
-.evento-progreso {
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px dashed #ddd;
-  text-align: right;
-  font-weight: bold;
-  color: #581517;
-}
-
-.sin-eventos {
-  text-align: center;
-  color: #666;
-  font-size: 16px;
-  margin-top: 40px;
-}
-
-/* Detalle del evento */
-.detalle-evento {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-}
-
-.detalle-header {
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  position: relative;
-}
-
-.btn-volver {
-  background: none;
-  border: none;
-  color: #581517;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 5px 0;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-.detalle-header h2 {
-  color: #333;
-  margin-bottom: 8px;
-  font-size: 22px;
-}
-
-/* Lista de estudiantes */
-.estudiantes-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.estudiante-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border-radius: 6px;
-  background-color: #f9f9f9;
-  border-left: 3px solid #581517;
-}
-
-.estudiante-info h3 {
-  color: #333;
-  margin-bottom: 5px;
-  font-size: 16px;
-}
-
-.estudiante-cedula {
-  color: #666;
-  font-size: 14px;
-}
-
-/* Notas */
-.nota-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.nota-input {
-  display: flex;
-  flex-direction: column;
-}
-
-.nota-input label {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.nota-input input {
-  width: 80px;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.nota-actual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.nota-actual label {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.nota-actual span {
-  font-weight: bold;
-  color: #581517;
+input[type="number"] {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 .btn-guardar {
-  background-color: #581517;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+    background-color: #27ae60;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
 }
 
 .btn-guardar:hover {
-  background-color: #7a1d1f;
+    background-color: #1d8f4d;
 }
 
-.sin-estudiantes {
-  text-align: center;
-  color: #666;
-  padding: 20px;
-}
-
-.progreso-footer {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-  text-align: right;
-  font-weight: bold;
-  color: #581517;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .estudiante-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  
-  .nota-container {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .eventos-lista {
-    grid-template-columns: 1fr;
-  }
-  .notas-header h1 {
-    font-size: 24px;
-    padding: 3rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .nota-container {
-    flex-wrap: wrap;
-  }
-  
-  .btn-guardar {
-    width: 100%;
-    margin-top: 10px;
-  }
+.sin-eventos {
+    text-align: center;
+    color: #888;
+    margin-top: 40px;
+    font-size: 17px;
 }

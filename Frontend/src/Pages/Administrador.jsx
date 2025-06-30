@@ -1,30 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../assets/logo.png";
 import "../Styles/Administrador.css";
 import { useAuth } from "../auth/AuthContext";
 import Swal from "sweetalert2";
 import { useNavigate, NavLink, Outlet, Link } from "react-router-dom";
 import {
+  FaHome,
   FaUser,
   FaBook,
   FaCalendar,
   FaGlobe,
+  FaCog,
   FaUserAlt,
   FaRegStickyNote,
-  FaBars,
-  FaTimes
 } from "react-icons/fa";
 import { PiCurrencyDollarSimpleFill } from "react-icons/pi";
 
 const Administrador = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     const result = await Swal.fire({
       title: "¿Estás seguro?",
-      text: "¿Quieres cerrar sesión?",
+      text: "¿Queres cerrar sesión?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -49,13 +48,6 @@ const Administrador = () => {
       <header className="header-principal">
         <div className="header-content">
           <div className="header-left">
-            <button 
-              className="menu-toggle" 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              aria-label="Toggle menu"
-            >
-              {sidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
             <Link to="/">
               <img src={logo} alt="Logo" className="header-logo" />
             </Link>
@@ -70,15 +62,7 @@ const Administrador = () => {
         </div>
       </header>
 
-      {/* Overlay para móviles */}
-      {sidebarOpen && (
-        <div 
-          className="sidebar-overlay" 
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      <aside className={`sidebar ${sidebarOpen ? 'active' : ''}`}>
+      <aside className="sidebar">
         <div className="sidebar-profile">
           <div className="profile-avatar">
             <FaUserAlt className="avatar-icon" />
@@ -96,18 +80,17 @@ const Administrador = () => {
                 className={({ isActive }) =>
                   `navbar_items ${isActive ? "estado-activo" : ""}`
                 }
-                onClick={() => setSidebarOpen(false)}
               >
                 <FaUser className="nav-icon" /> Usuarios
               </NavLink>
             </li>
+
             <li>
               <NavLink
                 to="/Administrador/Curso"
                 className={({ isActive }) =>
                   `navbar_items ${isActive ? "estado-activo" : ""}`
                 }
-                onClick={() => setSidebarOpen(false)}
               >
                 <FaBook className="nav-icon" /> Cursos
               </NavLink>
@@ -118,7 +101,6 @@ const Administrador = () => {
                 className={({ isActive }) =>
                   `navbar_items ${isActive ? "estado-activo" : ""}`
                 }
-                onClick={() => setSidebarOpen(false)}
               >
                 <FaCalendar className="nav-icon" /> Eventos
               </NavLink>
@@ -129,7 +111,6 @@ const Administrador = () => {
                 className={({ isActive }) =>
                   `navbar_items ${isActive ? "estado-activo" : ""}`
                 }
-                onClick={() => setSidebarOpen(false)}
               >
                 <FaGlobe className="nav-icon" /> Contenido Web
               </NavLink>
@@ -140,7 +121,6 @@ const Administrador = () => {
                 className={({ isActive }) =>
                   `navbar_items ${isActive ? "estado-activo" : ""}`
                 }
-                onClick={() => setSidebarOpen(false)}
               >
                 <FaRegStickyNote className="nav-icon" /> Notas
               </NavLink>
@@ -151,7 +131,6 @@ const Administrador = () => {
                 className={({ isActive }) =>
                   `navbar_items ${isActive ? "estado-activo" : ""}`
                 }
-                onClick={() => setSidebarOpen(false)}
               >
                 <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
               </NavLink>
