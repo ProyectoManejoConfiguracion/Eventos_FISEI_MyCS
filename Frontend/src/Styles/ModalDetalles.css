@@ -178,6 +178,29 @@
   font-size: 1rem;
 }
 
+.modal-certificado-btn {
+  background-color: #581517;
+  color: white;
+  border: none;
+  padding: 20px 200px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-certificado-btn:hover {
+  background-color: #711e21;
+}
+
+.modal-certificado-btn.disabled {
+  background: #b0b0b0 !important;
+  color: #fff;
+  cursor: not-allowed;
+  border: none;
+}
+
 .modal-dato-label {
   font-weight: 600;
   color: #333;
