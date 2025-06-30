@@ -16,7 +16,7 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { MdWavingHand, MdExitToApp } from "react-icons/md";
 import { BACK_URL } from "../../config";
-import ModalDetalles from "../Components/modals/ModalDetalles";
+import ModalDetalles from "../Components/modals/modalDetalles";
 
 const Estudiante = () => {
   const { user, logout } = useAuth();
@@ -80,6 +80,18 @@ const Estudiante = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return "Fecha no disponible";
+    // Modificar Fecha porque aparece con un dia menos xd.
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateString);
+    if (match) {
+      const [_, year, month, day] = match;
+      const date = new Date(Number(year), Number(month) - 1, Number(day));
+      return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+    // Si no, intenta parsear normalmente
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "Fecha inválida";
     return date.toLocaleDateString('es-ES', {
