@@ -38,6 +38,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(15),
       allowNull: true,
       defaultValue: "PENDIENTE"
+    },
+    CAR_MOT: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
