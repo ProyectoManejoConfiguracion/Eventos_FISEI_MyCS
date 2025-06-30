@@ -311,7 +311,7 @@ const VerEventoModal = ({ isOpen, closeModal, evento }) => {
                   }}>
                     <FaGraduationCap style={{ color: '#581517' }} />
                     <div>
-                      <strong>Nota Mínima Requerida:</strong> {detallesEvento.NOT_DET}
+                      <strong>Nota:</strong> {detallesEvento.NOT_DET}
                     </div>
                   </div>
                 )}
