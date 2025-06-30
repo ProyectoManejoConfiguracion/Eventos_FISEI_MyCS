@@ -165,7 +165,6 @@ const ModalDetalles = ({ show, item, onClose }) => {
     }
   }, [show, item, obtenerNota, obtenerDetalleYDocente]);
 
-  // Nuevo useEffect para asistencia certificado
   useEffect(() => {
     if (show && item && detalleEvento?.ID_DET) {
       obtenerAsistenciaCertificado();
@@ -192,7 +191,7 @@ const ModalDetalles = ({ show, item, onClose }) => {
       } finally {
         setPdfCert(false);
       }
-    }, 100); // Espera a que el componente se renderice
+    }, 100);
   };
 
   if (!show || !item) return null;
@@ -201,7 +200,6 @@ const ModalDetalles = ({ show, item, onClose }) => {
   const nombre = evento.nombre || evento.NOM_EVT || 'Sin nombre';
   const descripcion = evento.descripcion || evento.DES_EVT || 'Sin descripción';
   
-  // Obtener información del docente
   const getDocenteInfo = () => {
     if (loadingDocente) return 'Cargando...';
     if (docenteData?.CED_PER_PERSONA) {
@@ -240,7 +238,6 @@ const ModalDetalles = ({ show, item, onClose }) => {
 
   const nota = getNota();
 
-  // Render para asistencia certificado
   const renderAsistenciaCertificado = () => {
     if (loadingAsistencia) {
       return (
@@ -259,7 +256,7 @@ const ModalDetalles = ({ show, item, onClose }) => {
     );
   };
 
-  // Define tus condiciones
+  // Aqui definimos las condiciones para certificar
   const notaMinima = 7; // hasta ver bien
   const asistenciaMinima = 70; // porcentaje
   const fechaInicio = detalleEvento?.FEC_EVT || evento.FEC_EVT || evento.fechaInicio || "";
@@ -274,19 +271,8 @@ const ModalDetalles = ({ show, item, onClose }) => {
   // Función para parsear la fecha como local
   const parseFechaLocal = (fechaStr) => {
     if (!fechaStr) return null;
-    // Divide la fecha en partes
     const [year, month, day] = fechaStr.split('-');
-    // Crea la fecha usando el constructor local (mes - 1 porque en JS los meses van de 0 a 11)
     return new Date(year, month - 1, day);
-  };
-
-  const parseFechaLocalSumarDia = (fechaStr) => {
-    if (!fechaStr) return null;
-    const [year, month, day] = fechaStr.split('-');
-    const date = new Date(year, month - 1, day);
-    // Suma un día
-    date.setDate(date.getDate() + 1);
-    return date;
   };
 
   return (

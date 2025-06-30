@@ -21,6 +21,7 @@ const Certificado = ({
   tipoCurso       = '',
   descripcion     = '',
   carrera         = '',
+  area             = '',
   chair           = {
     name: 'Ing. Nombre Chair',
     title: 'Cargo del Chair',
@@ -82,7 +83,7 @@ const Certificado = ({
           <strong>Descripción:</strong> {descripcion}
         </p>
         <p>
-          <strong>Área:</strong> {carrera}
+          <strong>Área:</strong> {area}
         </p>
       </div>
 
