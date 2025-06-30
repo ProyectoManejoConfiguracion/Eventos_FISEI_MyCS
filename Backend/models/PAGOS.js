@@ -29,6 +29,10 @@ module.exports = function(sequelize, DataTypes) {
     FOT_PAG: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    EST_PAG: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

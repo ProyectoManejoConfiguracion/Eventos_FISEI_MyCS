@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('AUTORIDADES', {
-    ID_AUT: {
-      type: DataTypes.STRING(10),
+  return sequelize.define('PasswordResetTokens', {
+    id: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
@@ -14,44 +15,38 @@ module.exports = function(sequelize, DataTypes) {
         key: 'CED_PER'
       }
     },
-    DIR_AUT: {
-      type: DataTypes.STRING(30),
-      allowNull: false
-    },
-    CAR_AUT: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    ID_FAC: {
-      type: DataTypes.STRING(10),
+    token: {
+      type: DataTypes.STRING(128),
       allowNull: false,
-      references: {
-        model: 'FACULTADES',
-        key: 'ID_FAC'
-      }
+      unique: "token"
+    },
+    expiresAt: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'AUTORIDADES',
-    timestamps: false,
+    tableName: 'PasswordResetTokens',
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_AUT" },
+          { name: "id" },
         ]
       },
       {
-        name: "ID_FAC",
+        name: "token",
+        unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_FAC" },
+          { name: "token" },
         ]
       },
       {
-        name: "fk_autoridades_personas",
+        name: "PasswordResetTokens_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "CED_PER" },

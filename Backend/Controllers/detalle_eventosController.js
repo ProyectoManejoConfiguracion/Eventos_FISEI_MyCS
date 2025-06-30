@@ -90,7 +90,7 @@ exports.create = async (req, res) => {
         ID_DET: newDetalle.ID_DET
       });
     } else if (evento.MOD_EVT === "PRIVADO") {
-      const niveles = req.body.NIVELES_PRIVADOS;
+      const niveles = req.body.NIVELES;
 
       if (!Array.isArray(niveles) || niveles.length === 0) {
         return res.status(400).json({ error: "Se requieren niveles para eventos privados" });
@@ -115,8 +115,6 @@ exports.create = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 
 exports.update = async (req, res) => {
   try {

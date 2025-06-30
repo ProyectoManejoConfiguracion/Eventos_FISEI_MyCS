@@ -194,11 +194,11 @@
 
 
 .main-content {
-  grid-area: main;
   padding: 2rem;
   overflow-y: auto;
   background-color: #f8f9fa;
   min-height: 0; 
+  min-width: 95%;
 }
 
 .content-placeholder {

@@ -1,18 +1,33 @@
-const { NIVEL } = require('../models');
+const { NIVEL, REGISTRO_EVENTO } = require('../models');
 
-exports.getNivelesPorCarrera = async (req, res) => {
+exports.getNivelesPorDetalle = async (req, res) => {
   try {
+    const { idDet } = req.params;
+
+    const registros = await REGISTRO_EVENTO.findAll({
+      where: { ID_DET: idDet },
+      attributes: ['ID_NIV'],
+      raw: true
+    });
+
+    const idNivs = registros
+      .map(r => r.ID_NIV)
+      .filter(id => id !== null);
+
+    if (idNivs.length === 0) {
+      return res.json([]);
+    }
+
     const niveles = await NIVEL.findAll({
-      where: { ID_CAR: req.params.idCarrera},
+      where: { ID_NIV: idNivs }
     });
 
     res.json(niveles);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener los niveles' });
+    res.status(500).json({ message: 'Error al obtener los niveles del detalle' });
   }
 };
-
 
 exports.getAll = async (req, res) => {
   try {
