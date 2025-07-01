@@ -7,8 +7,7 @@ import Tecnologias from '../Components/Tecnologias';
 import Categorias from '../Components/Home/Carreras';
 
 // CONFIGURACIÓN DE API: Preparado para conexión futura
-// Descomentar cuando el backend esté disponible
-// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_BACK_URL || 'http://localhost:3000';
 
 // Mapeo de iconos
 const ICON_MAP = {
@@ -166,22 +165,9 @@ const DiscoveryHome = () => {
 
   // Función para obtener eventos desde la API (simulada por ahora)
   const fetchEventsFromAPI = async () => {
-    try {
-      // SIMULACIÓN: Esta función será reemplazada con la llamada real a la API
-      // En una implementación real, esto sería:
-      // const response = await fetch(`${API_BASE_URL}/events?status=open&limit=6`);
-      // if (!response.ok) throw new Error('Error al obtener eventos');
-      // return await response.json();
-      
-      // Por ahora, simulamos un delay para imitar la llamada a la API
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Retornamos datos mock
-      return MOCK_EVENTS.filter(event => event.estado === 'abierto').slice(0, 6);
-    } catch (error) {
-      console.error('Error al obtener eventos desde la API:', error);
-      throw error;
-    }
+    const response = await fetch(`${API_BASE_URL}/api/events?status=open&limit=6`);
+    if (!response.ok) throw new Error('Error al obtener eventos');
+    return await response.json();
   };
 
   // Función para obtener eventos por IDs (simulada por ahora)
