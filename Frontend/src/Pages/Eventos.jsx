@@ -10,6 +10,7 @@ import cursosimg from '../assets/Cursos.jpg';
 import ModalInscripcion from "../Components/modals/Inscripcion";
 import { useAuth } from "../auth/AuthContext";
 import { BACK_URL } from "../../config"; 
+import { useLocation } from "react-router-dom";
 
 const badgeColor = (tipo) => {
   switch (tipo) {
@@ -56,6 +57,7 @@ const Eventos = () => {
   const [detalleSel, setDetalleSel] = useState(null);
   const [tarifaSel, setTarifaSel] = useState([]);
   const { user } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     Promise.all([
@@ -72,6 +74,19 @@ const Eventos = () => {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.eventoSeleccionado) {
+      const evento = location.state.eventoSeleccionado;
+      const detalle = getDetalleEvento(evento.ID_EVT);
+      const tarifasEvento = getTarifaEvento(evento.ID_EVT);
+      setEventoSel({ ...evento, FOT_EVT: evento.FOT_EVT });
+      setDetalleSel(detalle);
+      setTarifaSel(tarifasEvento);
+      setModalOpen(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const eventosCombinados = eventos.map((evt) => {
     const det = detalles.find((d) => d.ID_EVT === evt.ID_EVT) || {};
