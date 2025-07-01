@@ -21,6 +21,14 @@ module.exports = function(sequelize, DataTypes) {
         model: 'NIVEL',
         key: 'ID_NIV'
       }
+    },
+    FOT_INS: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    ESTADO: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,
@@ -36,17 +44,17 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "CED_EST",
-        using: "BTREE",
-        fields: [
-          { name: "CED_EST" },
-        ]
-      },
-      {
         name: "ID_NIV",
         using: "BTREE",
         fields: [
           { name: "ID_NIV" },
+        ]
+      },
+      {
+        name: "fk_estudiantes_personas",
+        using: "BTREE",
+        fields: [
+          { name: "CED_EST" },
         ]
       },
     ]
