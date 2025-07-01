@@ -2,9 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import '../../Styles/Features.css';
 import { FaChalkboardTeacher, FaArrowRight } from 'react-icons/fa';
 
-const API_BASE_URL = import.meta.env.VITE_BACK_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_BACK_URL;
 
-// Componente para mostrar la imagen de cada feature con tamaño controlado
 const FeatureImage = React.memo(({ src, alt, title }) => (
   <div className="feature-image-container">
     <img
@@ -16,7 +15,6 @@ const FeatureImage = React.memo(({ src, alt, title }) => (
   </div>
 ));
 
-// Componente para CTA (llamado a la acción, opcional)
 const FeatureCTA = React.memo(({ text, link }) => {
   if (!text) return null;
   return (
@@ -27,7 +25,6 @@ const FeatureCTA = React.memo(({ text, link }) => {
   );
 });
 
-// Card de cada feature
 const FeatureCard = React.memo(({ feature, index }) => (
   <article
     className={`feature-card ${index % 2 !== 0 ? 'feature-card--reverse' : ''} visible`}
@@ -52,7 +49,6 @@ const FeatureCard = React.memo(({ feature, index }) => (
   </article>
 ));
 
-// Loader y error
 const LoadingSpinner = () => (
   <div className="loading-container">
     <div className="spinner"></div>
@@ -71,7 +67,6 @@ const ErrorState = ({ error, onRetry }) => (
   </div>
 );
 
-// Floating elements decorativos (opcional, puedes quitar si no quieres)
 const FloatingElements = React.memo(({ count }) => {
   const elements = useMemo(
     () =>
@@ -97,7 +92,6 @@ const DetalleFeature = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Cargar datos del backend
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/home?section=feature`)
       .then(res => {
@@ -119,7 +113,6 @@ const DetalleFeature = () => {
   if (error) return <ErrorState error={error} onRetry={() => window.location.reload()} />;
   if (!features.length) return <div>No hay características para mostrar.</div>;
 
-  // Puedes ajustar esto si quieres CTA o floatingElements (o comentar/quitar)
   const sectionContent = {
     id: "experiencia-discovery",
     title: "¿Por qué elegirnos?",
@@ -129,9 +122,6 @@ const DetalleFeature = () => {
 
   return (
     <section className="features-section" id={sectionContent.id}>
-      {/* Floating elements decorativos, opcional */}
-      {/* <FloatingElements count={3} /> */}
-
       <div className="section-container">
         <header className="section-header">
           <h2>{sectionContent.title}</h2>

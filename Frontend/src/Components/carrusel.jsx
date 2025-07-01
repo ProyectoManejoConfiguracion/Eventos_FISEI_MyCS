@@ -14,7 +14,6 @@ function Carrusel() {
 
   const timerRef = useRef(null);
 
-  // Cargar imágenes del backend (misma lógica que PARTE 1)
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/home?section=carousel`)
       .then(res => {
@@ -32,7 +31,6 @@ function Carrusel() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Autoplay
   useEffect(() => {
     if (!isPaused && imagenes.length > 1) {
       timerRef.current = setInterval(() => {
@@ -42,7 +40,6 @@ function Carrusel() {
     return () => clearInterval(timerRef.current);
   }, [isPaused, imagenes.length]);
 
-  // Navegación
   const handleNext = useCallback(() => {
     if (imagenes.length === 0) return;
     setIsTransitioning(true);
@@ -59,7 +56,6 @@ function Carrusel() {
 
   const handleDotClick = (idx) => setCurrent(idx);
 
-  // Teclado
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') handlePrev();
@@ -94,7 +90,6 @@ function Carrusel() {
     );
   }
 
-  // Render principal
   return (
     <div
       className='discovery-carousel'
