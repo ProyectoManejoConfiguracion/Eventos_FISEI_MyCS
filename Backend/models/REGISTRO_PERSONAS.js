@@ -57,21 +57,21 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "CED_PER",
+        name: "REGISTRO_PERSONAS_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "CED_PER" },
         ]
       },
       {
-        name: "ID_REG_EVT",
+        name: "REGISTRO_PERSONAS_ibfk_2",
         using: "BTREE",
         fields: [
           { name: "ID_REG_EVT" },
         ]
       },
       {
-        name: "ID_TAR_PER",
+        name: "REGISTRO_PERSONAS_ibfk_3",
         using: "BTREE",
         fields: [
           { name: "ID_TAR_PER" },

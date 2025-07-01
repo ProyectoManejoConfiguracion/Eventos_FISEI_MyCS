@@ -36,14 +36,14 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "ID_DET",
+        name: "REGISTRO_EVENTO_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "ID_DET" },
         ]
       },
       {
-        name: "ID_NIV",
+        name: "REGISTRO_EVENTO_ibfk_2",
         using: "BTREE",
         fields: [
           { name: "ID_NIV" },
