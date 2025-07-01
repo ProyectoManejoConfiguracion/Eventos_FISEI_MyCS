@@ -1,4 +1,3 @@
-/* DiscoveryHome - Estilos principales */
 .discovery-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #581517 0%, #7d1e21 100%);
@@ -386,9 +385,41 @@
   justify-content: center;
 }
 
-/* Responsive Design */
+/* Estilo para el botón "Ver todos los eventos" */
+.view-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
 
+.view-more-button {
+  background: linear-gradient(90deg, #ffd700 0%, #ffb347 100%);
+  color: #581517;
+  border: none;
+  border-radius: 30px;
+  padding: 16px 40px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 24px rgba(88, 21, 23, 0.18);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
 
+.view-more-button:hover,
+.view-more-button:focus {
+  background: linear-gradient(90deg, #ffb347 0%, #ffd700 100%);
+  color: #7d1e21;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 12px 32px rgba(88, 21, 23, 0.28);
+}
+
+.view-more-button:active {
+  transform: scale(0.98);
+}
 
 @media (max-width: 768px) {
   .discovery-container .section-title {
