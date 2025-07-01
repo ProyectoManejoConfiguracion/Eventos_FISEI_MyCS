@@ -2,161 +2,74 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/carrusel.css";
 
+const API_BASE_URL = import.meta.env.VITE_BACK_URL;
+
 function Carrusel() {
-  const [currentImagen, setCurrentImagen] = useState(0);
+  const [imagenes, setImagenes] = useState([]);
+  const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [imagenes, setImagenes] = useState([]);
-  const [carouselConfig, setCarouselConfig] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const carouselRef = useRef(null);
+
   const timerRef = useRef(null);
 
-  // 🔗 CONFIGURACIÓN PARA CONEXIÓN CON BACKEND
-  const API_CONFIG = {
-    // Cambiar esta URL por la de tu API
-    //baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
-    endpoints: {
-      carouselData: '/carousel/slides',
-      carouselConfig: '/carousel/config'
+  // Cargar imágenes del backend (misma lógica que PARTE 1)
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/home?section=carousel`)
+      .then(res => {
+        if (!res.ok) throw new Error('No se pudo cargar el carrusel');
+        return res.json();
+      })
+      .then(data => {
+        setImagenes(Array.isArray(data) ? data : []);
+        setError(null);
+      })
+      .catch(() => {
+        setImagenes([]);
+        setError('No se pudo cargar el carrusel');
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Autoplay
+  useEffect(() => {
+    if (!isPaused && imagenes.length > 1) {
+      timerRef.current = setInterval(() => {
+        setCurrent(prev => (prev + 1) % imagenes.length);
+      }, 5000);
     }
-  };
+    return () => clearInterval(timerRef.current);
+  }, [isPaused, imagenes.length]);
 
-  // 📊 DATOS POR DEFECTO (fallback si no hay conexión)
-  const defaultImagenes = [
-    { 
-      id: 1,
-      imagen: "/assets/carusel1.jpg", 
-      titulo: "EVENTOS Y CURSOS", 
-      descripcion: 'Incentivar la investigación en los campos afines',
-      redirectUrl: '/Eventos'
-    },
-    { 
-      id: 2,
-      imagen: "/assets/carusel2.png", 
-      titulo: 'EVENTOS Y CURSOS', 
-      descripcion: 'Disponibilidad para todas la personas',
-      redirectUrl: '/Eventos'
-    },
-    { 
-      id: 3,
-      imagen: "/assets/carusel3.jpg", 
-      titulo: 'EVENTOS Y CURSOS', 
-      descripcion: 'Compromiso con el desarrollo Tecnológico',
-      redirectUrl: '/Eventos'
-    }
-  ];
-
-  const defaultConfig = {
-    autoPlayInterval: 5000,
-    transitionDuration: 500,
-    enableAutoPlay: true,
-    enableKeyboardNavigation: true,
-    enableMousePause: true,
-    height: '100vh'
-  };
-
-  //CARGAR DATOS DESDE EL BACKEND
-  const fetchCarouselData = async () => {
-    try {
-      setLoading(true);
-      
-      // Cargar slides del carrusel
-      const slidesResponse = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.carouselData}`);
-      const configResponse = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.carouselConfig}`);
-      
-      if (slidesResponse.ok) {
-        const slidesData = await slidesResponse.json();
-        setImagenes(slidesData.slides || defaultImagenes);
-      } else {
-        console.warn('No se pudieron cargar los slides, usando datos por defecto');
-        setImagenes(defaultImagenes);
-      }
-
-      if (configResponse.ok) {
-        const configData = await configResponse.json();
-        setCarouselConfig({ ...defaultConfig, ...configData });
-      } else {
-        console.warn('No se pudo cargar la configuración, usando configuración por defecto');
-        setCarouselConfig(defaultConfig);
-      }
-
-    } catch (error) {
-      console.error('Error al cargar datos del carrusel:', error);
-      setError('Error al cargar el contenido');
-      // Usar datos por defecto en caso de error
-      setImagenes(defaultImagenes);
-      setCarouselConfig(defaultConfig);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // REFRESCAR DATOS (útil para admin panel)
-  const refreshCarouselData = () => {
-    fetchCarouselData();
-  };
-
-  //FUNCIONES DE NAVEGACIÓN
-  const cambiarSlide = useCallback((index) => {
-    if (isTransitioning || imagenes.length === 0) return;
-    setIsTransitioning(true);
-    setCurrentImagen(index);
-    setTimeout(() => setIsTransitioning(false), carouselConfig.transitionDuration || 500);
-  }, [isTransitioning, imagenes.length, carouselConfig.transitionDuration]);
-
+  // Navegación
   const handleNext = useCallback(() => {
     if (imagenes.length === 0) return;
-    cambiarSlide((currentImagen + 1) % imagenes.length);
-  }, [currentImagen, imagenes.length, cambiarSlide]);
+    setIsTransitioning(true);
+    setCurrent(prev => (prev + 1) % imagenes.length);
+    setTimeout(() => setIsTransitioning(false), 500);
+  }, [imagenes.length]);
 
   const handlePrev = useCallback(() => {
     if (imagenes.length === 0) return;
-    cambiarSlide((currentImagen - 1 + imagenes.length) % imagenes.length);
-  }, [currentImagen, imagenes.length, cambiarSlide]);
+    setIsTransitioning(true);
+    setCurrent(prev => (prev - 1 + imagenes.length) % imagenes.length);
+    setTimeout(() => setIsTransitioning(false), 500);
+  }, [imagenes.length]);
 
-  const handleDotClick = (index) => cambiarSlide(index);
+  const handleDotClick = (idx) => setCurrent(idx);
 
-  //FUNCIÓN PARA MANEJAR CLICS EN IMÁGENES (URLs editables desde backend)
-  const handleImageClick = (slide) => {
-    if (slide.redirectUrl) {
-      window.location.href = slide.redirectUrl;
-    }
-  };
-
-  //PARA AUTO-PLAY
+  // Teclado
   useEffect(() => {
-    if (!isPaused && carouselConfig.enableAutoPlay && imagenes.length > 0) {
-      timerRef.current = setInterval(handleNext, carouselConfig.autoPlayInterval || 5000);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [handleNext, isPaused, carouselConfig.enableAutoPlay, carouselConfig.autoPlayInterval, imagenes.length]);
-
-  // NAVEGACIÓN CON TECLADO
-  useEffect(() => {
-    if (!carouselConfig.enableKeyboardNavigation) return;
-
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') handlePrev();
       else if (e.key === 'ArrowRight') handleNext();
-      else if (e.key === ' ') {
-        e.preventDefault();
-        setIsPaused(prev => !prev);
-      }
+      else if (e.key === ' ') setIsPaused(p => !p);
     };
-    
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleNext, handlePrev, carouselConfig.enableKeyboardNavigation]);
+  }, [handleNext, handlePrev]);
 
-  //CARGAR DATOS AL MONTAR EL COMPONENTE
-  useEffect(() => {
-    fetchCarouselData();
-  }, []);
-
-  //ESTADO DE CARGA
   if (loading) {
     return (
       <div className="discovery-carousel loading-state">
@@ -168,13 +81,12 @@ function Carrusel() {
     );
   }
 
-  //ESTADO DE ERROR
-  if (error) {
+  if (error || imagenes.length === 0) {
     return (
       <div className="discovery-carousel error-state">
         <div className="carousel-error">
-          <p>{error}</p>
-          <button onClick={refreshCarouselData} className="retry-button">
+          <p>{error || "No hay imágenes para mostrar"}</p>
+          <button onClick={() => window.location.reload()} className="retry-button">
             Reintentar
           </button>
         </div>
@@ -182,71 +94,57 @@ function Carrusel() {
     );
   }
 
-  //RENDERIZADO PRINCIPAL
+  // Render principal
   return (
-    <div 
+    <div
       className='discovery-carousel'
-      ref={carouselRef}
-      onMouseEnter={() => carouselConfig.enableMousePause && setIsPaused(true)}
-      onMouseLeave={() => carouselConfig.enableMousePause && setIsPaused(false)}
-      role='region'
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
       aria-roledescription="carrusel"
       aria-label="Galería de imágenes"
-      style={{ height: carouselConfig.height || '100vh' }}
-    >    
-      <div 
-        className='discovery-carousel-track' 
-        style={{ 
-          transform: `translateX(-${currentImagen * 100}%)`,
-          transitionDuration: `${carouselConfig.transitionDuration || 500}ms`
+      style={{ height: '100vh' }}
+    >
+      <div
+        className='discovery-carousel-track'
+        style={{
+          transform: `translateX(-${current * 100}%)`,
+          transitionDuration: `${isTransitioning ? 500 : 0}ms`
         }}
       >
-        {imagenes.map((imagen, index) => (
-          <div 
-            className={`discovery-carousel-slide ${index === currentImagen ? 'active' : ''}`}
-            key={imagen.id || index}
-            aria-hidden={index !== currentImagen}
-            onClick={() => handleImageClick(imagen)}
-            style={{ cursor: imagen.redirectUrl ? 'pointer' : 'default' }}
+        {imagenes.map((img, idx) => (
+          <div
+            className={`discovery-carousel-slide ${idx === current ? 'active' : ''}`}
+            key={img.id || idx}
+            aria-hidden={idx !== current}
+            style={{ cursor: img.redirectUrl ? 'pointer' : 'default' }}
+            onClick={() => img.redirectUrl && (window.location.href = img.redirectUrl)}
           >
-            <img 
-              src={imagen.img} 
-              alt={imagen.label || `Slide ${index + 1}`}
+            <img
+              src={`${API_BASE_URL.replace('/api', '')}/${img.imagen}`}
+              alt={img.titulo}
               className='discovery-carousel-image'
-              loading={index === 0 ? 'eager' : 'lazy'}
+              loading={idx === 0 ? 'eager' : 'lazy'}
             />
             <div className='discovery-carousel-caption'>
-              <h3>{imagen.label}</h3>
-              <p>{imagen.desc}</p>
-              {imagen.buttonText && imagen.redirectUrl && (
-                <button 
-                  className="discovery-carousel-button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleImageClick(imagen);
-                  }}
-                >
-                  {imagen.buttonText}
-                </button>
-              )}
-            </div> 
+              <h3>{img.titulo}</h3>
+              <p>{img.descripcion}</p>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Controles de navegación */}
-      <button 
-        className='discovery-carousel-control prev' 
-        onClick={(e) => { e.stopPropagation(); handlePrev() }} 
+      {/* Navegación */}
+      <button
+        className='discovery-carousel-control prev'
+        onClick={handlePrev}
         aria-label="Anterior"
         disabled={imagenes.length <= 1}
       >
         <ChevronLeft size={32} />
       </button>
-      
-      <button 
-        className='discovery-carousel-control next' 
-        onClick={(e) => { e.stopPropagation(); handleNext() }} 
+      <button
+        className='discovery-carousel-control next'
+        onClick={handleNext}
         aria-label='Siguiente'
         disabled={imagenes.length <= 1}
       >
@@ -256,25 +154,15 @@ function Carrusel() {
       {/* Indicadores */}
       {imagenes.length > 1 && (
         <div className="discovery-carousel-indicators">
-          {imagenes.map((_, index) => (
+          {imagenes.map((_, idx) => (
             <button
-              key={index}
-              onClick={(e) => { e.stopPropagation(); handleDotClick(index) }}
-              className={`discovery-carousel-indicator ${index === currentImagen ? 'active' : ''}`}
-              aria-label={`Ir a la imagen ${index + 1}`}
-              aria-current={index === currentImagen}
+              key={idx}
+              onClick={() => handleDotClick(idx)}
+              className={`discovery-carousel-indicator ${idx === current ? 'active' : ''}`}
+              aria-label={`Ir a la imagen ${idx + 1}`}
+              aria-current={idx === current}
             />
           ))}
-        </div>
-      )}
-
-      {/* Información de depuración (solo en desarrollo) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="carousel-debug-info">
-          <button onClick={refreshCarouselData} className="refresh-button">
-            🔄 Refrescar datos
-          </button>
-          <span>Slides: {imagenes.length}</span>
         </div>
       )}
     </div>
