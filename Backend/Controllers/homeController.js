@@ -28,7 +28,9 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const newRecord = await HOME.create(req.body);
+    const { titulo, descripcion, section } = req.body;
+    const imagen = req.file ? req.file.path.replace(/\\/g, "/") : null; // Para rutas en Windows
+    const newRecord = await HOME.create({ titulo, descripcion, section, imagen });
     res.status(201).json(newRecord);
   } catch (error) {
     res.status(500).json({ error: error.message });
