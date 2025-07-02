@@ -1,90 +1,341 @@
+/* Contenedor principal */
 .usuarios-container {
-    padding: 30px;
-    max-width: 1000px;
-    margin: 0 auto;
+    padding: 20px;
+    max-width: 1040px;
     background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    font-family: 'Helvetica', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    transition: box-shadow 0.3s ease;
+    overflow-x: hidden;
+}
+/* Evitar scroll horizontal en body */
+body {
+    overflow-x: hidden;
 }
 
+.usuarios-container:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Título principal */
 .usuarios-container h2 {
     text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
+    color: #131313;
+    margin: 0 0 30px 0;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    position: relative;
 }
 
+.usuarios-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #5a1616, #991d1d);
+    border-radius: 2px;
+}
+
+/* Tabla de autoridades */
 .tabla-autoridades {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 16px;
+    margin-top: 10px;
+    font-size: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
+/* Encabezado de tabla */
 .tabla-autoridades thead {
-    background-color: #5a1616;
-    color: #fff;
+    background: linear-gradient(135deg, #5a1616, #741b1b);
+    color: #ffffff;
 }
 
-.tabla-autoridades th,
-.tabla-autoridades td {
-    padding: 12px 15px;
+.tabla-autoridades th {
+    padding: 9px 14px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+/* Celdas de tabla */
+.tabla-autoridades td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e8e8e8;
+    vertical-align: middle;
+}
+
+/* Filas alternadas */
+.tabla-autoridades tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* Hover en filas */
+.fila-autoridad {
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .fila-autoridad:hover {
-    background-color: #f5f5f5;
+    background-color: #f0f8ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(90, 22, 22, 0.1);
 }
 
+/* Contenedor de botones */
 .btn-container {
     display: flex;
-    justify-content: right;
-    margin-top: 20px;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+    padding: 30px;
+    border-top: 1px solid #e8e8e8;
 }
 
+/* Botón principal */
 .btn_LogingR {
-    background-color: #5a1616;
-    color: white;
+    background: linear-gradient(135deg, #5a1616, #741b1b);
+    color: #ffffff;
     border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
+    padding: 15px 24px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     font-weight: 600;
     font-size: 14px;
-}
-.btn-container:hover .btn_LogingR {
-    background-color: #991d1d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(90, 22, 22, 0.2);
+    position: relative;
+    overflow: hidden;
+    margin: 2px;
 }
 
+.btn_LogingR::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn_LogingR:hover::before {
+    left: 100%;
+}
+
+.btn_LogingR:hover {
+    background: linear-gradient(135deg, #741b1b, #991d1d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(90, 22, 22, 0.3);
+}
+
+.btn_LogingR:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(90, 22, 22, 0.4);
+}
+
+/* Botón eliminar */
 .eliminar-btn {
-  background-color: transparent;
-  border: none;
-  color: #e74c3c; /* rojo */
-  font-size: 1.2rem;
-  margin-left: 10px;
-  cursor: pointer;
-  transition: color 0.2s;
+    background-color: transparent;
+    border: none;
+    color: #e74c3c;
+    font-size: 18px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    margin: 10px;
 }
 
 .eliminar-btn:hover {
-  color: #c0392b;
+    color: #ffffff;
+    background-color: #e74c3c;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
-.tabla-autoridades td button {
-    background-color: #5a1616;
-    color: white;
+.eliminar-btn:active {
+    transform: scale(0.95);
+}
+
+/*Editar boton*/
+.editar-btn {
+    background-color: transparent;
     border: none;
-    padding: 8px 14px;
+    color: #e74c3c;
+    font-size: 18px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    margin: 10px;
+}
+
+.editar-btn:hover {
+    color: #ffffff;
+    background-color: #e74c3c;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.editar-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* Botones dentro de tabla */
+.tabla-autoridades td button {
+    background: linear-gradient(135deg, #5a1616, #741b1b);
+    color: #ffffff;
+    border: none;
+    padding: 10px 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(90, 22, 22, 0.2);
+    min-width: 80px;
 }
 
 .tabla-autoridades td button:hover {
-    background-color: #991d1d;
+    background: linear-gradient(135deg, #741b1b, #991d1d);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(90, 22, 22, 0.3);
+}
+
+.tabla-autoridades td button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(90, 22, 22, 0.4);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .usuarios-container {
+        margin: 10px;
+        padding: 20px;
+        border-radius: 12px;
+    }
+    
+    .usuarios-container h2 {
+        font-size: 1.6rem;
+    }
+    
+    .tabla-autoridades {
+        font-size: 14px;
+    }
+    
+    .tabla-autoridades th,
+    .tabla-autoridades td {
+        padding: 12px 16px;
+    }
+    
+    .btn-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn_LogingR {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .usuarios-container {
+        border-radius: 0;
+        box-shadow: none;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .usuarios-container {
+        padding: 1rem;
+    }
+    
+    .usuarios-container h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding: 40px;
+    }
+    
+    .tabla-autoridades th,
+    .tabla-autoridades td {
+        padding: 10px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .btn-container {
+        justify-content: center;
+    }
+    
+    .btn_LogingR {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .acciones-cell {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .editar-btn, .eliminar-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+}
+
+/* Estilo para pantallas muy pequeñas (ej. móviles) */
+@media (max-width: 480px) {
+    .usuarios-container {
+        padding: 10px 5px;
+    }
+    
+    .usuarios-container h2 {
+        font-size: 1.3rem;
+    }
+    
+    .tabla-autoridades {
+        font-size: 0.8rem;
+    }
+    
+    .tabla-autoridades th,
+    .tabla-autoridades td {
+        padding: 10px 8px;
+    }
+    
+    .btn_LogingR {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
 }

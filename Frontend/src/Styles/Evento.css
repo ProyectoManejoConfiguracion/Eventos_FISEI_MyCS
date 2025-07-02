@@ -25,6 +25,7 @@
   font-size: 1.1rem;
 }
 
+/* Formulario mejorado */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -161,12 +162,14 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Preview de imagen */
 .imagen-preview {
   width: 200px;
   height: 300px;
   /* resto igual */
 }
 
+/* Botón de submit mejorado */
 .form-submit {
   display: flex;
   flex-direction: column;

@@ -28,7 +28,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     ESTADO: {
       type: DataTypes.STRING(20),
-      allowNull: true
+      allowNull: true,
+      defaultValue: "PENDIENTE"
+
     }
   }, {
     sequelize,
