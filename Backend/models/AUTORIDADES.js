@@ -29,6 +29,15 @@ module.exports = function(sequelize, DataTypes) {
         model: 'FACULTADES',
         key: 'ID_FAC'
       }
+    },
+    ESTADO: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      defaultValue: "PENDIENTE"
+    },
+    FOT_CON: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
@@ -44,17 +53,17 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "CED_PER",
-        using: "BTREE",
-        fields: [
-          { name: "CED_PER" },
-        ]
-      },
-      {
         name: "ID_FAC",
         using: "BTREE",
         fields: [
           { name: "ID_FAC" },
+        ]
+      },
+      {
+        name: "fk_autoridades_personas",
+        using: "BTREE",
+        fields: [
+          { name: "CED_PER" },
         ]
       },
     ]

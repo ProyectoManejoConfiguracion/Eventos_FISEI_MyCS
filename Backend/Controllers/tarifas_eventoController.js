@@ -9,6 +9,18 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getAllByIdEvt = async (req, res) => {
+  try {
+    const { id_evt } = req.params;
+    const data = await TARIFAS_EVENTO.findAll({
+      where: { ID_EVT: id_evt }
+    });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getOne = async (req, res) => {
   try {
     const data = await TARIFAS_EVENTO.findByPk(req.params.id);
