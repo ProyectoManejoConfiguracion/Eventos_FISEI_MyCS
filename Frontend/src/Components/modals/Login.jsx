@@ -4,8 +4,11 @@ import logo from "../../assets/logo.png";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Asegúrate de que la URL del backend esté configurada correctamente
+import { FaUserAlt } from "react-icons/fa";
+import Recuperacion from "./Recuperacion";
 
 const Login = ({ isOpen, closeModal }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -111,9 +114,13 @@ const Login = ({ isOpen, closeModal }) => {
             </div>
 
             <div className="login-forgot-password">
-              <a href="#" className="login-forgot-link">
-                ¿Olvidaste tu contraseña?
-              </a>
+              <>
+                <button className="login-register-text" onClick={() => setIsModalOpen(true)}>
+                  Recuperar Contraseña
+                </button>
+                <Recuperacion isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
+                />
+              </>
             </div>
 
             <button className="login-button" onClick={handleLogin}>
@@ -122,16 +129,15 @@ const Login = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="login-register-container">
+
             <p className="login-register-text">
               ¿No tienes cuenta?
-              <a href="/Registro" className="login-register-link">
-                {" "}
-                Regístrate
-              </a>
-              <br />
               <a href="/Restudiante" className="login-register-link">
                 {""}
-                Regístrate como estudiante
+                <br></br>
+                Regístrate 
+
+                
               </a>
             </p>
           </div>

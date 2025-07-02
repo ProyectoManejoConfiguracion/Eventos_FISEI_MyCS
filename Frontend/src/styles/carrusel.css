@@ -1,15 +1,14 @@
-/* Estilos base del carrusel */
 .discovery-carousel {
   position: relative;
   width: 100%;
-  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  height: 100vh; /* Altura editable desde backend */
   overflow: hidden;
 }
 
 .discovery-carousel-track {
   display: flex;
   height: 100%;
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out; /* Duración editable desde backend */
   will-change: transform;
 }
 
@@ -26,7 +25,7 @@
   display: block;
 }
 
-/* Captions - Más minimalista */
+/* 📝 Captions - Más minimalista */
 .discovery-carousel-caption {
   position: absolute;
   bottom: 0;
@@ -76,7 +75,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Controles - Más sutiles */
+/* 🎛️ Controles - Más sutiles */
 .discovery-carousel-control {
   position: absolute;
   top: 50%;
@@ -100,6 +99,11 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+.discovery-carousel-control:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .discovery-carousel-control.prev {
   left: 2%;
 }
@@ -108,7 +112,7 @@
   right: 2%;
 }
 
-/* Indicadores - Más discretos */
+/* 🔘 Indicadores - Más discretos */
 .discovery-carousel-indicators {
   position: absolute;
   bottom: 5%;
@@ -139,7 +143,85 @@
   transform: scale(1.2);
 }
 
-/* Responsive */
+/* ⏳ Estados de carga y error */
+.discovery-carousel.loading-state,
+.discovery-carousel.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.carousel-loader,
+.carousel-error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loader-spinner {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 1rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.carousel-error p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.retry-button,
+.refresh-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.retry-button:hover,
+.refresh-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 🐛 Panel de debug (solo desarrollo) */
+.carousel-debug-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 20;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.carousel-debug-info .refresh-button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  min-width: auto;
+}
+
+/* 📱 Responsive */
 @media (max-width: 768px) {
   .discovery-carousel {
     height: 80vh;
@@ -153,11 +235,23 @@
     width: 40px;
     height: 40px;
   }
+
+  .discovery-carousel-control.prev {
+    left: 1%;
+  }
+
+  .discovery-carousel-control.next {
+    right: 1%;
+  }
 }
 
 @media (max-width: 480px) {
   .discovery-carousel {
     height: 60vh;
+  }
+  
+  .discovery-carousel-caption {
+    padding: 8% 4%;
   }
   
   .discovery-carousel-caption h3 {
@@ -168,6 +262,7 @@
     font-size: 0.9rem;
     margin-bottom: 1rem;
   }
+  
   .discovery-carousel-button {
     padding: 0.4rem 1rem;
     font-size: 0.8rem;
@@ -177,4 +272,73 @@
     width: 6px;
     height: 6px;
   }
+
+  .discovery-carousel-control {
+    width: 35px;
+    height: 35px;
+  }
+
+  .carousel-debug-info {
+    top: 5px;
+    right: 5px;
+    font-size: 0.7rem;
+  }
+}
+
+/* 🌙 Modo oscuro (opcional) */
+@media (prefers-color-scheme: dark) {
+  .discovery-carousel.loading-state,
+  .discovery-carousel.error-state {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  }
+}
+
+/* ♿ Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .discovery-carousel-track,
+  .discovery-carousel-control,
+  .discovery-carousel-indicator,
+  .discovery-carousel-button {
+    transition: none;
+  }
+  
+  .loader-spinner {
+    animation: none;
+  }
+}
+
+/* 🎯 Estados de focus para navegación por teclado */
+.discovery-carousel-control:focus,
+.discovery-carousel-indicator:focus,
+.discovery-carousel-button:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+/* 📐 Proporción de aspecto personalizable */
+.discovery-carousel[data-aspect-ratio="16:9"] {
+  height: 56.25vw;
+  max-height: 100vh;
+}
+
+.discovery-carousel[data-aspect-ratio="4:3"] {
+  height: 75vw;
+  max-height: 100vh;
+}
+
+/* 🎨 Variantes de tema personalizables desde backend */
+.discovery-carousel.theme-minimal .discovery-carousel-caption {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.discovery-carousel.theme-bold .discovery-carousel-caption h3 {
+  font-weight: 700;
+  color: #ffeb3b;
+}
+
+.discovery-carousel.theme-elegant .discovery-carousel-control {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  backdrop-filter: blur(5px);
 }

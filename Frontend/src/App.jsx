@@ -20,7 +20,8 @@ import Curso_Est from "./Pages/Estudiante/Curso_Est";
 import Calificacion_Est from "./Pages/Estudiante/Calificacion_Est";
 import Asistencia_Est from "./Pages/Estudiante/Asistencia_Est";
 import Certificado_Est from "./Pages/Estudiante/Certificados_Est";
-import Configuracion_Est from "./Pages/Estudiante/Configuracion_Est"; ;
+import Configuracion_Est from "./Pages/Estudiante/Configuracion_Est"; 
+import ResetPassword from "./Pages/ResetPassword";
 import { Routes, Route, BrowserRouter as Router, useLocation } from "react-router-dom";
 
 const Layout = () => {
@@ -39,6 +40,8 @@ const Layout = () => {
         <Route path="/Contactos" element={<Contactos />} />
         <Route path="/Registro" element={<Registro/>} />
           <Route path="/Restudiante" element={<Restudiante/>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
 
         {/* Rutas privadas (Administrador) */}
         <Route path="/Administrador/*" element={<Administrador />}>
@@ -73,7 +76,9 @@ const Layout = () => {
 function App() {
   return (
     <Router>
+      <div className="app-wrapper">
       <Layout />
+      </div>
     </Router>
   );
 }

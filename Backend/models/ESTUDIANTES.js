@@ -30,6 +30,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true,
       defaultValue: "PENDIENTE"
+
     }
   }, {
     sequelize,

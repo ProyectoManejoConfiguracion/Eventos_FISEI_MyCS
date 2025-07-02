@@ -10,6 +10,7 @@ import cursosimg from '../assets/Cursos.jpg';
 import ModalInscripcion from "../Components/modals/Inscripcion";
 import { useAuth } from "../auth/AuthContext";
 import { BACK_URL } from "../../config"; 
+import { useLocation } from "react-router-dom";
 
 const badgeColor = (tipo) => {
   switch (tipo) {
@@ -56,6 +57,38 @@ const Eventos = () => {
   const [detalleSel, setDetalleSel] = useState(null);
   const [tarifaSel, setTarifaSel] = useState([]);
   const { user } = useAuth();
+  const location = useLocation();
+
+  const [homeEventInfo, setHomeEventInfo] = useState({
+    imagen: null,
+    titulo: "",
+    descripcion: ""
+  });
+
+  useEffect(() => {
+    axios.get(`${BACK_URL}/api/home?section=eventos`)
+      .then(res => {
+        if (res.data && res.data.length > 0) {
+          const registro = res.data[0];
+          setHomeEventInfo({
+            imagen: registro.imagen ? `${BACK_URL}/${registro.imagen.replace(/\\/g, "/")}` : null,
+            titulo: registro.titulo || "",
+            descripcion: registro.descripcion || ""
+          });
+        } else {
+          setHomeEventInfo({
+            imagen: null,
+            titulo: "",
+            descripcion: ""
+          });
+        }
+      })
+      .catch(() => setHomeEventInfo({
+        imagen: null,
+        titulo: "",
+        descripcion: ""
+      }));
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -72,6 +105,19 @@ const Eventos = () => {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.eventoSeleccionado) {
+      const evento = location.state.eventoSeleccionado;
+      const detalle = getDetalleEvento(evento.ID_EVT);
+      const tarifasEvento = getTarifaEvento(evento.ID_EVT);
+      setEventoSel({ ...evento, FOT_EVT: evento.FOT_EVT });
+      setDetalleSel(detalle);
+      setTarifaSel(tarifasEvento);
+      setModalOpen(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const eventosCombinados = eventos.map((evt) => {
     const det = detalles.find((d) => d.ID_EVT === evt.ID_EVT) || {};
@@ -118,13 +164,15 @@ const Eventos = () => {
     <div className="eventos-page">
       <div className="tit-container">
         <div className="tit-section">
-          <img src={cursosimg} className="tit-imagen" />
+          {/* IMAGEN PRINCIPAL DE EVENTOS DESDE PANEL */}
+          <img src={homeEventInfo.imagen || cursosimg} className="tit-imagen" alt="Imagen principal eventos" />
           <div className="hero-overlay"></div>
           <div className="tit-content">
-            <h1 className="tit-title">Cursos y Eventos</h1>
+            <h1 className="tit-title">
+              {homeEventInfo.titulo || "Cursos y Eventos"}
+            </h1>
             <p className="tit-subtitle">
-              Descubre nuestros eventos académicos y cursos especializados de cada
-              facultad
+              {homeEventInfo.descripcion || "Descubre nuestros eventos académicos y cursos especializados de cada facultad"}
             </p>
           </div>
         </div>
@@ -136,7 +184,7 @@ const Eventos = () => {
           const tarifasEvento = getTarifaEvento(evento.ID_EVT);
           const imagenUrl = evento.FOT_EVT
             ? `${BACK_URL}/${evento.FOT_EVT.replace(/\\/g, "/")}`
-            : defaultImg;
+            : "/placeholder-image.jpg";
 
           return (
             <div className="evento-card" key={evento.ID_EVT}>
@@ -154,7 +202,7 @@ const Eventos = () => {
                 className="evento-img"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = defaultImg;
+                  e.target.src = "/placeholder-image.jpg";
                 }}
                 style={{
                   display: "block",
@@ -203,7 +251,6 @@ const Eventos = () => {
                 )}
               </div>
               <div className="evento-actions">
-                
                 <button
                   className="btn-inscribirse"
                   onClick={() => {
@@ -228,7 +275,7 @@ const Eventos = () => {
         tarifa={tarifaSel}
         usuario={user}
         onInscribir={(data) => {
-         
+
         }}
       />
     </div>
