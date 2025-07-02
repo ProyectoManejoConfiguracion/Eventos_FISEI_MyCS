@@ -49,8 +49,8 @@ const Administrador = () => {
       <header className="header-principal">
         <div className="header-content">
           <div className="header-left">
-            <button 
-              className="menu-toggle" 
+            <button
+              className="menu-toggle"
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle menu"
             >
@@ -72,8 +72,8 @@ const Administrador = () => {
 
       {/* Overlay para móviles */}
       {sidebarOpen && (
-        <div 
-          className="sidebar-overlay" 
+        <div
+          className="sidebar-overlay"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -90,17 +90,19 @@ const Administrador = () => {
         </div>
         <nav className="sidebar-navbar">
           <ul className="sidebar-navbar_item">
-            <li>
-              <NavLink
-                to="/Administrador/Usuario"
-                className={({ isActive }) =>
-                  `navbar_items ${isActive ? "estado-activo" : ""}`
-                }
-                onClick={() => setSidebarOpen(false)}
-              >
-                <FaUser className="nav-icon" /> Usuarios
-              </NavLink>
-            </li>
+            {user?.role === "Administrador" && (
+              <li>
+                <NavLink
+                  to="/Administrador/Usuario"
+                  className={({ isActive }) =>
+                    `navbar_items ${isActive ? "estado-activo" : ""}`
+                  }
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <FaUser className="nav-icon" /> Usuarios
+                </NavLink>
+              </li>
+            )}
             <li>
               <NavLink
                 to="/Administrador/Curso"
@@ -123,17 +125,22 @@ const Administrador = () => {
                 <FaCalendar className="nav-icon" /> Eventos
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/Administrador/Contenido"
-                className={({ isActive }) =>
-                  `navbar_items ${isActive ? "estado-activo" : ""}`
-                }
-                onClick={() => setSidebarOpen(false)}
-              >
-                <FaGlobe className="nav-icon" /> Contenido Web
-              </NavLink>
-            </li>
+
+              
+            {user?.role === "Administrador" && (
+              <li>
+                <NavLink
+                  to="/Administrador/Contenido"
+                  className={({ isActive }) =>
+                    `navbar_items ${isActive ? "estado-activo" : ""}`
+                  }
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <FaGlobe className="nav-icon" /> Contenido Web
+                </NavLink>
+              </li>)
+            }
+
             <li>
               <NavLink
                 to="/Administrador/Notas"
@@ -145,17 +152,7 @@ const Administrador = () => {
                 <FaRegStickyNote className="nav-icon" /> Notas
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/Administrador/Tarifas"
-                className={({ isActive }) =>
-                  `navbar_items ${isActive ? "estado-activo" : ""}`
-                }
-                onClick={() => setSidebarOpen(false)}
-              >
-                <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
-              </NavLink>
-            </li>
+
 
           </ul>
         </nav>
