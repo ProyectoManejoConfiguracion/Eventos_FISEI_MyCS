@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../auth/AuthContext";
-import "../../Styles/Notas.css";
-import { BACK_URL } from "../../../config"; // Asegúrate de que la URL del backend esté configurada correctamente
+import "../../Styles/Asistencia_Adm.css";
+import { BACK_URL } from "../../../config"; 
+import Swal from "sweetalert2";
 
 const Cursos = () => {
   const { user } = useAuth();
@@ -48,13 +49,27 @@ const Cursos = () => {
           return evento;
         })
       );
+       await Swal.fire({
+      title: '¡Asistencia registrada!',
+      text: 'La asistencia se ha registrado correctamente',
+      icon: 'success',
+      confirmButtonColor: '#581517',
+      timer: 2000,
+      timerProgressBar: true
+    });
 
-      alert("Asistencia asignada correctamente");
-    } catch (error) {
-      console.error("Error al asignar asistencia:", error);
-      alert("Error al asignar asistencia");
-    }
-  };
+  } catch (error) {
+    console.error("Error al asignar asistencia:", error);
+    
+    // Mostrar error
+    await Swal.fire({
+      title: 'Error',
+      text: 'No se pudo registrar la asistencia',
+      icon: 'error',
+      confirmButtonColor: '#581517'
+    });
+  }
+};
 
   return (
     <div className="notas-container">

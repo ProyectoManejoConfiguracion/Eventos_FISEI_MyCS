@@ -1,126 +1,164 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import carusell1 from "../assets/carusel1.jpg";
-import carusell2 from "../assets/carusel2.png";
-import carusell3 from "../assets/carusel3.jpg";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/carrusel.css";
+import { BACK_URL} from '../../config';
 
 function Carrusel() {
-  const [currentImagen, setCurrentImagen] = useState(0);
+  const [imagenes, setImagenes] = useState([]);
+  const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const carouselRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const timerRef = useRef(null);
 
-  const imagenes = [
-    { img: carusell1, label: "EVENTOS Y CURSOS", desc: 'Incentivar la investigación en los campos afines' },
-    { img: carusell2, label: 'EVENTOS Y CURSOS', desc: 'Disponibilidad para todas la personas' },
-    { img: carusell3, label: 'EVENTOS Y CURSOS', desc: 'Compromiso con el desarrollo Tecnológico' }
-  ];
-
-  const cambiarSlide = useCallback((index) => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentImagen(index);
-    setTimeout(() => setIsTransitioning(false), 500);
-  }, [isTransitioning]);
-
-  const handleNext = useCallback(() => cambiarSlide((currentImagen + 1) % imagenes.length), [currentImagen, imagenes.length, cambiarSlide]);
-  const handlePrev = useCallback(() => cambiarSlide((currentImagen - 1 + imagenes.length) % imagenes.length), [currentImagen, imagenes.length, cambiarSlide]);
-  const handleDotClick = (index) => cambiarSlide(index);
-
-  // 🔄 Redirigir siempre a "/Eventos"
-  const handleImageClick = () => {
-    window.location.href = "/Eventos";
-  };
+  useEffect(() => {
+    fetch(`${BACK_URL}/api/home?section=carousel`)
+      .then(res => {
+        if (!res.ok) throw new Error('No se pudo cargar el carrusel');
+        return res.json();
+      })
+      .then(data => {
+        setImagenes(Array.isArray(data) ? data : []);
+        setError(null);
+      })
+      .catch(() => {
+        setImagenes([]);
+        setError('No se pudo cargar el carrusel');
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
-    if (!isPaused) {
-      timerRef.current = setInterval(handleNext, 5000);
+    if (!isPaused && imagenes.length > 1) {
+      timerRef.current = setInterval(() => {
+        setCurrent(prev => (prev + 1) % imagenes.length);
+      }, 5000);
     }
     return () => clearInterval(timerRef.current);
-  }, [handleNext, isPaused]);
+  }, [isPaused, imagenes.length]);
+
+  const handleNext = useCallback(() => {
+    if (imagenes.length === 0) return;
+    setIsTransitioning(true);
+    setCurrent(prev => (prev + 1) % imagenes.length);
+    setTimeout(() => setIsTransitioning(false), 500);
+  }, [imagenes.length]);
+
+  const handlePrev = useCallback(() => {
+    if (imagenes.length === 0) return;
+    setIsTransitioning(true);
+    setCurrent(prev => (prev - 1 + imagenes.length) % imagenes.length);
+    setTimeout(() => setIsTransitioning(false), 500);
+  }, [imagenes.length]);
+
+  const handleDotClick = (idx) => setCurrent(idx);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') handlePrev();
       else if (e.key === 'ArrowRight') handleNext();
-      else if (e.key === ' ') setIsPaused(prev => !prev);
+      else if (e.key === ' ') setIsPaused(p => !p);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev]);
 
+  if (loading) {
+    return (
+      <div className="discovery-carousel loading-state">
+        <div className="carousel-loader">
+          <div className="loader-spinner"></div>
+          <p>Cargando contenido...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || imagenes.length === 0) {
+    return (
+      <div className="discovery-carousel error-state">
+        <div className="carousel-error">
+          <p>{error || "No hay imágenes para mostrar"}</p>
+          <button onClick={() => window.location.reload()} className="retry-button">
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div 
+    <div
       className='discovery-carousel'
-      ref={carouselRef}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      role='region'
       aria-roledescription="carrusel"
       aria-label="Galería de imágenes"
-    >    
-      <div 
-        className='discovery-carousel-track' 
-        style={{ transform: `translateX(-${currentImagen * 100}%)` }}
+      style={{ height: '100vh' }}
+    >
+      <div
+        className='discovery-carousel-track'
+        style={{
+          transform: `translateX(-${current * 100}%)`,
+          transitionDuration: `${isTransitioning ? 500 : 0}ms`
+        }}
       >
-        {imagenes.map((imagen, index) => (
-          <div 
-            className={`discovery-carousel-slide ${index === currentImagen ? 'active' : ''}`}
-            key={index}
-            aria-hidden={index !== currentImagen}
-            onClick={handleImageClick}
+        {imagenes.map((img, idx) => (
+          <div
+            className={`discovery-carousel-slide ${idx === current ? 'active' : ''}`}
+            key={img.id || idx}
+            aria-hidden={idx !== current}
+            style={{ cursor: img.redirectUrl ? 'pointer' : 'default' }}
+            onClick={() => img.redirectUrl && (window.location.href = img.redirectUrl)}
           >
-            <img 
-              src={imagen.img} 
-              alt={imagen.label}
+            <img
+              src={`${BACK_URL.replace('/api', '')}/${img.imagen}`}
+              alt={img.titulo}
               className='discovery-carousel-image'
+              loading={idx === 0 ? 'eager' : 'lazy'}
             />
             <div className='discovery-carousel-caption'>
-              <h3>{imagen.label}</h3>
-              <p>{imagen.desc}</p>
-              <button 
-                className="discovery-carousel-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleImageClick();
-                }}
-              >
-                Ver más
-              </button>
-            </div> 
+              <h3>{img.titulo}</h3>
+              <p>{img.descripcion}</p>
+            </div>
           </div>
         ))}
       </div>
 
-      <button 
-        className='discovery-carousel-control prev' 
-        onClick={(e) => { e.stopPropagation(); handlePrev() }} 
+      {/* Navegación */}
+      <button
+        className='discovery-carousel-control prev'
+        onClick={handlePrev}
         aria-label="Anterior"
+        disabled={imagenes.length <= 1}
       >
         <ChevronLeft size={32} />
       </button>
-      
-      <button 
-        className='discovery-carousel-control next' 
-        onClick={(e) => { e.stopPropagation(); handleNext() }} 
+      <button
+        className='discovery-carousel-control next'
+        onClick={handleNext}
         aria-label='Siguiente'
+        disabled={imagenes.length <= 1}
       >
         <ChevronRight size={32} />
       </button>
 
-      <div className="discovery-carousel-indicators">
-        {imagenes.map((_, index) => (
-          <button
-            key={index}
-            onClick={(e) => { e.stopPropagation(); handleDotClick(index) }}
-            className={`discovery-carousel-indicator ${index === currentImagen ? 'active' : ''}`}
-            aria-label={`Ir a la imagen ${index + 1}`}
-            aria-current={index === currentImagen}
-          />
-        ))}
-      </div>  
+      {/* Indicadores */}
+      {imagenes.length > 1 && (
+        <div className="discovery-carousel-indicators">
+          {imagenes.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleDotClick(idx)}
+              className={`discovery-carousel-indicator ${idx === current ? 'active' : ''}`}
+              aria-label={`Ir a la imagen ${idx + 1}`}
+              aria-current={idx === current}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
