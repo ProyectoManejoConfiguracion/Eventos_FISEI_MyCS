@@ -9,6 +9,7 @@ interface User {
   lastname: string;
   email: string;
   role: string;
+  est: string;
 }
 
 interface AuthContextType {
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastname: raw.APE_PER,
       email: raw.COR_PER,
       role: raw.ROL_EST,
+      est: raw.ESTADO
     };
 
     setUser(user);
@@ -65,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastname: raw.APE_PER,
       email: raw.COR_PER,
       role: raw.ROL_EST,
+      est: raw.ESTADO
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));

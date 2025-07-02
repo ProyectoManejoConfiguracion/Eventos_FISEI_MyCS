@@ -125,6 +125,16 @@ const Administrador = () => {
                 <FaRegStickyNote className="nav-icon" /> Notas
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/Administrador/VerificarFotos"
+                className={({ isActive }) =>
+                  `navbar_items ${isActive ? "estado-activo" : ""}`
+                }
+              >
+                <FaRegStickyNote className="nav-icon" /> Documentos
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </aside>

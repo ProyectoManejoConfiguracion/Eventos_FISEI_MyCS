@@ -27,7 +27,7 @@ const Login = ({ isOpen, closeModal }) => {
 
   const handleLogin = async () => {
     try {
-      const loggedUser= await login(email, password);
+      const loggedUser = await login(email, password);
       const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
@@ -47,10 +47,15 @@ const Login = ({ isOpen, closeModal }) => {
         icon: "success",
         draggable: true,
       }).then(() => {
-        if (loggedUser?.role == "Admin"||loggedUser?.role == "Docente") {
-          navigate("/Administrador");
-          closeModal();
-        }else if(loggedUser?.role=="Estudiante"){
+        if (loggedUser?.role == "Admin" || loggedUser?.role == "Docente") {
+          if (loggedUser?.est === "VERIFICADO") {
+            navigate("/Administrador");
+            closeModal();
+          } else {
+            navigate("/");
+            closeModal();
+          }
+        } else if (loggedUser?.role == "Estudiante") {
           navigate("/");
           closeModal();
         }

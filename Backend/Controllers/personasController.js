@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }, 
   fileFilter: (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|gif/;
     const mimetype = filetypes.test(file.mimetype);
@@ -117,7 +117,7 @@ exports.login = async (req, res) => {
     }
 
     let rol = 'Invitado';
-
+    let estado = "No Verificado";
     const autoridad = await AUTORIDADES.findOne({ where: { CED_PER: user.CED_PER } });
     if (autoridad) {
       const primeraAutoridad = await AUTORIDADES.findOne({
@@ -125,10 +125,12 @@ exports.login = async (req, res) => {
       });
 
       rol = (autoridad.ID_AUT === primeraAutoridad.ID_AUT) ? 'Admin' : 'Docente';
+      estado = autoridad.ESTADO;
     } else {
       const estudiante = await ESTUDIANTES.findOne({ where: { CED_EST: user.CED_PER } });
       if (estudiante) {
         rol = 'Estudiante';
+        estado = estudiante.ESTADO;
       }
     }
 
@@ -151,7 +153,8 @@ exports.login = async (req, res) => {
         NOM_PER: user.NOM_PER,
         APE_PER: user.APE_PER,
         COR_PER: user.COR_PER,
-        ROL_EST: rol
+        ROL_EST: rol,
+        ESTADO: estado
       }
     });
 
@@ -182,6 +185,90 @@ exports.delete = async (req, res) => {
     const deleted = await PERSONAS.destroy({ where: { id: req.params.id } });
     if (deleted) res.json({ message: 'Eliminado correctamente' });
     else res.status(404).json({ error: 'No encontrado' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getPersonasNoVerificadas = async (req, res) => {
+  try {
+    const data = await PERSONAS.findAll({
+      where: { EST_PER: { [require('sequelize').Op.ne]: 'VERIFICADO' } }
+    });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getAutoridadesNoVerificadas = async (req, res) => {
+  try {
+    const data = await AUTORIDADES.findAll({
+      where: { ESTADO: { [require('sequelize').Op.ne]: 'VERIFICADO' } }
+    });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getEstudiantesNoVerificados = async (req, res) => {
+  try {
+    const data = await ESTUDIANTES.findAll({
+      where: { ESTADO: { [require('sequelize').Op.ne]: 'VERIFICADO' } }
+    });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.cambiarEstadoPersona = async (req, res) => {
+  try {
+    const { estado } = req.body;
+    const [updated] = await PERSONAS.update(
+      { EST_PER: estado },
+      { where: { CED_PER: req.params.id } }
+    );
+    if (updated) {
+      res.json({ message: 'Estado actualizado correctamente' });
+    } else {
+      res.status(404).json({ error: 'Persona no encontrada' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.cambiarEstadoAutoridad = async (req, res) => {
+  try {
+    const { estado } = req.body;
+    const [updated] = await AUTORIDADES.update(
+      { ESTADO: estado },
+      { where: { CED_PER: req.params.id } }
+    );
+    if (updated) {
+      res.json({ message: 'Estado actualizado correctamente' });
+    } else {
+      res.status(404).json({ error: 'Autoridad no encontrada' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.cambiarEstadoEstudiante = async (req, res) => {
+  try {
+    const { estado } = req.body;
+    const [updated] = await ESTUDIANTES.update(
+      { ESTADO: estado },
+      { where: { CED_EST: req.params.id } }
+    );
+    if (updated) {
+      res.json({ message: 'Estado actualizado correctamente' });
+    } else {
+      res.status(404).json({ error: 'Estudiante no encontrado' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
