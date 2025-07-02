@@ -7,7 +7,7 @@ const upload = multer({ dest: 'uploads/' });
 router.get('/', homeController.getAll);
 router.get('/:id', homeController.getOne);
 router.post('/', upload.single('imagen'), homeController.create);
-router.put('/:id', homeController.update);
+router.put('/:id', upload.single('imagen'), homeController.update);
 router.delete('/:id', homeController.delete);
 
 module.exports = router;

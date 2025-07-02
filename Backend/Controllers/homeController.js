@@ -29,7 +29,12 @@ exports.getOne = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const { titulo, descripcion, section } = req.body;
-    const imagen = req.file ? req.file.path.replace(/\\/g, "/") : null; // Para rutas en Windows
+    let imagen = null;
+    if (section === "stats" || section === "tajetasNosotros" || section === "tarjetasContactanos") {
+      imagen = req.body.imagen || null;
+    } else if (req.file) {
+      imagen = req.file.path.replace(/\\/g, "/");
+    }
     const newRecord = await HOME.create({ titulo, descripcion, section, imagen });
     res.status(201).json(newRecord);
   } catch (error) {
@@ -39,13 +44,26 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await HOME.update(req.body, { where: { id: req.params.id } });
-    if (updated) {
-      const updatedRecord = await HOME.findByPk(req.params.id);
-      res.json(updatedRecord);
-    } else {
-      res.status(404).json({ error: 'No encontrado' });
+    const registro = await HOME.findByPk(req.params.id);
+    if (!registro) return res.status(404).json({ error: 'No encontrado' });
+
+    const { titulo, descripcion, section } = req.body;
+    let nuevaImagen = registro.imagen;
+
+    if (section === "stats" || section === "tarjetasNosotros" || section === "tarjetasContactanos") {
+      nuevaImagen = req.body.imagen || "Users";
+    } else if (req.file) {
+      nuevaImagen = req.file.path.replace(/\\/g, "/");
     }
+
+    await registro.update({
+      titulo,
+      descripcion,
+      section,
+      imagen: nuevaImagen
+    });
+
+    res.json(registro);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
