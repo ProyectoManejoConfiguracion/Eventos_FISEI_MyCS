@@ -8,10 +8,9 @@ import Footer from "./Components/Footer";
 import VistaGeneral from "./Pages/Admin/VistaGeneral";
 import Usuario from "./Pages/Admin/Usuarios";
 import Curso from "./Pages/Admin/Cursos";
-import Eventos_admin from "./Pages/Admin/Eventos_admin";
+import Eventos_admin from "./Pages/Admin/MainEvento";
 import Contenido from "./Pages/Admin/Contenido";
 import Notas from "./Pages/Admin/Notas";
-import Tarifas from "./Pages/Admin/Tarifas";
 import Configuracion from "./Pages/Admin/Configuracion";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
@@ -51,7 +50,6 @@ const Layout = () => {
           <Route path="Eventos" element={<Eventos_admin />} />
           <Route path="Contenido" element={<Contenido />} />
           <Route path="Notas" element={<Notas />} />
-          <Route path="Tarifas" element={<Tarifas />} />
           <Route path="Configuracion" element={<Configuracion />} />
         </Route>
         <Route path="/Estudiante/*" element={<Estudiante />}>

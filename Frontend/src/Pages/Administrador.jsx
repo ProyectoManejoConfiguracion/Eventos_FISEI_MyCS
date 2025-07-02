@@ -125,16 +125,6 @@ const Administrador = () => {
                 <FaRegStickyNote className="nav-icon" /> Notas
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/Administrador/Tarifas"
-                className={({ isActive }) =>
-                  `navbar_items ${isActive ? "estado-activo" : ""}`
-                }
-              >
-                <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
-              </NavLink>
-            </li>
           </ul>
         </nav>
       </aside>
