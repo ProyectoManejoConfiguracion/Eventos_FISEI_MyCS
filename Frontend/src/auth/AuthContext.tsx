@@ -14,7 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<User>;
+  login: (email: string, password: string) => Promise<User>;  
   logout: () => void;
   refreshUser: () => Promise<void>;
 }

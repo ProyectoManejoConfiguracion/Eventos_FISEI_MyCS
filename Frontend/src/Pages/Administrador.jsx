@@ -156,6 +156,7 @@ const Administrador = () => {
                 <PiCurrencyDollarSimpleFill className="nav-icon" /> Tarifas
               </NavLink>
             </li>
+
           </ul>
         </nav>
       </aside>

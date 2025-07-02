@@ -1,5 +1,5 @@
 const { sequelize, Sequelize } = require('../models');
-const { INFORMES, REGISTRO_PERSONAS, PERSONAS } = require('../models');
+const { INFORMES, REGISTRO_PERSONAS, PERSONAS,REGISTRO_EVENTO } = require('../models');
 const multer = require('multer');
 const path = require('path');
 
@@ -122,5 +122,67 @@ exports.editarOCrearNota = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al actualizar o crear la nota' });
+  }
+};
+
+exports.verificarNotasAsignadas = async (req, res) => {
+  const { idDet } = req.params;
+
+  try {
+    // 1. Buscar todos los ID_REG_EVT en REGISTRO_EVENTO para ese ID_DET
+    const registrosEvento = await REGISTRO_EVENTO.findAll({
+      where: { ID_DET: idDet },
+      attributes: ['ID_REG_EVT'],
+      raw: true
+    });
+    const idRegEvtList = registrosEvento.map(r => r.ID_REG_EVT);
+
+    // Si no hay registros de evento para ese detalle, devuelve FALTAN
+    if (idRegEvtList.length === 0) {
+      return res.json({ resp: "FALTAN" });
+    }
+
+    // 2. Buscar todos los NUM_REG_PER en REGISTRO_PERSONAS con esos ID_REG_EVT y EST_REG = 'VERIFICADO'
+    const registrosPersonas = await REGISTRO_PERSONAS.findAll({
+      where: {
+        ID_REG_EVT: idRegEvtList,
+        EST_REG: 'VERIFICADO'
+      },
+      attributes: ['NUM_REG_PER'],
+      raw: true
+    });
+    const numRegPerList = registrosPersonas.map(r => r.NUM_REG_PER);
+
+    // Si no hay personas verificadas, también devuelve FALTAN
+    if (numRegPerList.length === 0) {
+      return res.json({ resp: "FALTAN" });
+    }
+
+    // 3. Buscar informes para esos NUM_REG_PER
+    const informes = await INFORMES.findAll({
+      where: { NUM_REG_PER: numRegPerList },
+      attributes: ['NUM_REG_PER', 'NOT_INF'],
+      raw: true
+    });
+
+    // Crear un mapa para saber qué NUM_REG_PER tienen nota asignada
+    const notasMap = new Map();
+    informes.forEach(i => {
+      notasMap.set(i.NUM_REG_PER, i.NOT_INF);
+    });
+
+    // Verificar que todos los NUM_REG_PER tengan nota asignada (exista en informes y NOT_INF no sea null)
+    const todasAsignadas = numRegPerList.every(num =>
+      notasMap.has(num) && notasMap.get(num) !== null && notasMap.get(num) !== undefined
+    );
+
+    if (todasAsignadas) {
+      return res.json({ resp: "ASIGNADAS" });
+    } else {
+      return res.json({ resp: "FALTAN" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al verificar las notas' });
   }
 };

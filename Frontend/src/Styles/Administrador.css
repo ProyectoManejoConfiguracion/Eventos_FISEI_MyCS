@@ -285,6 +285,7 @@ body, .main-content {
   width: 6px;
 }
 
+
 .sidebar::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
@@ -303,6 +304,13 @@ body, .main-content {
   border: 1px solid #dee2e6;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+
+.main-content {
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  min-height: 0; 
+  min-width: 95%;
 }
 
 /* Botón de menú móvil */
