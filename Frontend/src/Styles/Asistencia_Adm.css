@@ -1,6 +1,10 @@
 /* Contenedor principal */
 .notas-container {
+<<<<<<< HEAD
   max-width: 1200px;
+=======
+  max-width: 1000px;
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
   margin: 0 auto;
   padding: 2rem;
   background-color: #ffffff;
@@ -18,6 +22,7 @@
   border-bottom: 2px solid #f0e0e0;
 }
 
+<<<<<<< HEAD
 .semana-info {
   text-align: right;
   margin-bottom: 1rem;
@@ -25,6 +30,8 @@
   color: #555;
 }
 
+=======
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
 /* Acordeón de eventos */
 .acordeon-evento {
   margin-bottom: 1.5rem;
@@ -75,6 +82,7 @@
   padding: 1.5rem;
   background-color: #ffffff;
   border-top: 1px solid #e2e8f0;
+<<<<<<< HEAD
   overflow-x: auto;
 }
 
@@ -93,11 +101,30 @@
 .tabla-asistencia th {
   padding: 0.75rem 0.5rem;
   text-align: center;
+=======
+}
+
+/* Tabla de asistencias */
+.tabla-notas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla-notas thead {
+  background-color: #f9f2f2;
+}
+
+.tabla-notas th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
   font-weight: 600;
   color: #581517;
   border-bottom: 2px solid #e2e8f0;
 }
 
+<<<<<<< HEAD
 .tabla-asistencia td {
   padding: 0.75rem 0.5rem;
   border-bottom: 1px solid #f0e0e0;
@@ -122,6 +149,18 @@
   color: #dc3545;
 }
 
+=======
+.tabla-notas td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0e0e0;
+  vertical-align: middle;
+}
+
+.tabla-notas tr:last-child td {
+  border-bottom: none;
+}
+
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
 /* Botón Asignar */
 .btn-guardar {
   background-color: #581517;
@@ -133,7 +172,10 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+<<<<<<< HEAD
   white-space: nowrap;
+=======
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
 }
 
 .btn-guardar:hover {
@@ -165,6 +207,7 @@
   color: #718096;
 }
 
+<<<<<<< HEAD
 /* Controles de semana */
 .controles-semana {
   display: flex;
@@ -220,6 +263,12 @@
   .notas-container h1 {
     padding: 1.5rem;
     font-size: 1.5rem;
+=======
+/* Responsive */
+@media (max-width: 768px) {
+  .notas-container h1 {
+    padding: 3.5rem;
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
   }
   
   .acordeon-header {
@@ -231,6 +280,7 @@
     padding: 1rem;
   }
   
+<<<<<<< HEAD
   .tabla-asistencia {
     font-size: 0.85rem;
   }
@@ -238,16 +288,35 @@
   .btn-guardar {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
+=======
+  .tabla-notas {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .tabla-notas th,
+  .tabla-notas td {
+    padding: 0.75rem;
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
   }
 }
 
 @media (max-width: 480px) {
   .notas-container h1 {
+<<<<<<< HEAD
     font-size: 1.3rem;
   }
   
   .btn-guardar {
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
+=======
+    font-size: 1.5rem;
+  }
+  
+  .btn-guardar {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
   }
 }

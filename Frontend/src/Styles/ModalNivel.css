@@ -1,0 +1,88 @@
+.niveles-container {
+  margin-bottom: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10000;
+}
+
+.Container-ModalL{
+  z-index: 10000;
+}
+.modal-container{
+  z-index: 10000;
+}
+
+.niveles-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.niveles-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.niveles-select-all {
+  background-color: #581517;
+  color: white;
+}
+
+.niveles-select-all:hover {
+  background-color: #6d1a1d;
+}
+
+.niveles-deselect-all {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.niveles-deselect-all:hover {
+  background-color: #e5e7eb;
+}
+
+.niveles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nivel-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  transition: background-color 0.2s;
+}
+
+.nivel-item:hover {
+  background-color: #f3f4f6;
+}
+
+.nivel-item input[type="checkbox"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  accent-color: #581517;
+}
+
+.nivel-name {
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.no-niveles {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px 0;
+}
+
+.niveles-save-button {
+  margin-top: 20px;
+}

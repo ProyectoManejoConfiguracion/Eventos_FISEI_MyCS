@@ -88,7 +88,16 @@ const Cursos = () => {
           return evento;
         })
       );
+       await Swal.fire({
+      title: '¡Asistencia registrada!',
+      text: 'La asistencia se ha registrado correctamente',
+      icon: 'success',
+      confirmButtonColor: '#581517',
+      timer: 2000,
+      timerProgressBar: true
+    });
 
+<<<<<<< HEAD
       await Swal.fire({
         title: '¡Asistencia actualizada!',
         text: `La asistencia ha sido ${asistio ? 'eliminada' : 'registrada'}`,
@@ -109,6 +118,20 @@ const Cursos = () => {
       });
     }
   };
+=======
+  } catch (error) {
+    console.error("Error al asignar asistencia:", error);
+    
+    // Mostrar error
+    await Swal.fire({
+      title: 'Error',
+      text: 'No se pudo registrar la asistencia',
+      icon: 'error',
+      confirmButtonColor: '#581517'
+    });
+  }
+};
+>>>>>>> fd4617e0641c3bc33249271bf6ceda8c31ae1ada
 
   const verificarAsistencia = (asistencias, fecha) => {
     if (!asistencias) return false;
