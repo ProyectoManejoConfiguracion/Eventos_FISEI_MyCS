@@ -59,6 +59,37 @@ const Eventos = () => {
   const { user } = useAuth();
   const location = useLocation();
 
+  const [homeEventInfo, setHomeEventInfo] = useState({
+    imagen: null,
+    titulo: "",
+    descripcion: ""
+  });
+
+  useEffect(() => {
+    axios.get(`${BACK_URL}/api/home?section=eventos`)
+      .then(res => {
+        if (res.data && res.data.length > 0) {
+          const registro = res.data[0];
+          setHomeEventInfo({
+            imagen: registro.imagen ? `${BACK_URL}/${registro.imagen.replace(/\\/g, "/")}` : null,
+            titulo: registro.titulo || "",
+            descripcion: registro.descripcion || ""
+          });
+        } else {
+          setHomeEventInfo({
+            imagen: null,
+            titulo: "",
+            descripcion: ""
+          });
+        }
+      })
+      .catch(() => setHomeEventInfo({
+        imagen: null,
+        titulo: "",
+        descripcion: ""
+      }));
+  }, []);
+
   useEffect(() => {
     Promise.all([
       axios.get(`${BACK_URL}/api/eventos`),
@@ -133,13 +164,15 @@ const Eventos = () => {
     <div className="eventos-page">
       <div className="tit-container">
         <div className="tit-section">
-          <img src={cursosimg} className="tit-imagen" />
+          {/* IMAGEN PRINCIPAL DE EVENTOS DESDE PANEL */}
+          <img src={homeEventInfo.imagen || cursosimg} className="tit-imagen" alt="Imagen principal eventos" />
           <div className="hero-overlay"></div>
           <div className="tit-content">
-            <h1 className="tit-title">Cursos y Eventos</h1>
+            <h1 className="tit-title">
+              {homeEventInfo.titulo || "Cursos y Eventos"}
+            </h1>
             <p className="tit-subtitle">
-              Descubre nuestros eventos académicos y cursos especializados de cada
-              facultad
+              {homeEventInfo.descripcion || "Descubre nuestros eventos académicos y cursos especializados de cada facultad"}
             </p>
           </div>
         </div>
@@ -151,7 +184,7 @@ const Eventos = () => {
           const tarifasEvento = getTarifaEvento(evento.ID_EVT);
           const imagenUrl = evento.FOT_EVT
             ? `${BACK_URL}/${evento.FOT_EVT.replace(/\\/g, "/")}`
-            : defaultImg;
+            : "/placeholder-image.jpg";
 
           return (
             <div className="evento-card" key={evento.ID_EVT}>
@@ -169,7 +202,7 @@ const Eventos = () => {
                 className="evento-img"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = defaultImg;
+                  e.target.src = "/placeholder-image.jpg";
                 }}
                 style={{
                   display: "block",
@@ -218,7 +251,6 @@ const Eventos = () => {
                 )}
               </div>
               <div className="evento-actions">
-                
                 <button
                   className="btn-inscribirse"
                   onClick={() => {
@@ -243,7 +275,7 @@ const Eventos = () => {
         tarifa={tarifaSel}
         usuario={user}
         onInscribir={(data) => {
-         
+
         }}
       />
     </div>
