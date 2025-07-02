@@ -76,6 +76,7 @@ const Notas = () => {
   };
 
   return (
+    <div className="central-wrapper">
     <div className="notas-container">
       <div className="notas-header">
         <h1>Gestión de Notas</h1>
@@ -173,6 +174,7 @@ const Notas = () => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };
