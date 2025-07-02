@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   FaUser, FaEnvelope, FaPhone, FaPen, FaSave, FaTimes, 
   FaUpload, FaChevronLeft, FaIdCard, FaGraduationCap, FaFilePdf, FaFileImage,
-  FaTrash, FaEye, FaEdit, FaExclamationTriangle
+  FaTrash, FaEye, FaEdit, FaExclamationTriangle, FaFileContract
 } from "react-icons/fa";
 import "../../Styles/Configuracion_Est.css";
 import { useAuth } from "../../auth/AuthContext";
@@ -95,7 +95,9 @@ const useProfileData = () => {
   
   const [personaCompleteData, setPersonaCompleteData] = useState(null);
   const [studentCompleteData, setStudentCompleteData] = useState(null);
+  const [authorityCompleteData, setAuthorityCompleteData] = useState(null);
   const [isStudent, setIsStudent] = useState(false);
+  const [isAuthority, setIsAuthority] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
   const normalizeLevel = (nivel) => {
@@ -121,7 +123,10 @@ const useProfileData = () => {
     try {
       const userRole = user?.rol || user?.role || user?.ROL_PER || "";
       const isStudentRole = ['estudiante', 'student'].includes(userRole.toLowerCase());
+      const isAuthorityRole = !isStudentRole && userRole.toLowerCase() !== 'persona';
+      
       setIsStudent(isStudentRole);
+      setIsAuthority(isAuthorityRole);
 
       const personalResponse = await fetch(`${BACK_URL}/api/personas/${user.id}`);
       if (!personalResponse.ok) throw new Error('Error al cargar datos personales');
@@ -136,6 +141,7 @@ const useProfileData = () => {
       let nivel = data.NIVEL || "";
       let credencialUrl = "";
       let studentData = null;
+      let authorityData = null;
 
       if (isStudentRole) {
         try {
@@ -160,6 +166,19 @@ const useProfileData = () => {
         } catch (error) {
           console.error("Error fetching student data:", error);
         }
+      } else if (isAuthorityRole) {
+        try {
+          const authorityResponse = await fetch(`${BACK_URL}/api/autoridades/cedula/${user.id}`);
+          if (authorityResponse.ok) {
+            authorityData = await authorityResponse.json();
+            setAuthorityCompleteData(authorityData);
+            credencialUrl = authorityData.FOT_CON 
+              ? `${BACK_URL}/${authorityData.FOT_CON.replace(/\\/g, "/")}`
+              : "";
+          }
+        } catch (error) {
+          console.error("Error fetching authority data:", error);
+        }
       }
 
       setProfileData({
@@ -174,7 +193,7 @@ const useProfileData = () => {
         cedulaArchivo: data.FOT_CED || "",
         carrera,
         nivel,
-        credencialArchivo: studentData?.FOT_INS || ""
+        credencialArchivo: studentData?.FOT_INS || authorityData?.FOT_CON || ""
       });
 
       return { cedulaUrl, credencialUrl };
@@ -193,7 +212,10 @@ const useProfileData = () => {
     setPersonaCompleteData,
     studentCompleteData,
     setStudentCompleteData,
+    authorityCompleteData,
+    setAuthorityCompleteData,
     isStudent,
+    isAuthority,
     loadingData,
     loadProfileData
   };
@@ -209,6 +231,15 @@ const ExistingFileDisplay = ({ fileUrl, type, onView, onDelete, onEdit, fileExis
     );
   };
 
+  const getFileDisplayName = (type) => {
+    switch(type) {
+      case 'cedula': return 'Cédula';
+      case 'credencial': return 'Credencial';
+      case 'contrato': return 'Contrato';
+      default: return type;
+    }
+  };
+
   return (
     <div className={`existing-file-display ${!fileExists ? 'file-missing' : ''}`}>
       <div className="file-info">
@@ -222,8 +253,8 @@ const ExistingFileDisplay = ({ fileUrl, type, onView, onDelete, onEdit, fileExis
           )}
         </div>
         <span className="file-name">
-          {type === 'cedula' ? 'Cédula' : 'Credencial'} 
-          {!fileExists ? ' (Archivo no encontrado)' : ' subida'}
+          {getFileDisplayName(type)} 
+          {!fileExists ? ' (Archivo no encontrado)' : ' subido'}
         </span>
       </div>
       <div className="file-actions">
@@ -314,7 +345,9 @@ const Configuracion_Est = () => {
     personaCompleteData,
     setPersonaCompleteData,
     studentCompleteData,
+    authorityCompleteData,
     isStudent,
+    isAuthority,
     loadingData,
     loadProfileData
   } = useProfileData();
@@ -446,11 +479,11 @@ const Configuracion_Est = () => {
           }
         }
         
-        if (isStudent && existingCredencialFile) {
+        if ((isStudent || isAuthority) && existingCredencialFile) {
           const credencialExists = await verifyFileExists(existingCredencialFile);
           setCredencialFileExists(credencialExists);
           if (!credencialExists) {
-            showFileNotFoundAlert('Credencial');
+            showFileNotFoundAlert(isStudent ? 'Credencial' : 'Contrato');
             setExistingCredencialFile("");
             setProfileData(prev => ({ ...prev, credencialArchivo: "" }));
           }
@@ -471,7 +504,7 @@ const Configuracion_Est = () => {
       const timer = setTimeout(verifyFiles, 1000);
       return () => clearTimeout(timer);
     }
-  }, [existingCedulaFile, existingCredencialFile, isStudent, loadingData]);
+  }, [existingCedulaFile, existingCredencialFile, isStudent, isAuthority, loadingData]);
 
   const verifyFileExists = async (filePath) => {
     if (!filePath) return false;
@@ -498,7 +531,8 @@ const Configuracion_Est = () => {
   const viewExistingFile = async (fileUrl, type) => {
     const fileExists = await verifyFileExists(fileUrl);
     if (!fileExists) {
-      showFileNotFoundAlert(type === 'cedula' ? 'Cédula' : 'Credencial');
+      const displayType = type === 'cedula' ? 'Cédula' : (isStudent ? 'Credencial' : 'Contrato');
+      showFileNotFoundAlert(displayType);
       if (type === 'cedula') {
         setCedulaFileExists(false);
         setExistingCedulaFile("");
@@ -576,16 +610,29 @@ const Configuracion_Est = () => {
         }
       );
 
-      if (isStudent && credencialFile) {
-        const estudianteFormData = new FormData();
-        estudianteFormData.append('FOT_INS', credencialFile);
-        await axios.put(
-          `${BACK_URL}/api/estudiantes/upload/${user?.id}`,
-          estudianteFormData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          }
-        );
+      // Subir archivo específico según el tipo de usuario
+      if (credencialFile) {
+        if (isStudent) {
+          const estudianteFormData = new FormData();
+          estudianteFormData.append('FOT_INS', credencialFile);
+          await axios.put(
+            `${BACK_URL}/api/estudiantes/upload/${user?.id}`,
+            estudianteFormData,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            }
+          );
+        } else if (isAuthority) {
+          const autoridadFormData = new FormData();
+          autoridadFormData.append('FOT_CON', credencialFile);
+          await axios.put(
+            `${BACK_URL}/api/autoridades/upload/${user?.id}`,
+            autoridadFormData,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            }
+          );
+        }
       }
 
       Swal.fire({
@@ -606,13 +653,24 @@ const Configuracion_Est = () => {
         setCedulaFileExists(true);
       }
 
-      if (isStudent && credencialFile) {
-        const studentResponse = await fetch(`${BACK_URL}/api/estudiantes/cedula/${user?.id}`);
-        if (studentResponse.ok) {
-          const updatedStudent = await studentResponse.json();
-          if (updatedStudent.FOT_INS) {
-            setExistingCredencialFile(`${BACK_URL}/${updatedStudent.FOT_INS.replace(/\\/g, "/")}`);
-            setCredencialFileExists(true);
+      if (credencialFile) {
+        if (isStudent) {
+          const studentResponse = await fetch(`${BACK_URL}/api/estudiantes/cedula/${user?.id}`);
+          if (studentResponse.ok) {
+            const updatedStudent = await studentResponse.json();
+            if (updatedStudent.FOT_INS) {
+              setExistingCredencialFile(`${BACK_URL}/${updatedStudent.FOT_INS.replace(/\\/g, "/")}`);
+              setCredencialFileExists(true);
+            }
+          }
+        } else if (isAuthority) {
+          const authorityResponse = await fetch(`${BACK_URL}/api/autoridades/cedula/${user?.id}`);
+          if (authorityResponse.ok) {
+            const updatedAuthority = await authorityResponse.json();
+            if (updatedAuthority.FOT_CON) {
+              setExistingCredencialFile(`${BACK_URL}/${updatedAuthority.FOT_CON.replace(/\\/g, "/")}`);
+              setCredencialFileExists(true);
+            }
           }
         }
       }
@@ -649,6 +707,31 @@ const Configuracion_Est = () => {
     setHasChanges(false);
     clearFiles();
     setOriginalData({}); // Limpiar originalData
+  };
+
+  // Obtener el título de la sección según el tipo de usuario
+  const getCredentialSectionTitle = () => {
+    if (isStudent) return "Información Académica";
+    if (isAuthority) return "Información Laboral";
+    return "Información Adicional";
+  };
+
+  // Obtener el título del archivo según el tipo de usuario
+  const getCredentialFileTitle = () => {
+    if (isStudent) return "Credencial Estudiantil";
+    if (isAuthority) return "Contrato";
+    return "Documento";
+  };
+
+  // Obtener el label del archivo según el tipo de usuario
+  const getCredentialFileLabel = (existing = false) => {
+    if (isStudent) {
+      return existing ? "Cambiar foto de Credencial" : "Foto de Credencial Estudiantil";
+    }
+    if (isAuthority) {
+      return existing ? "Cambiar archivo de Contrato" : "Archivo de Contrato (PDF o Imagen)";
+    }
+    return existing ? "Cambiar archivo" : "Archivo";
   };
 
   // Mostrar loading mientras se cargan los datos
@@ -878,33 +961,40 @@ const Configuracion_Est = () => {
             )}
           </div>
 
-          {isStudent && (
+          {(isStudent || isAuthority) && (
             <div className="perfil-section">
               <h3 className="perfil-section-title">
-                <FaGraduationCap className="perfil-section-icon" />
-                Información Académica
+                {isStudent ? (
+                  <FaGraduationCap className="perfil-section-icon" />
+                ) : (
+                  <FaFileContract className="perfil-section-icon" />
+                )}
+                {getCredentialSectionTitle()}
               </h3>
-              <div className="perfil-info-grid">
-                <div className="perfil-field">
-                  <label className="perfil-label">
-                    <FaGraduationCap className="perfil-icon" /> Carrera
-                  </label>
-                  <p className="perfil-info-value">{profileData.carrera || "No especificado"}</p>
+              
+              {isStudent && (
+                <div className="perfil-info-grid">
+                  <div className="perfil-field">
+                    <label className="perfil-label">
+                      <FaGraduationCap className="perfil-icon" /> Carrera
+                    </label>
+                    <p className="perfil-info-value">{profileData.carrera || "No especificado"}</p>
+                  </div>
+                  <div className="perfil-field">
+                    <label className="perfil-label">
+                      <FaGraduationCap className="perfil-icon" /> Nivel
+                    </label>
+                    <p className="perfil-info-value">{profileData.nivel || "No especificado"}</p>
+                  </div>
                 </div>
-                <div className="perfil-field">
-                  <label className="perfil-label">
-                    <FaGraduationCap className="perfil-icon" /> Nivel
-                  </label>
-                  <p className="perfil-info-value">{profileData.nivel || "No especificado"}</p>
-                </div>
-              </div>
+              )}
 
               {existingCredencialFile && !editingProfile && (
                 <div className="perfil-file-section">
-                  <h4 className="file-section-title">Credencial Estudiantil</h4>
+                  <h4 className="file-section-title">{getCredentialFileTitle()}</h4>
                   <ExistingFileDisplay
                     fileUrl={existingCredencialFile}
-                    type="credencial"
+                    type={isStudent ? "credencial" : "contrato"}
                     onView={viewExistingFile}
                     onEdit={() => setEditingProfile(true)}
                     fileExists={credencialFileExists}
@@ -915,13 +1005,17 @@ const Configuracion_Est = () => {
               {editingProfile && (
                 <div className="perfil-file-upload">
                   <label className="perfil-label">
-                    <FaFileImage className="perfil-icon" /> 
-                    {existingCredencialFile ? "Cambiar foto de Credencial" : "Foto de Credencial Estudiantil"}
+                    {isStudent ? (
+                      <FaFileImage className="perfil-icon" />
+                    ) : (
+                      <FaFileContract className="perfil-icon" />
+                    )} 
+                    {getCredentialFileLabel(!!existingCredencialFile)}
                   </label>
                   {existingCredencialFile && (
                     <ExistingFileDisplay
                       fileUrl={existingCredencialFile}
-                      type="credencial"
+                      type={isStudent ? "credencial" : "contrato"}
                       onView={viewExistingFile}
                       onEdit={() => {}}
                       fileExists={credencialFileExists}
@@ -942,7 +1036,7 @@ const Configuracion_Est = () => {
                   </div>
                   {credencialPreview && (
                     <div className="file-preview">
-                      <img src={credencialPreview} alt="Preview credencial" className="preview-image" />
+                      <img src={credencialPreview} alt={`Preview ${isStudent ? 'credencial' : 'contrato'}`} className="preview-image" />
                     </div>
                   )}
                 </div>
@@ -962,7 +1056,7 @@ const Configuracion_Est = () => {
         show={showCredencialModal}
         onClose={() => setShowCredencialModal(false)}
         fileUrl={existingCredencialFile}
-        title="Credencial Estudiantil"
+        title={getCredentialFileTitle()}
       />
     </div>
   );
