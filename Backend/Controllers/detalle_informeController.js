@@ -78,6 +78,8 @@ exports.asignarAsistencia = async (req, res) => {
   const { cedula, idEvento, fecha } = req.body;
 
   try {
+    console.log("Asignando asistencia:", { cedula, idEvento, fecha });
+
     // 1. Obtener el NUM_REG_PER
     const [registro] = await sequelize.query(
       `
@@ -87,7 +89,7 @@ exports.asignarAsistencia = async (req, res) => {
       JOIN DETALLE_EVENTOS de ON re.ID_DET = de.ID_DET
       WHERE rp.CED_PER = :cedula AND de.ID_EVT = :idEvento
       LIMIT 1
-    `,
+      `,
       {
         replacements: { cedula, idEvento },
         type: Sequelize.QueryTypes.SELECT,
@@ -95,18 +97,16 @@ exports.asignarAsistencia = async (req, res) => {
     );
 
     if (!registro) {
-      return res
-        .status(404)
-        .json({
-          message: "No se encontró el registro de persona para el evento.",
-        });
+      return res.status(404).json({
+        message: "No se encontró el registro de persona para el evento."
+      });
     }
 
     const { NUM_REG_PER } = registro;
 
     // 2. Buscar o crear un informe
     const [informe] = await sequelize.query(
-      `SELECT NUM_INF FROM INFORMES WHERE NUM_REG_PER = :numRegPer LIMIT 1`,
+      `SELECT NUM_IFN FROM INFORMES WHERE NUM_REG_PER = :numRegPer LIMIT 1`,
       {
         replacements: { numRegPer: NUM_REG_PER },
         type: Sequelize.QueryTypes.SELECT,
@@ -117,7 +117,7 @@ exports.asignarAsistencia = async (req, res) => {
 
     if (!informe) {
       // Crear nuevo informe
-      const [result] = await sequelize.query(
+      await sequelize.query(
         `INSERT INTO INFORMES (NUM_REG_PER) VALUES (:numRegPer)`,
         {
           replacements: { numRegPer: NUM_REG_PER },
@@ -135,85 +135,84 @@ exports.asignarAsistencia = async (req, res) => {
 
       numInforme = newInforme.id;
     } else {
-      numInforme = informe.NUM_INF;
+      numInforme = informe.NUM_IFN;
     }
-
-    // Verificar que numInforme tenga un valor válido
-    if (!numInforme) {
-      return res.status(500).json({
-        message: "Error al obtener o crear el informe",
-      });
-    }
-
-    console.log("Número de informe:", numInforme);
 
     // 3. Verificar si ya existe un detalle para esta fecha
     const [detalleExistente] = await sequelize.query(
       `
-      SELECT * FROM DETALLE_INFORME 
+      SELECT NUM_DET_INF 
+      FROM DETALLE_INFORME 
       WHERE NUM_INF = :numInforme AND REG_ASI = :fecha
-    `,
+      LIMIT 1
+      `,
       {
         replacements: { numInforme, fecha },
         type: Sequelize.QueryTypes.SELECT,
       }
     );
 
-    if (!detalleExistente) {
-      // 4. Si no existe, crear un nuevo detalle
-      await sequelize.query(
-        `
-        INSERT INTO DETALLE_INFORME (NUM_INF, REG_ASI) 
-        VALUES (:numInforme, :fecha)
-      `,
-        {
-          replacements: { numInforme, fecha },
-          type: Sequelize.QueryTypes.INSERT,
-        }
-      );
-      
-      res.json({ 
-        message: "Asistencia registrada correctamente.",
-        action: "created" 
-      });
-    } else {
-      // No es necesario actualizar, ya existe un registro para esta fecha
-      res.json({ 
+    // Si ya existe, simplemente retornamos la info
+    if (detalleExistente) {
+      return res.json({ 
         message: "La asistencia ya estaba registrada para esta fecha.",
-        action: "exists",
         detalleId: detalleExistente.NUM_DET_INF
       });
     }
+
+    // 4. Si no existe, crear un nuevo detalle de asistencia
+    await sequelize.query(
+      `
+      INSERT INTO DETALLE_INFORME (NUM_INF, REG_ASI) 
+      VALUES (:numInforme, :fecha)
+      `,
+      {
+        replacements: { numInforme, fecha },
+        type: Sequelize.QueryTypes.INSERT,
+      }
+    );
+
+    // Obtener el ID del detalle recién creado
+    const [nuevoDetalle] = await sequelize.query(
+      `SELECT LAST_INSERT_ID() as id`,
+      {
+        type: Sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json({ 
+      message: "Asistencia registrada correctamente.",
+      detalleId: nuevoDetalle.id
+    });
+
   } catch (error) {
     console.error("Error asignando asistencia:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
-
-
 exports.eliminarDetalleInforme = async (req, res) => {
   const { id } = req.params;
-  
+
   try {
-    console.log("Eliminando detalle de informe:", id);
-    
-    // Primero verificamos que el detalle exista
+    console.log("Eliminando detalle de informe con ID:", id);
+
+    // Verificar que el detalle exista
     const [detalle] = await sequelize.query(
-      `SELECT * FROM DETALLE_INFORME WHERE NUM_DET_INF = :id`,
+      `SELECT NUM_DET_INF FROM DETALLE_INFORME WHERE NUM_DET_INF = :id`,
       {
         replacements: { id },
         type: Sequelize.QueryTypes.SELECT,
       }
     );
-    
+
     if (!detalle) {
       return res.status(404).json({ 
         message: "Detalle de informe no encontrado." 
       });
     }
-    
-    // Procedemos a eliminar
+
+    // Eliminar el detalle
     await sequelize.query(
       `DELETE FROM DETALLE_INFORME WHERE NUM_DET_INF = :id`,
       {
@@ -221,7 +220,7 @@ exports.eliminarDetalleInforme = async (req, res) => {
         type: Sequelize.QueryTypes.DELETE,
       }
     );
-    
+
     res.json({ 
       message: "Asistencia eliminada correctamente.",
       detalleId: parseInt(id)
