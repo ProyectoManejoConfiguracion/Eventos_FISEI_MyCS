@@ -152,7 +152,6 @@ const Administrador = () => {
                 <FaRegStickyNote className="nav-icon" /> Notas
               </NavLink>
             </li>
-f
 
           </ul>
         </nav>
