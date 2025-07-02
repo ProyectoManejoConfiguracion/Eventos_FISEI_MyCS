@@ -22,9 +22,6 @@ body {
   overflow-x: hidden;
 }
 /* Evitar scroll horizontal en body y main */
-body, .main-content {
-  overflow-x: hidden;
-}
 
 /* Header mejorado con mejor estructura */
 .header-principal {

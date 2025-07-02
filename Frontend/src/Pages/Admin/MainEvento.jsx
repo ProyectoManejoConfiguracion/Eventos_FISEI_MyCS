@@ -325,6 +325,7 @@ const MainEvento = () => {
   }
 
   return (
+    <div className="central-wrapper">
     <div className="eventos-container">
       <div style={{ 
         display: 'flex', 
@@ -724,6 +725,7 @@ const MainEvento = () => {
           evento={eventoSeleccionado}
         />
       )}
+    </div>
     </div>
   );
 };

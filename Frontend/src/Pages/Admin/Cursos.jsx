@@ -72,6 +72,7 @@ const Cursos = () => {
 };
 
   return (
+    <div className="central-wrapper">
     <div className="notas-container">
       <h1>Asistencia a Cursos</h1>
 
@@ -143,6 +144,7 @@ const Cursos = () => {
       ) : (
         <p className="sin-eventos">No tienes eventos asignados</p>
       )}
+    </div>
     </div>
   );
 };
