@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import '../../Styles/Features.css';
 import { FaChalkboardTeacher, FaArrowRight } from 'react-icons/fa';
-
-const API_BASE_URL = import.meta.env.VITE_BACK_URL;
+import {BACK_URL } from '../../../config';
 
 const FeatureImage = React.memo(({ src, alt, title }) => (
   <div className="feature-image-container">
@@ -41,7 +40,7 @@ const FeatureCard = React.memo(({ feature, index }) => (
     </div>
     {feature.imagen &&
       <FeatureImage
-        src={`${API_BASE_URL}/${feature.imagen}`}
+        src={`${BACK_URL}/${feature.imagen}`}
         alt={feature.titulo}
         title={feature.titulo}
       />
@@ -93,7 +92,7 @@ const DetalleFeature = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/home?section=feature`)
+    fetch(`${BACK_URL}/api/home?section=feature`)
       .then(res => {
         if (!res.ok) throw new Error('Error al cargar las características');
         return res.json();
