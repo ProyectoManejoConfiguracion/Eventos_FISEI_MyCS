@@ -4,10 +4,11 @@ import ModalEvento from "./RegistrarEventos";
 import EditEvento from "./EditEvento";
 import VerEventoModal from "../../Components/modals/VerEventoModal";
 import "../../Styles/Eventos.css";
-import { FaPlus, FaTrashAlt, FaEye, FaEdit, FaInfoCircle, FaChevronDown, FaChevronUp, FaRecycle, FaUser, FaClock } from "react-icons/fa";
+import { FaPlus, FaTrashAlt, FaEye, FaEdit, FaInfoCircle, FaChevronDown, FaChevronUp, FaRecycle, FaUser, FaClock, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
 import { BACK_URL } from "../../../config";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import Swal from 'sweetalert2';
 
 const MainEvento = () => {
   const [eventos, setEventos] = useState([]);
@@ -19,6 +20,9 @@ const MainEvento = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showNoVisibles, setShowNoVisibles] = useState(false);
+  const [showFinalizados, setShowFinalizados] = useState(false);
+
+
 
   useEffect(() => {
     obtenerEventos();
@@ -55,22 +59,118 @@ const MainEvento = () => {
     }
   };
 
-  const cambiarVisibilidadEvento = async (id, nuevoEstado) => {
-    const accion = nuevoEstado === "VISIBLE" ? "recuperar" : "eliminar";
-    const confirmar = window.confirm(
-      `¿Estás seguro de ${accion} este evento?`
-    );
-    if (!confirmar) return;
+  const finalizarEvento = async (evento) => {
+    const detalle = detallesEventos[evento.ID_EVT];
+    if (!detalle || !detalle.ID_DET) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pueden obtener los detalles del evento. Intente nuevamente.',
+      });
+      return;
+    }
+
+    // Determinar si es necesario verificar notas basado en la categoría
+    const esCurso = detalle.CAT_DET === "CURSO";
+    const mensajeConfirmacion = esCurso 
+      ? "Esto marcará el evento como finalizado. Asegúrese que todos los estudiantes tienen notas y asistencia asignadas."
+      : "Esto marcará el evento como finalizado. Asegúrese que todos los estudiantes tienen asistencia asignada.";
+
+    // Primero confirmar la acción
+    const confirmarResult = await Swal.fire({
+      title: '¿Finalizar evento?',
+      text: mensajeConfirmacion,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, finalizar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirmarResult.isConfirmed) return;
 
     try {
-      // Actualizado para usar PUT en lugar de PATCH y la ruta correcta
+      // Solo verificar notas si es un curso
+      if (esCurso) {
+        // Verificar si todas las notas están asignadas
+        Swal.fire({
+          title: 'Verificando notas...',
+          text: 'Por favor espere mientras verificamos las notas de los estudiantes.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        const notasResponse = await axios.get(`${BACK_URL}/api/informes/notas/${detalle.ID_DET}`);
+        
+        if (notasResponse.data?.resp !== "ASIGNADAS") {
+          Swal.fire({
+            icon: 'error',
+            title: 'Notas incompletas',
+            text: 'No se puede finalizar el evento porque hay estudiantes sin notas asignadas.',
+          });
+          return;
+        }
+      }
+
+      // Si todas las notas están asignadas o no es un curso, cambiar el estado a FINALIZADO
+      await axios.put(`${BACK_URL}/api/eventos/visibilidad/${evento.ID_EVT}`, { EST_VIS: "FINALIZADO" });
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Evento finalizado',
+        text: 'El evento ha sido marcado como finalizado exitosamente.',
+      });
+
+      // Refrescar la lista de eventos
+      obtenerEventos();
+      obtenerDetallesEventos();
+      
+    } catch (error) {
+      console.error("Error al finalizar el evento:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al finalizar el evento. Intente nuevamente.',
+      });
+    }
+  };
+
+  const cambiarVisibilidadEvento = async (id, nuevoEstado) => {
+    const accion = nuevoEstado === "VISIBLE" ? "recuperar" : "eliminar";
+    
+    const result = await Swal.fire({
+      title: `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} evento?`,
+      text: `¿Está seguro que desea ${accion} este evento?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
       await axios.put(`${BACK_URL}/api/eventos/visibilidad/${id}`, { EST_VIS: nuevoEstado });
       obtenerEventos(); 
       obtenerDetallesEventos();
-      alert(`Evento ${accion === "recuperar" ? "recuperado" : "eliminado"} con éxito`);
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `Evento ${accion === "recuperar" ? "recuperado" : "eliminado"} con éxito.`,
+      });
     } catch (error) {
       console.error(`Error al ${accion} evento:`, error);
-      alert(`Error al ${accion} el evento. Intente nuevamente.`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Error al ${accion} el evento. Intente nuevamente.`,
+      });
     }
   };
 
@@ -143,7 +243,11 @@ const MainEvento = () => {
       setEventoSeleccionado(eventoCompleto);
       setIsEditModalOpen(true);
     } catch (error) {
-      alert("Error al cargar los detalles del evento. Intente nuevamente.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al cargar los detalles del evento. Intente nuevamente.',
+      });
     }
   };
 
@@ -153,7 +257,11 @@ const MainEvento = () => {
       setEventoSeleccionado(eventoCompleto);
       setIsVerModalOpen(true);
     } catch (error) {
-      alert("Error al cargar los detalles del evento. Intente nuevamente.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al cargar los detalles del evento. Intente nuevamente.',
+      });
     }
   };
 
@@ -182,9 +290,26 @@ const MainEvento = () => {
       <span className="badge badge-secondary">Privado</span>;
   };
 
-  // Filtrar eventos por visibilidad
-  const eventosVisibles = eventos.filter(evento => 
-    evento.EST_VIS === "VISIBLE" || !evento.EST_VIS
+  // Función para verificar si un evento está finalizado (fecha fin anterior a hoy o estado FINALIZADO)
+  const esEventoFinalizado = (evento) => {
+    if (evento.EST_VIS === "FINALIZADO") return true;
+    
+    if (!evento.FEC_FIN) return false;
+    const fechaFin = new Date(evento.FEC_FIN);
+    const hoy = new Date();
+    return fechaFin < hoy;
+  };
+
+  // Filtrar eventos por visibilidad y estado
+  const eventosActivos = eventos.filter(evento => 
+    (evento.EST_VIS === "VISIBLE" || !evento.EST_VIS) && 
+    evento.EST_VIS !== "FINALIZADO" && 
+    !esEventoFinalizado(evento)
+  );
+  
+  const eventosFinalizados = eventos.filter(evento => 
+    (evento.EST_VIS === "FINALIZADO" || !evento.EST_VIS) && 
+    (evento.EST_VIS === "FINALIZADO" || esEventoFinalizado(evento))
   );
   
   const eventosNoVisibles = eventos.filter(evento => 
@@ -228,15 +353,16 @@ const MainEvento = () => {
         </button>
       </div>
 
-      {eventosVisibles.length === 0 && eventosNoVisibles.length === 0 ? (
+      {eventosActivos.length === 0 && eventosFinalizados.length === 0 && eventosNoVisibles.length === 0 ? (
         <div className="no-eventos">
           <p>No hay eventos registrados. ¡Comienza creando uno nuevo!</p>
         </div>
       ) : (
         <>
-          {/* Tabla de eventos visibles */}
+          {/* Tabla de eventos activos */}
           <div className="table-responsive">
-            {eventosVisibles.length === 0 ? (
+            
+            {eventosActivos.length === 0 ? (
               <div className="no-eventos">
                 <p>No hay eventos activos</p>
               </div>
@@ -254,7 +380,7 @@ const MainEvento = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {eventosVisibles.map((evento) => {
+                  {eventosActivos.map((evento) => {
                     const detalle = detallesEventos[evento.ID_EVT] || {};
                     
                     return (
@@ -295,6 +421,25 @@ const MainEvento = () => {
                               <FaEdit />
                             </button>
                             <button
+                              className="btn-finalizar"
+                              onClick={() => finalizarEvento(evento)}
+                              title="Finalizar evento"
+                              style={{
+                                color: 'green',
+                                border: 'none',
+                                borderRadius: '4px',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                 marginTop: '5px'
+                              }}
+                            >
+                              <FaCheckCircle />
+                            </button>
+                            <button
                               className="btn-eliminar"
                               onClick={() => eliminarEvento(evento.ID_EVT)}
                               title="Eliminar evento"
@@ -311,32 +456,146 @@ const MainEvento = () => {
             )}
           </div>
           
-          {/* Sección para eventos no visibles (desplegable) */}
-          {eventosNoVisibles.length > 0 && (
-            <div style={{ marginTop: '20px' }}>
+          {/* Sección para eventos finalizados (desplegable) */}
+          {eventosFinalizados.length > 0 && (
+            <div style={{ marginTop: '30px' }}>
               <div 
                 style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
                   padding: '10px 15px',
-                  backgroundColor: '#f8f9fa', 
+                  backgroundColor: '#e6f7ff', 
                   borderRadius: '6px',
-                  border: '1px solid #e5e7eb',
-                  marginBottom: showNoVisibles ? '15px' : '0',
+                  border: '1px solid #91caff',
+                  marginBottom: showFinalizados ? '15px' : '0',
                   cursor: 'pointer'
                 }}
-                onClick={() => setShowNoVisibles(!showNoVisibles)}
+                onClick={() => setShowFinalizados(!showFinalizados)}
               >
-                <h3 style={{ margin: '0', fontSize: '16px' }}>
-                  Eventos Archivados ({eventosNoVisibles.length})
+                <h3 style={{ 
+                  margin: '0', 
+                  fontSize: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#0958d9'
+                }}>
+                  <FaCalendarCheck /> Eventos Finalizados ({eventosFinalizados.length})
                 </h3>
                 <button 
                   style={{ 
                     background: 'none', 
                     border: 'none', 
                     cursor: 'pointer',
-                    color: '#6b7280',
+                    color: '#0958d9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '20px'
+                  }}
+                >
+                  {showFinalizados ? <FaChevronUp /> : <FaChevronDown />}
+                </button>
+              </div>
+              
+              {showFinalizados && (
+                <div className="table-responsive">
+                  <table className="tabla-eventos">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Lugar</th>
+                        <th>Tipo</th>
+                        <th>Modalidad</th>
+                        <th>Categoría</th>
+                        <th className="acciones-columna">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {eventosFinalizados.map((evento) => {
+                        const detalle = detallesEventos[evento.ID_EVT] || {};
+                        
+                        return (
+                          <tr 
+                            className="fila-evento" 
+                            key={evento.ID_EVT}
+                            style={{ backgroundColor: '#f0f9ff' }}
+                          >
+                            <td>
+                              <div className="evento-titulo">
+                                {evento.NOM_EVT}
+                                <div className="evento-subtitulo">{evento.SUB_EVT}</div>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="evento-fechas">
+                                <div>{formatearFecha(evento.FEC_EVT)}</div>
+                                {evento.FEC_FIN && evento.FEC_FIN !== evento.FEC_EVT && (
+                                  <div className="fecha-fin">hasta {formatearFecha(evento.FEC_FIN)}</div>
+                                )}
+                              </div>
+                            </td>
+                            <td>{evento.LUG_EVT}</td>
+                            <td>{getTipoEvento(evento.TIP_EVT)}</td>
+                            <td>{getModalidadEvento(evento.MOD_EVT)}</td>
+                            <td>{detalle.CAT_DET || "N/A"}</td>
+                            
+                            <td className="acciones-columna">
+                              <div className="acciones-container">
+                                <button
+                                  className="btn-ver"
+                                  onClick={() => abrirModalVer(evento)}
+                                  title="Ver detalles"
+                                >
+                                  <FaEye />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Sección para eventos no visibles (desplegable) - ahora al final */}
+          {eventosNoVisibles.length > 0 && (
+            <div style={{ marginTop: '30px' }}>
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '10px 15px',
+                  backgroundColor: '#fff2e8', 
+                  borderRadius: '6px',
+                  border: '1px solid #ffcb99',
+                  marginBottom: showNoVisibles ? '15px' : '0',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setShowNoVisibles(!showNoVisibles)}
+              >
+                <h3 style={{ 
+                  margin: '0', 
+                  fontSize: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#d4380d'
+                }}>
+                  <FaTrashAlt style={{ fontSize: '14px' }} /> Eventos Archivados ({eventosNoVisibles.length})
+                </h3>
+                <button 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    color: '#d4380d',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -369,7 +628,7 @@ const MainEvento = () => {
                           <tr 
                             className="fila-evento" 
                             key={evento.ID_EVT}
-                            style={{ backgroundColor: '#f9fafb' }}
+                            style={{ backgroundColor: '#fff7e6' }}
                           >
                             <td>
                               <div className="evento-titulo">
