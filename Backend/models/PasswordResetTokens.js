@@ -46,7 +46,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "CED_PER",
+        name: "PasswordResetTokens_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "CED_PER" },

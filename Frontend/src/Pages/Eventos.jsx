@@ -45,6 +45,25 @@ const Loader = () => (
   </div>
 );
 
+// Función para filtrar eventos válidos
+const filtrarEventosValidos = (eventos) => {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0); // Establecer a medianoche para comparación exacta
+
+  return eventos.filter(evento => {
+    // Verificar si el evento es visible
+    if (evento.EST_VIS === "NO VISIBLE") {
+      return false;
+    }
+
+    // Verificar si la fecha del evento es hoy o futura
+    const fechaEvento = new Date(evento.FEC_EVT);
+    fechaEvento.setHours(0, 0, 0, 0);
+    
+    return fechaEvento >= hoy;
+  });
+};
+
 const Eventos = () => {
   const [eventos, setEventos] = useState([]);
   const [detalles, setDetalles] = useState([]);
@@ -64,10 +83,13 @@ const Eventos = () => {
       axios.get(`${BACK_URL}/api/tarifas_evento`),
     ])
       .then(([resEventos, resDetalles, resTarifas]) => {
-        setEventos(resEventos.data);
+        // Filtrar eventos válidos (visibles y con fecha actual o futura)
+        const eventosValidos = filtrarEventosValidos(resEventos.data);
+        
+        setEventos(eventosValidos);
         setDetalles(resDetalles.data);
         setTarifas(resTarifas.data);
-        setEventosFiltrados(resEventos.data);
+        setEventosFiltrados(eventosValidos);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
@@ -203,7 +225,6 @@ const Eventos = () => {
                 )}
               </div>
               <div className="evento-actions">
-                
                 <button
                   className="btn-inscribirse"
                   onClick={() => {

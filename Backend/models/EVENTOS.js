@@ -45,6 +45,11 @@ module.exports = function(sequelize, DataTypes) {
     CAR_MOT: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    EST_VIS: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      defaultValue: "VISIBLE"
     }
   }, {
     sequelize,
