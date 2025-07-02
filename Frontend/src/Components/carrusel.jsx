@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/carrusel.css";
-
-const API_BASE_URL = import.meta.env.VITE_BACK_URL;
+import { BACK_URL} from '../../config';
 
 function Carrusel() {
   const [imagenes, setImagenes] = useState([]);
@@ -15,7 +14,7 @@ function Carrusel() {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/home?section=carousel`)
+    fetch(`${BACK_URL}/api/home?section=carousel`)
       .then(res => {
         if (!res.ok) throw new Error('No se pudo cargar el carrusel');
         return res.json();
@@ -115,7 +114,7 @@ function Carrusel() {
             onClick={() => img.redirectUrl && (window.location.href = img.redirectUrl)}
           >
             <img
-              src={`${API_BASE_URL.replace('/api', '')}/${img.imagen}`}
+              src={`${BACK_URL.replace('/api', '')}/${img.imagen}`}
               alt={img.titulo}
               className='discovery-carousel-image'
               loading={idx === 0 ? 'eager' : 'lazy'}

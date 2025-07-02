@@ -6,8 +6,7 @@ import '../Styles/Home.css';
 import Features from '../Components/Home/DetalleFeature';
 import Tecnologias from '../Components/Tecnologias';
 import Categorias from '../Components/Home/Carreras';
-
-const API_BASE_URL = import.meta.env.VITE_BACK_URL;
+import { BACK_URL } from '../../config';
 
 const ICON_MAP = {
   'Users': Users,
@@ -46,7 +45,7 @@ const DiscoveryHome = () => {
   const navigate = useNavigate();
 
   const fetchEventsFromAPI = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/eventos`);
+    const response = await fetch(`${BACK_URL}/api/eventos`);
     if (!response.ok) throw new Error('Error al obtener eventos');
     const data = await response.json();
     return data.filter(event => event.EST_VIS === 'VISIBLE');
@@ -74,7 +73,7 @@ const DiscoveryHome = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/home?section=stats`)
+    fetch(`${BACK_URL}/api/home?section=stats`)
       .then(res => res.json())
       .then(data => setStatsData(data))
       .catch(() => setStatsData([]));
@@ -201,15 +200,19 @@ const EventCard = ({ event }) => {
   return (
     <article className="discovery-card">
       <div className="card-image-container">
-        <img 
-          src={event.FOT_EVT ? `${API_BASE_URL}/${event.FOT_EVT}` : '/placeholder-image.jpg'} 
+        <img
+          src={event.FOT_EVT ? `${BACK_URL}/${event.FOT_EVT}` : '/1749487325571-234972478.jpeg'}
           alt={event.NOM_EVT}
           className="card-image"
           loading="lazy"
           onError={(e) => {
-            e.target.src = '/placeholder-image.jpg';
+            // Solo cambia a placeholder si no lo es ya
+            if (!e.target.src.endsWith('/1749487325571-234972478.jpeg')) {
+              e.target.src = '/1749487325571-234972478.jpeg';
+            }
           }}
         />
+
       </div>
       <div className="card-content">
         <div className="card-meta">

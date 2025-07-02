@@ -285,6 +285,7 @@ body, .main-content {
   width: 6px;
 }
 
+
 .sidebar::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
@@ -303,6 +304,13 @@ body, .main-content {
   border: 1px solid #dee2e6;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+
+.main-content {
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  min-height: 0; 
+  min-width: 95%;
 }
 
 /* Botón de menú móvil */
@@ -334,7 +342,6 @@ body, .main-content {
   background: #722022;
   transform: translateY(-1px);
 }
-
 
 .main-content {
   padding: 2rem;
@@ -375,6 +382,11 @@ body, .main-content {
     grid-template-areas:
       "header"
       "main";
+/* Media queries para pantallas más grandes */
+@media (min-width: 768px) {
+  .header-principal {
+    height: 115px;
+    padding: 0;
   }
   
   .header-content {
@@ -422,7 +434,7 @@ body, .main-content {
   text-align: center;
   padding: 4rem;
 }
-}
+
 
 /* Estilos específicos para el texto de la facultad */
 .facultad-text {
