@@ -1,3 +1,49 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.central-wrapper {
+  min-height: 100vh;
+  min-width: 70vw;
+  max-width: 88vw;
+  display: flex;
+  align-items: center;      /* Centra verticalmente */
+  justify-content: center;  /* Centra horizontalmente */
+  background: #f3f4f6;      /* (Opcional) color fondo */
+  box-sizing: border-box;
+  padding: 32px 12px;       /* Espacio para pantallas chicas */
+  flex-direction: column;   /* Mantiene todo apilado si hay varios bloques */
+}
+
+/* Previene desbordes horizontales en pantallas pequeñas */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.eventos-container,
+.modal-container {
+  margin: 0 auto;
+  align-self: center;
+}
+
+/* Responsive para evitar que el contenido se achique demasiado en móvil */
+@media (max-width: 700px) {
+  .central-wrapper {
+    padding: 12px 2vw;
+  }
+  .eventos-container,
+  .modal-container {
+    width: 100%;
+    max-width: 100vw;
+    min-width: unset;
+  }
+}
+y
 /* Estilos principales */
 .eventos-container {
   min-height: 100px;
@@ -219,7 +265,7 @@
 
 .btn-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-bottom: 20px;
 }
 
@@ -245,7 +291,7 @@
 }
 
 .tabla-eventos {
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
   border-radius: 8px;
   overflow: hidden;

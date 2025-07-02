@@ -76,7 +76,7 @@ const Layout = () => {
 function App() {
   return (
     <Router>
-      <div className="app-wrapper">
+      <div >
       <Layout />
       </div>
     </Router>
