@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../auth/AuthContext";
-import "../../Styles/Notas.css";
-import { BACK_URL } from "../../../config"; // Asegúrate de que la URL del backend esté configurada correctamente
+import "../../Styles/Asistencia_Adm.css";
+import { BACK_URL } from "../../../config"; 
+import Swal from "sweetalert2";
 
 const Cursos = () => {
   const { user } = useAuth();
   const [eventos, setEventos] = useState([]);
   const [expanded, setExpanded] = useState(null);
+  const [semanaActual, setSemanaActual] = useState([]);
+  const [semanaSeleccionada, setSemanaSeleccionada] = useState(0);
+
+  // Obtener los días de la semana actual y semanas adyacentes
+  useEffect(() => {
+    const calcularSemana = (offset = 0) => {
+      const hoy = new Date();
+      const diaSemana = hoy.getDay(); // 0=Domingo, 1=Lunes, etc.
+      const lunes = new Date(hoy);
+      lunes.setDate(hoy.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1) + (offset * 7));
+      
+      const diasSemana = [];
+      for (let i = 0; i < 5; i++) {
+        const dia = new Date(lunes);
+        dia.setDate(lunes.getDate() + i);
+        diasSemana.push(dia.toISOString().split('T')[0]);
+      }
+      return diasSemana;
+    };
+
+    setSemanaActual(calcularSemana(semanaSeleccionada));
+  }, [semanaSeleccionada]);
 
   useEffect(() => {
     if (user?.id) {
@@ -20,40 +43,85 @@ const Cursos = () => {
     }
   }, [user]);
 
-  const handleAsignarAsistencia = async (cedula, idEvento) => {
+  const manejarAsistencia = async (cedula, idEvento, fecha, asistio) => {
     try {
-      const fecha = new Date().toISOString().split("T")[0];
-      await axios.post(`${BACK_URL}/api/detalle_informe/asistencia`, {
-        cedula,
-        idEvento,
-        fecha,
-      });
+      if (asistio) {
+        // Eliminar asistencia
+        await axios.delete(`${BACK_URL}/api/detalle_informe/asistencia`, {
+          data: { cedula, idEvento, fecha }
+        });
+      } else {
+        // Agregar asistencia
+        await axios.post(`${BACK_URL}/api/detalle_informe/asistencia`, {
+          cedula, idEvento, fecha
+        });
+      }
 
-      setEventos((prevEventos) =>
-        prevEventos.map((evento) => {
+      setEventos(prevEventos =>
+        prevEventos.map(evento => {
           if (evento.ID_EVT === idEvento) {
             return {
               ...evento,
-              Personas: evento.Personas.map((persona) => {
+              Personas: evento.Personas.map(persona => {
                 if (persona.CED_PER === cedula) {
+                  let nuevasAsistencias = persona.REG_ASI ? [...persona.REG_ASI] : [];
+                  
+                  if (asistio) {
+                    // Remover la fecha si ya estaba presente
+                    nuevasAsistencias = nuevasAsistencias.filter(d => d !== fecha);
+                  } else {
+                    // Agregar la fecha si no estaba presente
+                    if (!nuevasAsistencias.includes(fecha)) {
+                      nuevasAsistencias.push(fecha);
+                    }
+                  }
+                  
                   return {
                     ...persona,
-                    REG_ASI: fecha,
+                    REG_ASI: nuevasAsistencias
                   };
                 }
                 return persona;
-              }),
+              })
             };
           }
           return evento;
         })
       );
 
-      alert("Asistencia asignada correctamente");
+      await Swal.fire({
+        title: '¡Asistencia actualizada!',
+        text: `La asistencia ha sido ${asistio ? 'eliminada' : 'registrada'}`,
+        icon: 'success',
+        confirmButtonColor: '#581517',
+        timer: 2000,
+        timerProgressBar: true
+      });
+
     } catch (error) {
-      console.error("Error al asignar asistencia:", error);
-      alert("Error al asignar asistencia");
+      console.error("Error al actualizar asistencia:", error);
+      
+      await Swal.fire({
+        title: 'Error',
+        text: 'No se pudo actualizar la asistencia',
+        icon: 'error',
+        confirmButtonColor: '#581517'
+      });
     }
+  };
+
+  const verificarAsistencia = (asistencias, fecha) => {
+    if (!asistencias) return false;
+    return asistencias.includes(fecha);
+  };
+
+  const cambiarSemana = (direccion) => {
+    setSemanaSeleccionada(prev => prev + direccion);
+  };
+
+  const formatearFecha = (fecha) => {
+    const [year, month, day] = fecha.split('-');
+    return `${day}/${month}`;
   };
 
   return (
@@ -72,14 +140,36 @@ const Cursos = () => {
 
             {expanded === idx && (
               <div className="acordeon-content">
-                <table className="tabla-notas">
+                <div className="controles-semana">
+                  <button 
+                    onClick={() => cambiarSemana(-1)} 
+                    className="btn-semana"
+                  >
+                    &lt; Semana anterior
+                  </button>
+                  <span className="rango-semana">
+                    Semana del {formatearFecha(semanaActual[0])} al {formatearFecha(semanaActual[4])}
+                  </span>
+                  <button 
+                    onClick={() => cambiarSemana(1)} 
+                    className="btn-semana"
+                  >
+                    Semana siguiente &gt;
+                  </button>
+                </div>
+                
+                <table className="tabla-asistencia">
                   <thead>
                     <tr>
                       <th>Cédula</th>
                       <th>Nombre</th>
                       <th>Apellido</th>
-                      <th>Asistencia</th>
-                      <th>Acción</th>
+                      {semanaActual.map((fecha, i) => (
+                        <th key={fecha}>
+                          {['Lun', 'Mar', 'Mié', 'Jue', 'Vie'][i]}
+                          <br/>{formatearFecha(fecha)}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
@@ -89,30 +179,29 @@ const Cursos = () => {
                           <td>{persona.CED_PER}</td>
                           <td>{persona.NOM_PER}</td>
                           <td>{persona.APE_PER}</td>
-                          <td>
-                            {persona.REG_ASI
-                              ? persona.REG_ASI
-                              : "No registrada"}
-                          </td>
-                          <td>
-                            <button
-                              onClick={() =>
-                                handleAsignarAsistencia(
-                                  persona.CED_PER,
-                                  evento.ID_EVT
-                                )
-                              }
-                              className="btn-guardar"
-                            >
-                              Asignar
-                            </button>
-                          </td>
+                          {semanaActual.map((fecha) => {
+                            const asistio = verificarAsistencia(persona.REG_ASI, fecha);
+                            return (
+                              <td 
+                                key={fecha} 
+                                className={`celda-asistencia ${asistio ? 'asistio' : 'no-asistio'}`}
+                                onClick={() => manejarAsistencia(
+                                  persona.CED_PER, 
+                                  evento.ID_EVT, 
+                                  fecha, 
+                                  asistio
+                                )}
+                              >
+                                {asistio ? '✓' : 'X'}
+                              </td>
+                            );
+                          })}
                         </tr>
                       ))
                     ) : (
                       <tr>
                         <td
-                          colSpan="5"
+                          colSpan={3 + semanaActual.length}
                           className="text-center py-2 text-gray-500"
                         >
                           No hay personas registradas
