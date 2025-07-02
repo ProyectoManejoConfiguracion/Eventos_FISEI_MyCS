@@ -90,7 +90,7 @@ const Administrador = () => {
         </div>
         <nav className="sidebar-navbar">
           <ul className="sidebar-navbar_item">
-            {user?.role === "Administrador" && (
+            {user?.role === "Admin" && (
               <li>
                 <NavLink
                   to="/Administrador/Usuario"
@@ -127,7 +127,7 @@ const Administrador = () => {
             </li>
 
               
-            {user?.role === "Administrador" && (
+            {user?.role === "Admin" && (
               <li>
                 <NavLink
                   to="/Administrador/Contenido"
@@ -152,7 +152,7 @@ const Administrador = () => {
                 <FaRegStickyNote className="nav-icon" /> Notas
               </NavLink>
             </li>
-
+f
 
           </ul>
         </nav>
