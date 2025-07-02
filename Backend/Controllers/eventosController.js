@@ -220,7 +220,7 @@ exports.cambiarVisibilidad = async (req, res) => {
     const { EST_VIS } = req.body;
     const [updated] = await EVENTOS.update(
       { EST_VIS },
-      { where: { ID_EVT: req.params.id } } // <-- aquí usa ID_EVT
+      { where: { ID_EVT: req.params.id } }
     );
     if (updated) {
       res.json({ message: `Estado de visibilidad actualizado a "${EST_VIS}"` });
