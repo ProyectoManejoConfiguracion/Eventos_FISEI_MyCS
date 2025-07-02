@@ -29,6 +29,15 @@ module.exports = function(sequelize, DataTypes) {
         model: 'FACULTADES',
         key: 'ID_FAC'
       }
+    },
+    ESTADO: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      defaultValue: "PENDIENTE"
+    },
+    FOT_CON: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
