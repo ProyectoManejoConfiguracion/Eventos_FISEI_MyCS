@@ -219,7 +219,7 @@
 
 .btn-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-bottom: 20px;
 }
 
@@ -245,7 +245,7 @@
 }
 
 .tabla-eventos {
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
   border-radius: 8px;
   overflow: hidden;

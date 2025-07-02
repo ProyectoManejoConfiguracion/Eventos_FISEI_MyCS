@@ -6,6 +6,7 @@
   width: 100%;        /* Corregido: ancho fluido */
   min-height: 100vh;
   box-sizing: border-box;
+  left: 60%;
 }
 
 /* Estilos generales */
@@ -18,6 +19,7 @@
   color: #333;
   line-height: 1;
   box-sizing: border-box;
+  margin-left: 150px;
 }
 
 .contenido-container h1 {

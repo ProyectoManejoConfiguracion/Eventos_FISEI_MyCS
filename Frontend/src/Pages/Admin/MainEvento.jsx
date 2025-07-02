@@ -461,6 +461,7 @@ const MainEvento = () => {
             <div style={{ marginTop: '30px' }}>
               <div 
                 style={{ 
+                  width: '15%',
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
@@ -568,6 +569,7 @@ const MainEvento = () => {
             <div style={{ marginTop: '30px' }}>
               <div 
                 style={{ 
+                  width: '15%',
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',

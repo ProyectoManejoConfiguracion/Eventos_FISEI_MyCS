@@ -1,5 +1,6 @@
 /* Contenedor principal */
 .usuarios-container {
+    margin: 5% 20%;
     padding: 20px;
     max-width: 1040px;
     background: #ffffff;
