@@ -1,21 +1,23 @@
 /*No eliminar el main-content*/
 .main-content {
   background-color: #f0f0f0;
-  padding: 2rem;
+  padding: 2rem 0;    /* Solo arriba y abajo, no a los costados */
   font-family: 'Helvetica', sans-serif;
-  width: 1100px;
+  width: 100%;        /* Corregido: ancho fluido */
+  min-height: 100vh;
+  box-sizing: border-box;
 }
-
-
 
 /* Estilos generales */
 .contenido-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  width: 75%;                  /* Corregido: fluido */
+  max-width: 1000px;
+  margin: 0 ;               /* Centrado horizontal */
+  padding: 0px;                /* Igual que Notas.css */
   font-family: 'Roboto', 'Segoe UI', sans-serif;
   color: #333;
-  line-height: 1.6;
+  line-height: 1;
+  box-sizing: border-box;
 }
 
 .contenido-container h1 {
@@ -265,12 +267,123 @@
   box-shadow: none;
 }
 
+.cancel-btn {
+  background-color: #E74C3C;
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 10px rgba(231, 76, 60, 0.15);
+  margin-left: 12px;
+}
+
+.cancel-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+}
+
+.cancel-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-input-button {
+  display: inline-block;
+  background: #fafbfc;
+  color: #222;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  box-shadow: none;
+}
+
+.file-input-button:hover,
+.file-input-button:focus {
+  border-color: #581517;
+  background: #f5f5f5;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.file-name {
+  margin-left: 1rem;
+  font-size: 0.98rem;
+  color: #581517;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.success-message {
+  padding: 10px;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.submit-btn { 
+  background: #581517;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover {
+  background: #3a0a0b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-group {
+  margin-bottom: 1.5rem; 
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .contenido-container {
     padding: 0 1.5rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -281,20 +394,20 @@
     font-size: 30px;
     padding: 3rem;
   }
-  
+
   .content-sections-tabs {
     justify-content: flex-start;
     overflow-x: auto;
     padding-bottom: 0.5rem;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .content-sections-tabs button {
     flex: 0 0 auto;
     padding: 0.7rem 1.5rem;
     font-size: 0.8rem;
   }
-  
+
   .contenido-form {
     padding: 1.5rem;
   }
@@ -310,15 +423,15 @@
   .contenido-container {
     padding: 0 1rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .form-section h2 {
     font-size: 1.4rem;
   }
-  
+
   .submit-btn {
     width: 100%;
     padding: 1rem;
