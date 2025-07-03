@@ -111,7 +111,7 @@ const Administrador = () => {
                 }
                 onClick={() => setSidebarOpen(false)}
               >
-                <FaBook className="nav-icon" /> Asistencia
+                <FaBook className="nav-icon" /> Cursos
               </NavLink>
             </li>
             <li>

@@ -18,10 +18,6 @@ const Certificado = ({
   locacion        = 'Ciudad, País',
   fechaInicio     = 'Fecha Inicio',
   fechaFin        = 'Fecha Fin',
-  tipoCurso       = '',
-  descripcion     = '',
-  carrera         = '',
-  area             = '',
   chair           = {
     name: 'Ing. Nombre Chair',
     title: 'Cargo del Chair',
@@ -64,26 +60,20 @@ const Certificado = ({
 
       {/* Título central del certificado */}
       <div className="certificate-title">
-        <h1>CERTIFICADO DE APROBACIÓN DE CURSO</h1>
+        <h1>CERTIFICATE OF COURSE COMPLETION</h1>
       </div>
 
-      {/* Sección “PARA: [Participante]” */}
+      {/* Sección “TO: [Participante]” */}
       <div className="certificate-to">
-        <span>PARA:</span>
+        <span>TO:</span>
         <h2>{participante}</h2>
       </div>
 
       {/* Texto del cuerpo */}
       <div className="certificate-body">
         <p>
-          Por haber aprobado y asistido al <strong>{tipoCurso}</strong> <strong>“{tituloEvento}”</strong> ({horasEvento} horas),<br />
-          realizado en {locacion}, desde el {fechaInicio} hasta el {fechaFin}.
-        </p>
-        <p>
-          <strong>Descripción:</strong> {descripcion}
-        </p>
-        <p>
-          <strong>Área:</strong> {area}
+          For this course approval and attendance <strong>“<strong>{tituloEvento}</strong>”</strong> ({horasEvento} hours) 
+          which was held in {locacion}, from {fechaInicio} to {fechaFin}.
         </p>
       </div>
 

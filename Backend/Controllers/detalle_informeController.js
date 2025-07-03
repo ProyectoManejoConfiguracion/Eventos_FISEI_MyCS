@@ -8,9 +8,9 @@ exports.getAsistenciasPorAutoridad = async (req, res) => {
 
     const results = await sequelize.query(
       `
-      SELECT e.ID_EVT, e.NOM_EVT, e.FEC_EVT, e.FEC_FIN, e.EST_VIS, de.CAT_DET,
+      SELECT e.ID_EVT, e.NOM_EVT, e.FEC_EVT, de.CAT_DET,
              p.CED_PER, p.NOM_PER, p.APE_PER,
-             i.NUM_IFN, di.NUM_DET_INF, di.REG_ASI
+             di.NUM_DET_INF, di.REG_ASI
       FROM EVENTOS e
       JOIN DETALLE_EVENTOS de ON e.ID_EVT = de.ID_EVT
       JOIN REGISTRO_EVENTO re ON de.ID_DET = re.ID_DET
@@ -18,11 +18,8 @@ exports.getAsistenciasPorAutoridad = async (req, res) => {
       JOIN PERSONAS p ON rp.CED_PER = p.CED_PER
       LEFT JOIN INFORMES i ON rp.NUM_REG_PER = i.NUM_REG_PER
       LEFT JOIN DETALLE_INFORME di ON i.NUM_IFN = di.NUM_INF
-      WHERE de.CAT_DET = 'CURSO'
-        AND de.CED_AUT = :cedula
-        AND e.EST_VIS = 'VISIBLE'
-        AND rp.EST_REG = 'VERIFICADO'
-      `,
+      WHERE de.CAT_DET = 'CURSO' AND de.CED_AUT = :cedula
+    `,
       {
         replacements: { cedula },
         type: Sequelize.QueryTypes.SELECT,
@@ -38,34 +35,18 @@ exports.getAsistenciasPorAutoridad = async (req, res) => {
           ID_EVT: row.ID_EVT,
           NOM_EVT: row.NOM_EVT,
           FEC_EVT: row.FEC_EVT,
-          FEC_FIN: row.FEC_FIN,
           CAT_DET: row.CAT_DET,
           Personas: [],
         };
       }
 
-      // Buscar si ya existe la persona en el array
-      let persona = eventosMap[key].Personas.find(
-        (p) => p.CED_PER === row.CED_PER
-      );
-      if (!persona) {
-        persona = {
-          CED_PER: row.CED_PER,
-          NOM_PER: row.NOM_PER,
-          APE_PER: row.APE_PER,
-          NUM_INF: row.NUM_IFN || null,
-          DetallesInforme: [],
-        };
-        eventosMap[key].Personas.push(persona);
-      }
-
-      // Si hay detalle de informe, agregarlo a la lista
-      if (row.NUM_DET_INF) {
-        persona.DetallesInforme.push({
-          NUM_DET_INF: row.NUM_DET_INF,
-          REG_ASI: row.REG_ASI,
-        });
-      }
+      eventosMap[key].Personas.push({
+        CED_PER: row.CED_PER,
+        NOM_PER: row.NOM_PER,
+        APE_PER: row.APE_PER,
+        NUM_DET_INF: row.NUM_DET_INF || null,
+        REG_ASI: row.REG_ASI || null,
+      });
     });
 
     res.json(Object.values(eventosMap));
@@ -78,9 +59,6 @@ exports.asignarAsistencia = async (req, res) => {
   const { cedula, idEvento, fecha } = req.body;
 
   try {
-    console.log("Asignando asistencia:", { cedula, idEvento, fecha });
-
-    // 1. Obtener el NUM_REG_PER
     const [registro] = await sequelize.query(
       `
       SELECT rp.NUM_REG_PER
@@ -89,7 +67,7 @@ exports.asignarAsistencia = async (req, res) => {
       JOIN DETALLE_EVENTOS de ON re.ID_DET = de.ID_DET
       WHERE rp.CED_PER = :cedula AND de.ID_EVT = :idEvento
       LIMIT 1
-      `,
+    `,
       {
         replacements: { cedula, idEvento },
         type: Sequelize.QueryTypes.SELECT,
@@ -97,136 +75,90 @@ exports.asignarAsistencia = async (req, res) => {
     );
 
     if (!registro) {
-      return res.status(404).json({
-        message: "No se encontró el registro de persona para el evento."
-      });
+      return res
+        .status(404)
+        .json({
+          message: "No se encontró el registro de persona para el evento.",
+        });
     }
 
     const { NUM_REG_PER } = registro;
 
-    // 2. Buscar o crear un informe
     const [informe] = await sequelize.query(
-      `SELECT NUM_IFN FROM INFORMES WHERE NUM_REG_PER = :numRegPer LIMIT 1`,
+      `
+      SELECT * FROM INFORMES WHERE NUM_REG_PER = :numRegPer
+    `,
       {
         replacements: { numRegPer: NUM_REG_PER },
         type: Sequelize.QueryTypes.SELECT,
       }
     );
 
-    let numInforme;
+    let NUM_INF;
 
     if (!informe) {
-      // Crear nuevo informe
-      await sequelize.query(
-        `INSERT INTO INFORMES (NUM_REG_PER) VALUES (:numRegPer)`,
+      const [insertResult] = await sequelize.query(
+        `
+  INSERT INTO INFORMES (NUM_REG_PER) VALUES (:numRegPer)
+`,
         {
           replacements: { numRegPer: NUM_REG_PER },
           type: Sequelize.QueryTypes.INSERT,
         }
       );
 
-      // Obtener el ID del informe recién creado
       const [newInforme] = await sequelize.query(
-        `SELECT LAST_INSERT_ID() as id`,
+        `
+  SELECT LAST_INSERT_ID() as NUM_IFN
+`,
         {
           type: Sequelize.QueryTypes.SELECT,
         }
       );
 
-      numInforme = newInforme.id;
+      NUM_INF = newInforme.NUM_IFN;
     } else {
-      numInforme = informe.NUM_IFN;
+      NUM_INF = informe.NUM_IFN;
     }
 
-    // 3. Verificar si ya existe un detalle para esta fecha
-    const [detalleExistente] = await sequelize.query(
-      `
-      SELECT NUM_DET_INF 
-      FROM DETALLE_INFORME 
-      WHERE NUM_INF = :numInforme AND REG_ASI = :fecha
-      LIMIT 1
-      `,
-      {
-        replacements: { numInforme, fecha },
-        type: Sequelize.QueryTypes.SELECT,
-      }
-    );
-
-    // Si ya existe, simplemente retornamos la info
-    if (detalleExistente) {
-      return res.json({ 
-        message: "La asistencia ya estaba registrada para esta fecha.",
-        detalleId: detalleExistente.NUM_DET_INF
-      });
-    }
-
-    // 4. Si no existe, crear un nuevo detalle de asistencia
-    await sequelize.query(
-      `
-      INSERT INTO DETALLE_INFORME (NUM_INF, REG_ASI) 
-      VALUES (:numInforme, :fecha)
-      `,
-      {
-        replacements: { numInforme, fecha },
-        type: Sequelize.QueryTypes.INSERT,
-      }
-    );
-
-    // Obtener el ID del detalle recién creado
-    const [nuevoDetalle] = await sequelize.query(
-      `SELECT LAST_INSERT_ID() as id`,
-      {
-        type: Sequelize.QueryTypes.SELECT,
-      }
-    );
-
-    res.json({ 
-      message: "Asistencia registrada correctamente.",
-      detalleId: nuevoDetalle.id
-    });
-
-  } catch (error) {
-    console.error("Error asignando asistencia:", error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.eliminarDetalleInforme = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    console.log("Eliminando detalle de informe con ID:", id);
-
-    // Verificar que el detalle exista
     const [detalle] = await sequelize.query(
-      `SELECT NUM_DET_INF FROM DETALLE_INFORME WHERE NUM_DET_INF = :id`,
+      `
+      SELECT * FROM DETALLE_INFORME 
+      WHERE NUM_INF = :numInf
+    `,
       {
-        replacements: { id },
+        replacements: { numInf: NUM_INF },
         type: Sequelize.QueryTypes.SELECT,
       }
     );
 
     if (!detalle) {
-      return res.status(404).json({ 
-        message: "Detalle de informe no encontrado." 
-      });
+      await sequelize.query(
+        `
+        INSERT INTO DETALLE_INFORME (NUM_INF, REG_ASI) 
+        VALUES (:numInf, :fecha)
+      `,
+        {
+          replacements: { numInf: NUM_INF, fecha },
+          type: Sequelize.QueryTypes.INSERT,
+        }
+      );
+    } else {
+      await sequelize.query(
+        `
+        UPDATE DETALLE_INFORME SET REG_ASI = :fecha 
+        WHERE NUM_DET_INF = :numDetInf
+      `,
+        {
+          replacements: { fecha, numDetInf: detalle.NUM_DET_INF },
+          type: Sequelize.QueryTypes.UPDATE,
+        }
+      );
     }
 
-    // Eliminar el detalle
-    await sequelize.query(
-      `DELETE FROM DETALLE_INFORME WHERE NUM_DET_INF = :id`,
-      {
-        replacements: { id },
-        type: Sequelize.QueryTypes.DELETE,
-      }
-    );
-
-    res.json({ 
-      message: "Asistencia eliminada correctamente.",
-      detalleId: parseInt(id)
-    });
+    res.json({ message: "Asistencia asignada correctamente." });
   } catch (error) {
-    console.error("Error eliminando asistencia:", error);
+    console.error("Error asignando asistencia:", error);
     res.status(500).json({ error: error.message });
   }
 };

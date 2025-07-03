@@ -4,5 +4,5 @@ const detalle_informeController = require('../Controllers/detalle_informeControl
 
 router.get('/:cedula', detalle_informeController.getAsistenciasPorAutoridad);
 router.post('/asistencia', detalle_informeController.asignarAsistencia);
-router.delete('/borrar/:id', detalle_informeController.eliminarDetalleInforme);
+
 module.exports = router;
