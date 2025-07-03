@@ -1,6 +1,6 @@
 /* Contenedor principal */
 .notas-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
   background-color: #ffffff;
@@ -16,6 +16,13 @@
   text-align: center;
   padding-bottom: 1rem;
   border-bottom: 2px solid #f0e0e0;
+}
+
+.semana-info {
+  text-align: right;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 /* Acordeón de eventos */
@@ -68,35 +75,51 @@
   padding: 1.5rem;
   background-color: #ffffff;
   border-top: 1px solid #e2e8f0;
+  overflow-x: auto;
 }
 
 /* Tabla de asistencias */
-.tabla-notas {
+.tabla-asistencia {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  min-width: 800px;
 }
 
-.tabla-notas thead {
+.tabla-asistencia thead {
   background-color: #f9f2f2;
 }
 
-.tabla-notas th {
-  padding: 0.75rem 1rem;
-  text-align: left;
+.tabla-asistencia th {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
   font-weight: 600;
   color: #581517;
   border-bottom: 2px solid #e2e8f0;
 }
 
-.tabla-notas td {
-  padding: 1rem;
+.tabla-asistencia td {
+  padding: 0.75rem 0.5rem;
   border-bottom: 1px solid #f0e0e0;
   vertical-align: middle;
+  text-align: center;
 }
 
-.tabla-notas tr:last-child td {
+.tabla-asistencia tr:last-child td {
   border-bottom: none;
+}
+
+.celda-asistencia {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.asistio {
+  color: #28a745;
+}
+
+.no-asistio {
+  color: #dc3545;
 }
 
 /* Botón Asignar */
@@ -110,6 +133,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn-guardar:hover {
@@ -141,10 +165,61 @@
   color: #718096;
 }
 
+/* Controles de semana */
+.controles-semana {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.btn-semana {
+  background-color: #f0e0e0;
+  color: #581517;
+  border: 1px solid #d0b0b0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-semana:hover {
+  background-color: #e0d0d0;
+}
+
+.rango-semana {
+  font-weight: 600;
+  color: #581517;
+}
+
+/* Celdas de asistencia interactivas */
+.celda-asistencia {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.celda-asistencia:hover {
+  transform: scale(1.2);
+}
+
+.asistio {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.no-asistio {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
+  .notas-container {
+    padding: 1rem;
+  }
+  
   .notas-container h1 {
-    padding: 3.5rem;
+    padding: 1.5rem;
+    font-size: 1.5rem;
   }
   
   .acordeon-header {
@@ -156,24 +231,23 @@
     padding: 1rem;
   }
   
-  .tabla-notas {
-    display: block;
-    overflow-x: auto;
+  .tabla-asistencia {
+    font-size: 0.85rem;
   }
   
-  .tabla-notas th,
-  .tabla-notas td {
-    padding: 0.75rem;
+  .btn-guardar {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .notas-container h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
   
   .btn-guardar {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
   }
 }

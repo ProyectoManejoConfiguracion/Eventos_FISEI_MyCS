@@ -51,6 +51,10 @@ const Login = ({ isOpen, closeModal }) => {
         draggable: true,
       }).then(() => {
         if (loggedUser?.role == "Admin" || loggedUser?.role == "Docente") {
+          navigate("/Administrador");
+          closeModal();
+        }else if(loggedUser?.role=="Estudiante" ||loggedUser?.role == "Invitado"){
+
           if (loggedUser?.est === "VERIFICADO") {
             navigate("/Administrador");
             closeModal();
@@ -59,6 +63,7 @@ const Login = ({ isOpen, closeModal }) => {
             closeModal();
           }
         } else if (loggedUser?.role == "Estudiante") {
+
           navigate("/");
           closeModal();
         }

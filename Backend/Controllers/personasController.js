@@ -40,6 +40,21 @@ const upload = multer({
   }
 }).single('FOT_PER');
 
+const imgced = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Solo se permiten imágenes (JPEG, JPG, PNG, GIF)'));
+  }
+}).single('FOT_CED');
+
 exports.recover = async (req, res) => {
   const { email } = req.body;
   try {
@@ -212,6 +227,7 @@ exports.login = async (req, res) => {
         APE_PER: user.APE_PER,
         COR_PER: user.COR_PER,
         ROL_EST: rol,
+        FOT_PER: user.FOT_PER
         ESTADO: estado
       }
     });
@@ -224,19 +240,52 @@ exports.login = async (req, res) => {
 
 
 exports.update = async (req, res) => {
-  try {
-    const [updated] = await PERSONAS.update(req.body, { where: { CED_PER: req.params.id } });
-    if (updated) {
-      const updatedRecord = await PERSONAS.findByPk(req.params.id);
-      res.json(updatedRecord);
-    } else {
-      res.status(404).json({ error: 'Persona no encontrada' });
+  // Manejar la subida de la imagen primero
+  imgced(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(400).json({ error: err.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
+    try {
+      const { CON_PER, ...rest } = req.body;
+      let updates = { ...rest };
+
+      
+      if (req.file) {
+        const imagePath = path.join('uploads', req.file.filename).replace(/\\/g, '/');
+        updates.FOT_CED = imagePath;
+      }
+
+    
+      if (CON_PER) {
+        updates.CON_PER = await bcrypt.hash(CON_PER, 10);
+      }
+
+      const [updated] = await PERSONAS.update(updates, { where: { CED_PER: req.params.id } });
+
+      if (updated) {
+        const updatedRecord = await PERSONAS.findByPk(req.params.id);
+        res.json({
+          message: 'Usuario actualizado exitosamente',
+          user: {
+            CED_PER: updatedRecord.CED_PER,
+            NOM_PER: updatedRecord.NOM_PER,
+            APE_PER: updatedRecord.APE_PER,
+            COR_PER: updatedRecord.COR_PER,
+            FOT_PER: updatedRecord.FOT_PER,
+            FOT_CED: updatedRecord.FOT_CED
+          }
+        });
+      } else {
+        res.status(404).json({ error: 'Persona no encontrada' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+};
 
 exports.delete = async (req, res) => {
   try {
@@ -249,7 +298,6 @@ exports.delete = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
 exports.getPersonasNoVerificadas = async (req, res) => {
   try {
     const data = await PERSONAS.findAll({
@@ -333,6 +381,3 @@ exports.cambiarEstadoEstudiante = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-=======
-
->>>>>>> 4f7d8b8d177f3931383a8b33070548906b03bde5

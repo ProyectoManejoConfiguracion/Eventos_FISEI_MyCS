@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
-import {BACK_URL } from '../../config';
+import { BACK_URL } from '../../config';
 
 interface User {
   id: string;
@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user');
   };
 
-  
   const refreshUser = async () => {
     if (!user?.id) return;
     const res = await axios.get(`${BACK_URL}/api/personas/${user.id}`);
