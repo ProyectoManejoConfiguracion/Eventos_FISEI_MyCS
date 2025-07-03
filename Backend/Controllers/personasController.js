@@ -1,4 +1,5 @@
-const { PERSONAS, ESTUDIANTES, AUTORIDADES } = require('../models');
+const { PERSONAS, ESTUDIANTES, AUTORIDADES, PasswordResetToken } = require('../models');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'clavesecretasupersegura';
@@ -6,6 +7,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const uploadPath = path.join('C:', 'uploads');
+const crypto = require('crypto');
+const { sendRecoveryEmail } = require('../utils/mailer');
+
+
+
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -48,6 +55,54 @@ const imgced = multer({
   }
 }).single('FOT_CED');
 
+exports.recover = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await PERSONAS.findOne({ where: { COR_PER: email } });
+    if (user) {
+      // genera token único y guarda con expiración
+      const token = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 3600 * 1000); // 1 hora
+      await PasswordResetToken.create({
+        CED_PER: user.CED_PER,  // o el campo PK de PERSONAS
+        token,
+        expiresAt
+      });
+      // envía el correo con nodemailer
+      await sendRecoveryEmail(user.COR_PER, token);
+    }
+    // devolvemos 204 en todos los casos para no filtrar existencia
+    res.sendStatus(204);
+} catch (err) {
+    console.error('Error en recover:', err);
+    // Envía el mensaje real para poder debuguear
+    res.status(500).json({ error: err.message });
+}
+};
+
+// 2) POST /api/auth/reset-password
+exports.resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+  try {
+    // busca el registro de token junto al usuario
+    const record = await PasswordResetToken.findOne({
+      where: { token },
+      include: { model: PERSONAS, foreignKey: 'CED_PER' }
+    });
+    if (!record || record.expiresAt < new Date()) {
+      return res.status(400).json({ message: 'Token inválido o expirado.' });
+    }
+    // actualiza la contraseña
+    record.PERSONA.CON_PER = await bcrypt.hash(newPassword, 10);
+    await record.PERSONA.save();
+    // destruye el token para que no se reutilice
+    await record.destroy();
+    res.json({ message: 'Contraseña restablecida correctamente.' });
+  } catch (err) {
+  console.error("Error en reset-password:", err);
+  res.status(500).json({ error: err.message });
+}
+};
 
 exports.create = async (req, res) => {
   // Manejar la subida de la imagen primero
@@ -59,6 +114,7 @@ exports.create = async (req, res) => {
     }
 
     try {
+        console.log("Body recibido en /api/personas:", req.body);
       const { CON_PER, ...rest } = req.body;
       let imagePath = null;
 
@@ -90,6 +146,7 @@ exports.create = async (req, res) => {
         }
       });
     } catch (error) {
+      console.error("Error en create PERSONAS:", error); // <<--- Aquí ve el error real
       res.status(500).json({ error: error.message });
     }
   });
@@ -229,10 +286,13 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const deleted = await PERSONAS.destroy({ where: { id: req.params.id } });
+    const deleted = await PERSONAS.destroy({ where: { CED_PER: req.params.id } });
     if (deleted) res.json({ message: 'Eliminado correctamente' });
     else res.status(404).json({ error: 'No encontrado' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(err);
+    res.status(500).json({ error: err.message }); // <-- muy útil para depurar
   }
 };
+
+

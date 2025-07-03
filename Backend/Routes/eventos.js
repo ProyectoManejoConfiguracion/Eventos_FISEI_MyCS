@@ -7,7 +7,7 @@ router.get('/tarifas', eventosController.getEventosPagoConTarifas);
 router.get('/:id', eventosController.getOne);
 router.post('/asignar_tarifa', eventosController.asignarOActualizarTarifa);
 router.post('/', eventosController.create);
-router.put('/:id', eventosController.update);
+router.put('/:id', eventosController.editarEventoCompleto);
 router.delete('/:id', eventosController.delete);
-
+router.put('/visibilidad/:id', eventosController.cambiarVisibilidad);
 module.exports = router;

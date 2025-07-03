@@ -63,7 +63,19 @@ exports.create = async (req, res) => {
   try {
     const newRecord = await AUTORIDADES.create(req.body);
     res.status(201).json(newRecord);
-  } catch (error) {
+  } catch (err) {
+        if (err.name === "SequelizeValidationError" || err.name === "SequelizeDatabaseError" || err.name === "notNull Violation:" || err.name === "SequelizeUniqueConstraintError"
+        || err.name === "SequelizeForeignKeyConstraintError" || err.name === "SequelizeConnectionError" || err.name === "SequelizeConnectionRefusedError" || err.name === "SequelizeTimeoutError" || err.name === "SequelizeAccessDeniedError" || err.name === "SequelizeHostNotFoundError" || err.name === "SequelizeHostNotReachableError" || err.name === "SequelizeInvalidConnectionError" || err.name === "SequelizeConnectionTimedOutError" || err.name === "SequelizeConnectionAcquireTimeoutError"
+        || err.name === "SequelizeConnectionLostError" || err.name === "SequelizeConnectionResetError" || err.name === "SequelizeConnectionAbortedError" || err.name === "SequelizeConnectionRefusedError" || err.name === "SequelizeConnectionClosedError" || err.name === "SequelizeConnectionPoolTimeoutError" || err.name === "SequelizeConnectionPoolFullError" || err.name === "SequelizeConnectionPoolEmptyError" || err.name === "SequelizeConnectionPoolClosedError"
+        || err.name === "SequelizeConnectionPoolInvalidError" || err.name === "SequelizeConnectionPoolAcquireTimeoutError" || err.name === "SequelizeConnectionPoolReleaseTimeoutError" || err.name === "SequelizeConnectionPoolDestroyTimeoutError" || err.name === "SequelizeConnectionPoolEvictTimeoutError" || err.name === "SequelizeConnectionPoolGetTimeoutError" || err.name === "SequelizeConnectionPoolSetTimeoutError" || err.name === "SequelizeConnectionPoolClearTimeoutError"
+        || err.name === "SequelizeConnectionPoolCloseTimeoutError" || err.name === "SequelizeConnectionPoolDrainTimeoutError" || err.name === "SequelizeConnectionPoolIdleTimeoutError" || err.name === "SequelizeConnectionPoolBusyTimeoutError" || err.name === "SequelizeConnectionPoolUnavailableError" || err.name === "SequelizeConnectionPoolOverloadError" || err.name === "SequelizeConnectionPoolUnderloadError"
+        ) {
+      // Puedes analizar err.message o err.errors para personalizar
+      if (err.message.includes("AUTORIDADES.CED_PER cannot be null")) {
+        return res.status(400).json({ error: "Debes ingresar una cédula para la autoridad." });
+      }
+      // Otras validaciones...
+    }
     res.status(500).json({ error: error.message });
   }
 };
