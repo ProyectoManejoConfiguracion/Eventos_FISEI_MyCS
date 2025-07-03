@@ -11,6 +11,8 @@ import { useAuth } from "../auth/AuthContext";
 import { BACK_URL } from "../../config";
 import { useLocation } from "react-router-dom";
 
+// ... badgeColor, Loader y filtrarEventosValidos (igual que tu código, no los repito para ahorrar espacio) ...
+
 const badgeColor = (tipo) => {
   switch (tipo) {
     case "CONFERENCIAS":
@@ -45,6 +47,20 @@ const Loader = () => (
   </div>
 );
 
+<<<<<<< Updated upstream
+=======
+const filtrarEventosValidos = (eventos) => {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  return eventos.filter(evento => {
+    if (evento.EST_VIS === "NO VISIBLE") return false;
+    const fechaEvento = new Date(evento.FEC_EVT);
+    fechaEvento.setHours(0, 0, 0, 0);
+    return fechaEvento >= hoy;
+  });
+};
+
+>>>>>>> Stashed changes
 const Eventos = () => {
   const [eventos, setEventos] = useState([]);
   const [detalles, setDetalles] = useState([]);
@@ -67,7 +83,6 @@ const Eventos = () => {
   // Función para formatear URL de imágenes
   const formatImageUrl = useCallback((path) => {
     if (!path) return null;
-    // Prevenir doble formateo
     if (path.startsWith("http") || path.startsWith("/")) return path;
     return `${BACK_URL}/${path.replace(/\\/g, "/")}`;
   }, []);
@@ -94,9 +109,9 @@ const Eventos = () => {
           descripcion: "",
         });
       });
-  }, []); // Sin dependencias para evitar recargas
+  }, [formatImageUrl]); // Solo depende de formatImageUrl
 
-  // Cargar datos de eventos - solo una vez
+  // --- AQUÍ SOLO UNO PARA CARGA DE DATOS ---
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -105,21 +120,19 @@ const Eventos = () => {
           axios.get(`${BACK_URL}/api/detalle_eventos`),
           axios.get(`${BACK_URL}/api/tarifas_evento`),
         ]);
-
-        // No modificar las URLs aquí, solo guardar los datos originales
-        setEventos(resEventos.data);
+        const eventosValidos = filtrarEventosValidos(resEventos.data);
+        setEventos(eventosValidos);
         setDetalles(resDetalles.data);
         setTarifas(resTarifas.data);
-        setEventosFiltrados(resEventos.data);
+        setEventosFiltrados(eventosValidos);
       } catch (err) {
         console.error("Error al cargar datos:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, []); // Sin dependencias para cargar solo una vez
+  }, []);
 
   // Manejar el evento seleccionado desde la navegación
   useEffect(() => {
@@ -128,16 +141,15 @@ const Eventos = () => {
       const detalle = getDetalleEvento(evento.ID_EVT);
       const tarifasEvento = getTarifaEvento(evento.ID_EVT);
 
-      // Evitar modificar FOT_EVT, solo pasar el objeto tal como está
       setEventoSel(evento);
       setDetalleSel(detalle);
       setTarifaSel(tarifasEvento);
       setModalOpen(true);
 
-      // Limpiar el estado de location para evitar reaperturas
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, modalOpen]);
+    // eslint-disable-next-line
+  }, [location.state, modalOpen, detalles, tarifas]);
 
   const getDetalleEvento = useCallback(
     (id_evt) => detalles.find((d) => d.ID_EVT === id_evt),
