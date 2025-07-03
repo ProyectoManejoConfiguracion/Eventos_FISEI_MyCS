@@ -822,6 +822,7 @@ const Contenido = () => {
 
   // ========== RENDER ==========
   return (
+    <div className="central-wrapper">
     <main className="main-content">
       <div className="contenido-container">
         <h1>Editor de Contenido Web</h1>
@@ -1438,6 +1439,7 @@ const Contenido = () => {
         )}
       </div>
     </main>
+    </div>
   );
 };
 

@@ -55,6 +55,15 @@ const Login = ({ isOpen, closeModal }) => {
           closeModal();
         }else if(loggedUser?.role=="Estudiante" ||loggedUser?.role == "Invitado"){
 
+          if (loggedUser?.est === "VERIFICADO") {
+            navigate("/Administrador");
+            closeModal();
+          } else {
+            navigate("/");
+            closeModal();
+          }
+        } else if (loggedUser?.role == "Estudiante") {
+
           navigate("/");
           closeModal();
         }

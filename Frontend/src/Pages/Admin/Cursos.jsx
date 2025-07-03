@@ -148,6 +148,7 @@ const manejarAsistencia = async (persona, idEvento, fecha, asistio) => {
   };
 
   return (
+    <div className="central-wrapper">
     <div className="notas-container">
       <h1>Asistencia a Cursos</h1>
 
@@ -234,6 +235,7 @@ const manejarAsistencia = async (persona, idEvento, fecha, asistio) => {
       ) : (
         <p className="sin-eventos">No hay eventos disponibles</p>
       )}
+    </div>
     </div>
   );
 };

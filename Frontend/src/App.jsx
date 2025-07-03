@@ -11,6 +11,7 @@ import Curso from "./Pages/Admin/Cursos";
 import Eventos_admin from "./Pages/Admin/MainEvento";
 import Contenido from "./Pages/Admin/Contenido";
 import Notas from "./Pages/Admin/Notas";
+import VerificarFotos from "./Pages/Admin/VerificarFotos";
 import Configuracion from "./Pages/Admin/Configuracion";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
@@ -49,6 +50,7 @@ const Layout = () => {
           <Route path="Curso" element={<Curso />} />
           <Route path="Eventos" element={<Eventos_admin />} />
           <Route path="Contenido" element={<Contenido />} />
+          <Route path="VerificarFotos" element={<VerificarFotos />} />
           <Route path="Notas" element={<Notas />} />
           <Route path="Configuracion" element={<Configuracion />} />
         </Route>
@@ -58,6 +60,7 @@ const Layout = () => {
         <Route path="Asistencia" element={<Asistencia_Est />} />
         <Route path="Certificados" element={<Certificado_Est />} />
         <Route path="Configuracion" element={<Configuracion_Est />} />
+        
         
         </Route>
 
@@ -73,7 +76,7 @@ const Layout = () => {
 function App() {
   return (
     <Router>
-      <div className="app-wrapper">
+      <div >
       <Layout />
       </div>
     </Router>

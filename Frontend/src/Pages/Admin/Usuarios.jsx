@@ -81,6 +81,7 @@ const Usuarios = () => {
   };
 
   return (
+    <div className="central-wrapper">
     <div className="usuarios-container">
       <h2>Gestión de Autoridades</h2>
 
@@ -142,6 +143,7 @@ const Usuarios = () => {
         autoridadSeleccionada={autoridadSeleccionada}
         onSave={obtenerAutoridades}
       />
+    </div>
     </div>
   );
 };
