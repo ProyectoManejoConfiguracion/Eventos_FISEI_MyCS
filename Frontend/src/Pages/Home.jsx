@@ -16,13 +16,6 @@ const ICON_MAP = {
   'MapPin': MapPin
 };
 
-/*const DEFAULT_STATS = [
-  { id: 1, number: '5,000+', text: 'Estudiantes Formados', icon: 'Users' },
-  { id: 2, number: '120+', text: 'Eventos Anuales', icon: 'Calendar' },
-  { id: 3, number: '85%', text: 'Tasa de Empleabilidad', icon: 'Award' },
-  { id: 4, number: '40+', text: 'Empresas Colaboradoras', icon: 'Globe' }
-];*/
-
 const DEFAULT_CONFIG = {
   coursesSection: {
     title: 'Eventos y Cursos Destacados',
@@ -33,8 +26,6 @@ const DEFAULT_CONFIG = {
     subtitle: 'Ofrecemos la mejor formación tecnológica con un enfoque práctico'
   }
 };
-
-
 
 const DiscoveryHome = () => {
   const [eventsData, setEventsData] = useState([]);
@@ -79,11 +70,6 @@ const DiscoveryHome = () => {
       .catch(() => setStatsData([]));
   }, []);
 
-  const processedStats = statsData.map(stat => ({
-    ...stat,
-    icon: ICON_MAP[stat.icon] || Users
-  }));
-
   if (loading) {
     return (
       <div className="discovery-container">
@@ -100,7 +86,7 @@ const DiscoveryHome = () => {
       <section className="discovery-hero">
         <Carrusel />
       </section>
-      
+
       {/* Stats Section */}
       <section className="discovery-stats">
         <div className="stats-container">
@@ -123,7 +109,7 @@ const DiscoveryHome = () => {
               {homeConfig.coursesSection?.subtitle || 'Descubre nuestras oportunidades de aprendizaje'}
             </p>
           </header>
-          
+
           {/* Contenedor de eventos */}
           <div className="courses-grid">
             {eventsData.length > 0 ? (
@@ -139,8 +125,8 @@ const DiscoveryHome = () => {
               </div>
             )}
           </div>
-          
-          {/* Botón para ver más eventos (opcional) */}
+
+          {/* Botón para ver más eventos */}
           <div className="view-more-container">
             <button
               className="view-more-button"
@@ -154,9 +140,9 @@ const DiscoveryHome = () => {
 
       {/* Features Section */}
       <section className="discovery-section features-section">
-        <Features 
-          title={homeConfig.features?.title} 
-          subtitle={homeConfig.features?.subtitle} 
+        <Features
+          title={homeConfig.features?.title}
+          subtitle={homeConfig.features?.subtitle}
         />
       </section>
       {error && (
@@ -169,15 +155,22 @@ const DiscoveryHome = () => {
   );
 };
 
+<<<<<<< Updated upstream
+=======
+// ---- COMPONENTES HIJO ----
+
+>>>>>>> Stashed changes
 const StatCard = ({ stat }) => {
-  const Icon = ICON_MAP[stat.imagen] || Users;
+  // Si tu backend retorna { icon: 'Users', number: '5,000+', text: 'Estudiantes Formados', id: 1 }
+  // cambia a { imagen, titulo, descripcion, ... } si lo necesitas
+  const Icon = ICON_MAP[stat.icon] || Users;
   return (
     <div className="stat-card">
       <div className="stat-icon">
         <Icon size={36} />
       </div>
-      <div className="stat-number">{stat.titulo}</div>
-      <div className="stat-text">{stat.descripcion}</div>
+      <div className="stat-number">{stat.number}</div>
+      <div className="stat-text">{stat.text}</div>
     </div>
   );
 };
@@ -206,13 +199,11 @@ const EventCard = ({ event }) => {
           className="card-image"
           loading="lazy"
           onError={(e) => {
-            // Solo cambia a placeholder si no lo es ya
             if (!e.target.src.endsWith('/1749487325571-234972478.jpeg')) {
               e.target.src = '/1749487325571-234972478.jpeg';
             }
           }}
         />
-
       </div>
       <div className="card-content">
         <div className="card-meta">
