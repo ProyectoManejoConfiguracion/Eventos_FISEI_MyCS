@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
-import {BACK_URL } from '../../config';
+import { BACK_URL } from '../../config';
 
 interface User {
   id: string;
@@ -9,6 +9,7 @@ interface User {
   lastname: string;
   email: string;
   role: string;
+  est: string;
 }
 
 interface AuthContextType {
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastname: raw.APE_PER,
       email: raw.COR_PER,
       role: raw.ROL_EST,
+      est: raw.ESTADO
     };
 
     setUser(user);
@@ -54,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user');
   };
 
-  
   const refreshUser = async () => {
     if (!user?.id) return;
     const res = await axios.get(`${BACK_URL}/api/personas/${user.id}`);
@@ -65,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastname: raw.APE_PER,
       email: raw.COR_PER,
       role: raw.ROL_EST,
+      est: raw.ESTADO
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));

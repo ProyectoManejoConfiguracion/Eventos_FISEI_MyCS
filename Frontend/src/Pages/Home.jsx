@@ -112,7 +112,6 @@ const DiscoveryHome = () => {
         </div>
       </section>
 
-      {/* Eventos Section */}
       <section className="discovery-section">
         <div className="section-container">
           <header className="section-header">
@@ -150,7 +149,9 @@ const DiscoveryHome = () => {
             </button>
           </div>
         </div>
+        
       </section>
+      */}
 
       {/* Features Section */}
       <section className="discovery-section features-section">
@@ -169,6 +170,24 @@ const DiscoveryHome = () => {
   );
 };
 
+const StatCard = ({ stat }) => (
+  <div className="stat-card">
+    <div className="stat-icon">
+      <stat.icon size={36} />
+    </div>
+    <div className="stat-number">{stat.number}</div>
+    <div className="stat-text">{stat.text}</div>
+  </div>
+);
+  const CourseCard = ({ course }) => (
+  <article className="discovery-card">
+    <div className="card-image-container">
+      <img 
+        src={course.image} 
+        alt={course.title}
+        className="card-image"
+        loading="lazy"
+      />
 const StatCard = ({ stat }) => {
   const Icon = ICON_MAP[stat.imagen] || Users;
   return (
@@ -238,6 +257,10 @@ const EventCard = ({ event }) => {
           </button>
         </div>
       </div>
+    </div>
+  </article>
+  );
+
     </article>
   );
 };

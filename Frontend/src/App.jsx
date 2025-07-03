@@ -15,7 +15,7 @@ import Configuracion from "./Pages/Admin/Configuracion";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
 import Estudiante from "./Pages/Estudiante";
-import Curso_Est from "./Pages/Estudiante/Curso_Est";
+
 import Calificacion_Est from "./Pages/Estudiante/Calificacion_Est";
 import Asistencia_Est from "./Pages/Estudiante/Asistencia_Est";
 import Certificado_Est from "./Pages/Estudiante/Certificados_Est";
@@ -53,7 +53,7 @@ const Layout = () => {
           <Route path="Configuracion" element={<Configuracion />} />
         </Route>
         <Route path="/Estudiante/*" element={<Estudiante />}>
-        <Route path="Cursos" element={<Curso_Est />} />
+     
         <Route path="Calificaciones" element={<Calificacion_Est />} />
         <Route path="Asistencia" element={<Asistencia_Est />} />
         <Route path="Certificados" element={<Certificado_Est />} />

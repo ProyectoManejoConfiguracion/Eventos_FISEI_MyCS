@@ -15,8 +15,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const isEstudiante =
-    user?.role === "Estudiante" || user?.role === "ESTUDIANTE";
-  const isDashboard = location.pathname.startsWith("/Estudiante");
+  ["estudiante", "invitado"].includes((user?.role || "").toLowerCase());
+const isDashboard = location.pathname.startsWith("/Estudiante");
 
   // Cerrar menú móvil cuando cambie la ruta
   useEffect(() => {

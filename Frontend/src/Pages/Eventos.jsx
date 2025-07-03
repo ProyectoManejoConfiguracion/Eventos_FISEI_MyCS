@@ -45,6 +45,25 @@ const Loader = () => (
   </div>
 );
 
+// Función para filtrar eventos válidos
+const filtrarEventosValidos = (eventos) => {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0); // Establecer a medianoche para comparación exacta
+
+  return eventos.filter(evento => {
+    // Verificar si el evento es visible
+    if (evento.EST_VIS === "NO VISIBLE") {
+      return false;
+    }
+
+    // Verificar si la fecha del evento es hoy o futura
+    const fechaEvento = new Date(evento.FEC_EVT);
+    fechaEvento.setHours(0, 0, 0, 0);
+    
+    return fechaEvento >= hoy;
+  });
+};
+
 const Eventos = () => {
   const [eventos, setEventos] = useState([]);
   const [detalles, setDetalles] = useState([]);
@@ -98,6 +117,23 @@ const Eventos = () => {
 
   // Cargar datos de eventos - solo una vez
   useEffect(() => {
+    Promise.all([
+      axios.get(`${BACK_URL}/api/eventos`),
+      axios.get(`${BACK_URL}/api/detalle_eventos`),
+      axios.get(`${BACK_URL}/api/tarifas_evento`),
+    ])
+      .then(([resEventos, resDetalles, resTarifas]) => {
+        // Filtrar eventos válidos (visibles y con fecha actual o futura)
+        const eventosValidos = filtrarEventosValidos(resEventos.data);
+        
+        setEventos(eventosValidos);
+        setDetalles(resDetalles.data);
+        setTarifas(resTarifas.data);
+        setEventosFiltrados(eventosValidos);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
     const fetchData = async () => {
       try {
         const [resEventos, resDetalles, resTarifas] = await Promise.all([
