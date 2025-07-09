@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../Styles/Usuarios.css";
+import { BACK_URL } from "../../../config"; 
 
 const EditAutoridad = ({
   isOpen,
@@ -19,7 +20,7 @@ const EditAutoridad = ({
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/facultades")
+      .get(`${BACK_URL}/api/facultades `) // Asegúrate de que la URL sea correcta
       .then((res) => setFacultades(res.data))
       .catch((err) => console.error("Error al cargar facultades:", err));
   }, []);
@@ -45,7 +46,7 @@ const EditAutoridad = ({
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:3000/api/autoridades/${autoridadData.ID_AUT}`,
+        `${BACK_URL}/api/autoridades/${autoridadData.ID_AUT}`,
         autoridadData
       );
       onSave();

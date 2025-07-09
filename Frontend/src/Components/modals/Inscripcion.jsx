@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useAuth } from '../../auth/AuthContext';
 import axios from "axios";
+import { BACK_URL } from "../../../config.js"; 
 
 const ModalInscripcion = ({
   isOpen,
@@ -46,15 +47,16 @@ const ModalInscripcion = ({
     }
 
     try {
-      await axios.post("http://localhost:3000/api/registro_personas/register/", {
-        cedula: user.id,
-        idEvento: evento.ID_EVT
+      await axios.post(`${BACK_URL}/api/registro_personas/register/`, {
+      cedula: user.id,
+      idEvento: evento.ID_EVT
       });
       Swal.fire("Inscrito", "Te has inscrito correctamente.", "success");
       onInscribir && onInscribir({ metodoPago, comprobante });
       onClose();
     } catch (err) {
-      Swal.fire("Error", "No se pudo inscribir. Intenta más tarde.", "error");
+      const errorMsg = err.response?.data?.error || err.message;
+      Swal.fire("Error", `No se pudo inscribir. ${errorMsg}`, "error");
     }
   };
 

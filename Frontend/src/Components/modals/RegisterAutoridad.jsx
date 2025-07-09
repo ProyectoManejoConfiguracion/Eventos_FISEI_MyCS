@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../Styles/RegistroAut.css";
 import axios from "axios";
+import { BACK_URL } from "../../../config"; // Asegúrate de que la URL del backend esté configurada correctamente
 
 
 const RegisterAutoridad = ({ isOpen, closeModal }) => {
@@ -28,7 +29,7 @@ const RegisterAutoridad = ({ isOpen, closeModal }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/facultades")
+      .get(`${BACK_URL}/api/facultades`)
       .then((resp) => setFacultades(resp.data))
       .catch((err) => console.error("Error al cargar facultades:", err));
   }, []);
@@ -128,14 +129,14 @@ const RegisterAutoridad = ({ isOpen, closeModal }) => {
 
     try {
       const resp1 = await axios.post(
-        "http://localhost:3000/api/personas",
+        `${BACK_URL}/api/personas`,
         dataPersona,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
       const resp2 = await axios.post(
-        "http://localhost:3000/api/autoridades",
+        `${BACK_URL}/api/autoridades`,
         dataAutoridad,
         {
           headers: { "Content-Type": "application/json" },

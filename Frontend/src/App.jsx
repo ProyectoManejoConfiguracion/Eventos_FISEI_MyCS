@@ -8,10 +8,10 @@ import Footer from "./Components/Footer";
 import VistaGeneral from "./Pages/Admin/VistaGeneral";
 import Usuario from "./Pages/Admin/Usuarios";
 import Curso from "./Pages/Admin/Cursos";
-import Eventos_admin from "./Pages/Admin/Eventos_admin";
+import Eventos_admin from "./Pages/Admin/MainEvento";
 import Contenido from "./Pages/Admin/Contenido";
 import Notas from "./Pages/Admin/Notas";
-import Tarifas from "./Pages/Admin/Tarifas";
+import VerificarFotos from "./Pages/Admin/VerificarFotos";
 import Configuracion from "./Pages/Admin/Configuracion";
 import Restudiante from './Pages/Restudiante'; 
 import Registro from "./Pages/Registro";
@@ -20,7 +20,8 @@ import Curso_Est from "./Pages/Estudiante/Curso_Est";
 import Calificacion_Est from "./Pages/Estudiante/Calificacion_Est";
 import Asistencia_Est from "./Pages/Estudiante/Asistencia_Est";
 import Certificado_Est from "./Pages/Estudiante/Certificados_Est";
-import Configuracion_Est from "./Pages/Estudiante/Configuracion_Est"; ;
+import Configuracion_Est from "./Pages/Estudiante/Configuracion_Est"; 
+import ResetPassword from "./Pages/ResetPassword";
 import { Routes, Route, BrowserRouter as Router, useLocation } from "react-router-dom";
 
 const Layout = () => {
@@ -39,6 +40,8 @@ const Layout = () => {
         <Route path="/Contactos" element={<Contactos />} />
         <Route path="/Registro" element={<Registro/>} />
           <Route path="/Restudiante" element={<Restudiante/>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
 
         {/* Rutas privadas (Administrador) */}
         <Route path="/Administrador/*" element={<Administrador />}>
@@ -47,8 +50,8 @@ const Layout = () => {
           <Route path="Curso" element={<Curso />} />
           <Route path="Eventos" element={<Eventos_admin />} />
           <Route path="Contenido" element={<Contenido />} />
+          <Route path="VerificarFotos" element={<VerificarFotos />} />
           <Route path="Notas" element={<Notas />} />
-          <Route path="Tarifas" element={<Tarifas />} />
           <Route path="Configuracion" element={<Configuracion />} />
         </Route>
         <Route path="/Estudiante/*" element={<Estudiante />}>
@@ -57,6 +60,7 @@ const Layout = () => {
         <Route path="Asistencia" element={<Asistencia_Est />} />
         <Route path="Certificados" element={<Certificado_Est />} />
         <Route path="Configuracion" element={<Configuracion_Est />} />
+        
         
         </Route>
 
@@ -72,7 +76,9 @@ const Layout = () => {
 function App() {
   return (
     <Router>
+      <div >
       <Layout />
+      </div>
     </Router>
   );
 }

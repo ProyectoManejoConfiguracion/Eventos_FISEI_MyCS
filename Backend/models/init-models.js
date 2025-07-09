@@ -1,15 +1,18 @@
 var DataTypes = require("sequelize").DataTypes;
 var _AUTORIDADES = require("./AUTORIDADES");
 var _CARRERAS = require("./CARRERAS");
+var _CONTENIDO_WEB = require("./CONTENIDO_WEB");
 var _DETALLE_EVENTOS = require("./DETALLE_EVENTOS");
 var _DETALLE_INFORME = require("./DETALLE_INFORME");
 var _ESTUDIANTES = require("./ESTUDIANTES");
 var _EVENTOS = require("./EVENTOS");
 var _FACULTADES = require("./FACULTADES");
+var _HOME = require("./HOME");
 var _INFORMES = require("./INFORMES");
 var _NIVEL = require("./NIVEL");
 var _PAGOS = require("./PAGOS");
 var _PERSONAS = require("./PERSONAS");
+var _PasswordResetTokens = require("./PasswordResetTokens");
 var _REGISTRO_EVENTO = require("./REGISTRO_EVENTO");
 var _REGISTRO_PERSONAS = require("./REGISTRO_PERSONAS");
 var _REQUERIMIENTOS = require("./REQUERIMIENTOS");
@@ -18,15 +21,18 @@ var _TARIFAS_EVENTO = require("./TARIFAS_EVENTO");
 function initModels(sequelize) {
   var AUTORIDADES = _AUTORIDADES(sequelize, DataTypes);
   var CARRERAS = _CARRERAS(sequelize, DataTypes);
+  var CONTENIDO_WEB = _CONTENIDO_WEB(sequelize, DataTypes);
   var DETALLE_EVENTOS = _DETALLE_EVENTOS(sequelize, DataTypes);
   var DETALLE_INFORME = _DETALLE_INFORME(sequelize, DataTypes);
   var ESTUDIANTES = _ESTUDIANTES(sequelize, DataTypes);
   var EVENTOS = _EVENTOS(sequelize, DataTypes);
   var FACULTADES = _FACULTADES(sequelize, DataTypes);
+  var HOME = _HOME(sequelize, DataTypes);
   var INFORMES = _INFORMES(sequelize, DataTypes);
   var NIVEL = _NIVEL(sequelize, DataTypes);
   var PAGOS = _PAGOS(sequelize, DataTypes);
   var PERSONAS = _PERSONAS(sequelize, DataTypes);
+  var PasswordResetTokens = _PasswordResetTokens(sequelize, DataTypes);
   var REGISTRO_EVENTO = _REGISTRO_EVENTO(sequelize, DataTypes);
   var REGISTRO_PERSONAS = _REGISTRO_PERSONAS(sequelize, DataTypes);
   var REQUERIMIENTOS = _REQUERIMIENTOS(sequelize, DataTypes);
@@ -60,6 +66,8 @@ function initModels(sequelize) {
   PERSONAS.hasMany(DETALLE_EVENTOS, { as: "DETALLE_EVENTOs", foreignKey: "CED_AUT"});
   ESTUDIANTES.belongsTo(PERSONAS, { as: "CED_EST_PERSONA", foreignKey: "CED_EST"});
   PERSONAS.hasMany(ESTUDIANTES, { as: "ESTUDIANTEs", foreignKey: "CED_EST"});
+  PasswordResetTokens.belongsTo(PERSONAS, { as: "CED_PER_PERSONA", foreignKey: "CED_PER"});
+  PERSONAS.hasMany(PasswordResetTokens, { as: "PasswordResetTokens", foreignKey: "CED_PER"});
   REGISTRO_PERSONAS.belongsTo(PERSONAS, { as: "CED_PER_PERSONA", foreignKey: "CED_PER"});
   PERSONAS.hasMany(REGISTRO_PERSONAS, { as: "REGISTRO_PERSONAs", foreignKey: "CED_PER"});
   REGISTRO_PERSONAS.belongsTo(REGISTRO_EVENTO, { as: "ID_REG_EVT_REGISTRO_EVENTO", foreignKey: "ID_REG_EVT"});
@@ -68,21 +76,24 @@ function initModels(sequelize) {
   REGISTRO_PERSONAS.hasMany(INFORMES, { as: "INFORMEs", foreignKey: "NUM_REG_PER"});
   PAGOS.belongsTo(REGISTRO_PERSONAS, { as: "NUM_REG_PER_REGISTRO_PERSONA", foreignKey: "NUM_REG_PER"});
   REGISTRO_PERSONAS.hasMany(PAGOS, { as: "PAGOs", foreignKey: "NUM_REG_PER"});
-  REGISTRO_PERSONAS.belongsTo(TARIFAS_EVENTO, { as: "TIP_PAR_TARIFAS_EVENTO", foreignKey: "TIP_PAR"});
-  TARIFAS_EVENTO.hasMany(REGISTRO_PERSONAS, { as: "REGISTRO_PERSONAs", foreignKey: "TIP_PAR"});
+  REGISTRO_PERSONAS.belongsTo(TARIFAS_EVENTO, { as: "ID_TAR_PER_TARIFAS_EVENTO", foreignKey: "ID_TAR_PER"});
+  TARIFAS_EVENTO.hasMany(REGISTRO_PERSONAS, { as: "REGISTRO_PERSONAs", foreignKey: "ID_TAR_PER"});
 
   return {
     AUTORIDADES,
     CARRERAS,
+    CONTENIDO_WEB,
     DETALLE_EVENTOS,
     DETALLE_INFORME,
     ESTUDIANTES,
     EVENTOS,
     FACULTADES,
+    HOME,
     INFORMES,
     NIVEL,
     PAGOS,
     PERSONAS,
+    PasswordResetTokens,
     REGISTRO_EVENTO,
     REGISTRO_PERSONAS,
     REQUERIMIENTOS,

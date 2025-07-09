@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../auth/AuthContext";
-import "../../Styles/Notas.css";
+import "../../Styles/Asistencia_Adm.css";
+import { BACK_URL } from "../../../config"; 
+import Swal from "sweetalert2";
 
 const Cursos = () => {
   const { user } = useAuth();
@@ -11,7 +13,7 @@ const Cursos = () => {
   useEffect(() => {
     if (user?.id) {
       axios
-        .get(`http://localhost:3000/api/detalle_informe/${user.id}`)
+        .get(`${BACK_URL}/api/detalle_informe/${user.id}`)
         .then((response) => setEventos(response.data))
         .catch((error) =>
           console.error("Error al obtener asistencias:", error)
@@ -22,7 +24,7 @@ const Cursos = () => {
   const handleAsignarAsistencia = async (cedula, idEvento) => {
     try {
       const fecha = new Date().toISOString().split("T")[0];
-      await axios.post("http://localhost:3000/api/detalle_informe/asistencia", {
+      await axios.post(`${BACK_URL}/api/detalle_informe/asistencia`, {
         cedula,
         idEvento,
         fecha,
@@ -47,15 +49,30 @@ const Cursos = () => {
           return evento;
         })
       );
+       await Swal.fire({
+      title: '¡Asistencia registrada!',
+      text: 'La asistencia se ha registrado correctamente',
+      icon: 'success',
+      confirmButtonColor: '#581517',
+      timer: 2000,
+      timerProgressBar: true
+    });
 
-      alert("Asistencia asignada correctamente");
-    } catch (error) {
-      console.error("Error al asignar asistencia:", error);
-      alert("Error al asignar asistencia");
-    }
-  };
+  } catch (error) {
+    console.error("Error al asignar asistencia:", error);
+    
+    // Mostrar error
+    await Swal.fire({
+      title: 'Error',
+      text: 'No se pudo registrar la asistencia',
+      icon: 'error',
+      confirmButtonColor: '#581517'
+    });
+  }
+};
 
   return (
+    <div className="central-wrapper">
     <div className="notas-container">
       <h1>Asistencia a Cursos</h1>
 
@@ -127,6 +144,7 @@ const Cursos = () => {
       ) : (
         <p className="sin-eventos">No tienes eventos asignados</p>
       )}
+    </div>
     </div>
   );
 };

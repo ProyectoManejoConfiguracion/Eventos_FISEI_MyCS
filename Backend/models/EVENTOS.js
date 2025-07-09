@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     MOD_EVT: {
       type: DataTypes.STRING(10),
-      allowNull: true
+      allowNull: false
     },
     FOT_EVT: {
       type: DataTypes.STRING(255),
@@ -37,6 +37,19 @@ module.exports = function(sequelize, DataTypes) {
     SUB_EVT: {
       type: DataTypes.STRING(80),
       allowNull: true
+    },
+    FEC_FIN: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
+    CAR_MOT: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    EST_VIS: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      defaultValue: "VISIBLE"
     }
   }, {
     sequelize,

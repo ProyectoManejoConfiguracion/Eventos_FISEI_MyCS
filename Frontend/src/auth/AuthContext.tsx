@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
+import {BACK_URL } from '../../config';
 
 interface User {
   id: string;
@@ -8,12 +9,13 @@ interface User {
   lastname: string;
   email: string;
   role: string;
+  est: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<User>;
+  login: (email: string, password: string) => Promise<User>;  
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user;
 
   const login = async (email: string, password: string): Promise<User> => {
-    const res = await axios.post('http://localhost:3000/api/personas/login', {
+    const res = await axios.post(`${BACK_URL}/api/personas/login`, {
       email,
       password,
     });
@@ -40,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastname: raw.APE_PER,
       email: raw.COR_PER,
       role: raw.ROL_EST,
+      est: raw.ESTADO
     };
 
     setUser(user);
@@ -56,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   
   const refreshUser = async () => {
     if (!user?.id) return;
-    const res = await axios.get(`http://localhost:3000/api/personas/${user.id}`);
+    const res = await axios.get(`${BACK_URL}/api/personas/${user.id}`);
     const raw = res.data;
     const updatedUser: User = {
       id: raw.CED_PER,
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastname: raw.APE_PER,
       email: raw.COR_PER,
       role: raw.ROL_EST,
+      est: raw.ESTADO
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));

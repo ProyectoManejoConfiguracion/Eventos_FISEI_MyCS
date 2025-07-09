@@ -3,6 +3,7 @@ import { useState } from "react";
 import "../Styles/Registro.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BACK_URL } from "../../config"; 
 
 const Registro = () => {
     const [imagenPreview, setImagenPreview] = useState(null);
@@ -94,7 +95,7 @@ const handleSubmit = async (e) => {
             }
             
             const response = await axios.post(
-                "http://localhost:3000/api/PERSONAS", 
+                `${BACK_URL}/api/PERSONAS`, 
                 data,
                 {
                     headers: {

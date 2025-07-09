@@ -3,6 +3,7 @@ import "../../Styles/Curso_Est.css";
 import { FaBookOpen, FaRegClock } from "react-icons/fa";
 import { useAuth } from "../../auth/AuthContext";
 import ModalConstruccion from "../../Components/modals/Construccion";
+import { BACK_URL } from "../../../config";
 
 const badgeEstado = (categoria) => {
   switch (categoria) {
@@ -26,7 +27,7 @@ const Cursos = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3000/api/cursos/${user?.id}`)
+    fetch(`${BACK_URL}/api/cursos/${user?.id}`)
       .then((res) => res.json())
       .then((data) => setCursos(data))
       .catch(() => setCursos([]))

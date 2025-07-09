@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('PAGOS', {
     NUM_PAG: {
-      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
@@ -25,7 +24,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     VAL_PAG: {
       type: DataTypes.DECIMAL(5,2),
-      allowNull: false
+      allowNull: true
+    },
+    FOT_PAG: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    EST_PAG: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

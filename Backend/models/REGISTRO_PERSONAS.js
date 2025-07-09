@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('REGISTRO_PERSONAS', {
     NUM_REG_PER: {
-      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
@@ -27,13 +26,22 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'TTARIFAS_EVENTO',
+        model: 'TARIFAS_EVENTO',
         key: 'ID_TAR'
       }
     },
     FEC_REG_PER: {
       type: DataTypes.DATEONLY,
       allowNull: false
+    },
+    EST_REG: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+      defaultValue: "PENDIENTE"
+    },
+    CAR_MOT: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
@@ -49,24 +57,24 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "CED_PER",
+        name: "REGISTRO_PERSONAS_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "CED_PER" },
         ]
       },
       {
-        name: "ID_REG_EVT",
+        name: "REGISTRO_PERSONAS_ibfk_2",
         using: "BTREE",
         fields: [
           { name: "ID_REG_EVT" },
         ]
       },
       {
-        name: "TIP_PAR",
+        name: "REGISTRO_PERSONAS_ibfk_3",
         using: "BTREE",
         fields: [
-          { name: "TIP_PAR" },
+          { name: "ID_TAR_PER" },
         ]
       },
     ]

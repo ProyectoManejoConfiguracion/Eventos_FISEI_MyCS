@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     NOT_INF: {
       type: DataTypes.DECIMAL(5,2),
-      allowNull: true 
+      allowNull: true
     }
   }, {
     sequelize,
@@ -29,11 +29,11 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "NUM_INF" },
+          { name: "NUM_IFN" },
         ]
       },
       {
-        name: "NUM_REG_PER",
+        name: "INFORMES_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "NUM_REG_PER" },

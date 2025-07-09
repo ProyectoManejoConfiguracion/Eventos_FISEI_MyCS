@@ -7,17 +7,17 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    REG_ASI: {
-      type: DataTypes.DATEONLY,
-      allowNull: true
-    },
     NUM_INF: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'INFORMES',
-        key: 'NUM_INF'
+        key: 'NUM_IFN'
       }
+    },
+    REG_ASI: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,
@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "NUM_INF",
+        name: "DETALLE_INFORME_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "NUM_INF" },

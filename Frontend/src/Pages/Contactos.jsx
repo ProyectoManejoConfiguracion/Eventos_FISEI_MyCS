@@ -1,34 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import "../Styles/Contactos.css";
-import img from "../assets/facultad1.jpg";
+import { BACK_URL } from "../../config";
+
+const ICON_MAP = {
+  Phone,
+  Mail,
+  MapPin
+};
 
 const Contactos = () => {
-  const [contactData, setContactData] = useState({
-    TELF: "(03) 285-1894",
-    EMAIL_A: "talleresfisei@uta.edu.ec",
-    EMAIL_B: "ctt.fisei@uta.edu.ec"
-  });
+  const [banner, setBanner] = useState({ imagen: "", titulo: "CONTÁCTANOS" });
+  const [tarjetas, setTarjetas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchContactData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/web');
-        if (!response.ok) {
-          throw new Error('No se pudo cargar la información de contacto');
+        const resBanner = await fetch(`${BACK_URL}/api/home?section=ImagenContactanos`);
+        const dataBanner = await resBanner.json();
+        if (Array.isArray(dataBanner) && dataBanner.length > 0) {
+          setBanner({
+            imagen: dataBanner[0].imagen ? `${BACK_URL}/${dataBanner[0].imagen.replace(/\\/g, "/")}` : "",
+            titulo: dataBanner[0].titulo || "CONTÁCTANOS"
+          });
         }
-        const data = await response.json();
-        
-        setContactData({
-          TELF: data.TELF || "(03) 285-1894",
-          EMAIL_A: data.EMAIL_A || "talleresfisei@uta.edu.ec",
-          EMAIL_B: data.EMAIL_B || "ctt.fisei@uta.edu.ec"
-        });
+
+        const resTarjetas = await fetch(`${BACK_URL}/api/home?section=tarjetasContactanos`);
+        const dataTarjetas = await resTarjetas.json();
+        setTarjetas(Array.isArray(dataTarjetas) ? dataTarjetas : []);
       } catch (err) {
-        setError(err.message);
-        console.error("Error fetching contact data:", err);
+        setError("No se pudo cargar la información de contacto.");
       } finally {
         setLoading(false);
       }
@@ -37,63 +40,40 @@ const Contactos = () => {
     fetchContactData();
   }, []);
 
-  if (loading) {
-    return <div className="loading-contact">Cargando información de contacto...</div>;
-  }
-
-  if (error) {
-    return <div className="error-contact">Error: {error}</div>;
-  }
+  if (loading) return <div className="loading-contact">Cargando información de contacto...</div>;
+  if (error) return <div className="error-contact">Error: {error}</div>;
 
   return (
     <div className="contact-container">
       <div className="contact-hero">
-        <img src={img} alt="Banner" className="hero-image" />
+        {banner.imagen && <img src={banner.imagen} alt="Banner" className="hero-image" />}
         <div className="hero-overlay" />
         <div className="hero-content">
-          <h1 className="hero-title">Contáctanos</h1>
+          <h1 className="hero-title">{banner.titulo}</h1>
         </div>
       </div>
       <div className="main-content">
         <div className="cards-grid">
-          <div className="contact-card">
-            <div className="card-content">
-              <div className="icon-wrapper icon-wrapper-blue">
-                <Phone className="icon" />
+          {tarjetas.map(tarjeta => {
+            const Icon = ICON_MAP[tarjeta.imagen] || Phone;
+            return (
+              <div className="contact-card" key={tarjeta.id}>
+                <div className="card-content">
+                  <div className="icon-wrapper icon-wrapper-blue">
+                    <Icon className="icon" />
+                  </div>
+                  <div className="card-info">
+                    <h4 className="card-title">{tarjeta.titulo}</h4>
+                    {tarjeta.descripcion && tarjeta.descripcion.split("\n").map((linea, idx) => (
+                      <p className="card-text" key={idx}>{linea}</p>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="card-info">
-                <h4 className="card-title">Llámanos</h4>
-                <p className="card-text">{contactData.TELF}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="contact-card">
-            <div className="card-content">
-              <div className="icon-wrapper icon-wrapper-green">
-                <Mail className="icon" />
-              </div>
-              <div>
-                <h4 className="card-title">Email</h4>
-                <p className="card-text">{contactData.EMAIL_A}</p>
-                <p className="card-text">{contactData.EMAIL_B}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="contact-card">
-            <div className="card-content">
-              <div className="icon-wrapper icon-wrapper-purple">
-                <MapPin className="icon" />
-              </div>
-              <div>
-                <h4 className="card-title">Visítanos</h4>
-                <p className="card-text">Av. Los Chasquis y Rio Guayllabamba</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="formulario-section">
+            );
+          })}
+        </div>
+        <div className="formulario-section">
             <h3 className="section-title">Envíanos un mensaje</h3>
             <form className="formulario-container">
               <div className="input-group">
@@ -141,7 +121,6 @@ const Contactos = () => {
               </button>
             </form>
           </div>
-        </div>
       </div>
     </div>
   );

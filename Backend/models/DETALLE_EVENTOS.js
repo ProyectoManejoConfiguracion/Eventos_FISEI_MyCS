@@ -27,12 +27,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     NOT_DET: {
-      type: DataTypes.DECIMAL(4,2),
-      allowNull: false
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     HOR_DET: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     ARE_DET: {
       type: DataTypes.STRING(40),
@@ -56,14 +56,14 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "ID_EVT",
+        name: "DETALLE_EVENTOS_ibfk_1",
         using: "BTREE",
         fields: [
           { name: "ID_EVT" },
         ]
       },
       {
-        name: "CED_AUT",
+        name: "DETALLE_EVENTOS_ibfk_2",
         using: "BTREE",
         fields: [
           { name: "CED_AUT" },
